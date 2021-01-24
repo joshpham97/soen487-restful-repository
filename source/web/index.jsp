@@ -11,6 +11,16 @@
     <title>Test</title>
   </head>
   <body>
-    Test
+  Hello World.
+    <div class="h4">Create New Artist</div>
+    <form action="ArtistServlet" method="post">
+      <input type="text" name="action" value="post" hidden/>
+      <div class="form-group">
+        <input id="postNickname" name="nickname" class="form-control" rows="1" placeholder="nickname" required />
+        <input id="postFirstName" name="firstname" class="form-control" rows="1" placeholder="nickname" required />
+        <input id="postLastName" name="lastname" class="form-control" rows="1" placeholder="nickname" required />
+        <input id="postBio" name="bio" class="form-control" rows="2" placeholder="nickname" required />
+      </div>
+    </form>
   </body>
 </html>
