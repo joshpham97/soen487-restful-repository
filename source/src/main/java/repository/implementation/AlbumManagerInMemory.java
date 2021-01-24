@@ -4,10 +4,12 @@ import repository.core.Album;
 import repository.core.IAlbumManager;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
-public class AlbumManagerInMemory implements IAlbumManager {
+public class AlbumManagerInMemory implements IAlbumManager  {
     private CopyOnWriteArrayList<Album> albums;
 
     public AlbumManagerInMemory() {
@@ -15,15 +17,35 @@ public class AlbumManagerInMemory implements IAlbumManager {
     }
 
     public ArrayList<Album> listAlbum() {
-        return new ArrayList<>(albums);
+        return albums.stream()
+                .sorted(Comparator.comparing(Album::getIsrc).thenComparing(Album::getTitle)) // Sort by ISRC and title
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     public Album getAlbum(String isrc) {
-        return null;
+        Optional<Album> album;
+
+        try {
+            album = albums.stream()
+                    .filter(a -> a.getIsrc().equals(isrc))
+                    .findFirst();
+
+            if (!album.isPresent())
+                return null;
+        }
+        catch(Exception e) {
+            return null;
+        }
+
+        return album.get();
     }
 
     public boolean addAlbum(Album album) {
         try {
+            Album duplicate = getAlbum(album.getIsrc());
+            if(duplicate != null)  // Constraint: duplicate ISRC
+                return false;
+
             albums.add(album);
         }
         catch(Exception e) {
@@ -54,8 +76,7 @@ public class AlbumManagerInMemory implements IAlbumManager {
                     .filter(a -> !a.getIsrc().equals(isrc))
                     .collect(Collectors.toCollection(CopyOnWriteArrayList::new));
 
-            // Check if anything was deleted
-            if(beforeLength == albums.size())
+            if(beforeLength == albums.size()) // Nothing was deleted
                 return false;
         }
         catch(Exception e) {

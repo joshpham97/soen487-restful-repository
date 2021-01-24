@@ -1,14 +1,10 @@
 package repository.business;
 
+import repository.core.Album;
 import repository.core.IAlbumManager;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import utilities.ConfigReader;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
 
 public class AlbumManagerFactory {
@@ -19,9 +15,9 @@ public class AlbumManagerFactory {
 
     public static IAlbumManager loadManager() {
         try {
-            if (albumManager == null) {
-                synchronized (IAlbumManager.class) {
-                    Class<?> cl = Class.forName(getConfigFileKey());
+            synchronized (IAlbumManager.class) {
+                if (albumManager == null) {
+                    Class<?> cl = Class.forName(ConfigReader.getConfigFileKey(CONFIG_FILE, CONFIG_KEY));
                     Constructor<?> cons = cl.getConstructor();
 
                     albumManager = (IAlbumManager) cons.newInstance();
@@ -35,11 +31,36 @@ public class AlbumManagerFactory {
         return albumManager;
     }
 
-    public static String getConfigFileKey() throws IOException, ParseException {
-        InputStream inputStream = AlbumManagerFactory.class.getClassLoader().getResourceAsStream(CONFIG_FILE); // Get resource
-        Object obj = new JSONParser().parse(new InputStreamReader(inputStream)); // Read file
-        JSONObject jo = (JSONObject) obj;
-
-        return jo.get(CONFIG_KEY).toString();
-    }
+    // TO REMOVE: quick testing
+//    public static void main(String[] args) {
+//        IAlbumManager albumManager = AlbumManagerFactory.loadManager();
+//
+//        // check albumManager is defined
+//        System.out.println("Defined: " + (albumManager != null ? true : false));
+//
+//        Album a1 = new Album("isrc1", "title1", 2021, "artist1", "contentDesc1");
+//        Album a2 = new Album("isrc2", "title2", 2022, "artist2", "contentDesc2");
+//        Album a3 = new Album("isrc3", "title3", 2023, "artist3", "contentDesc3");
+//        Album duplicate = new Album("isrc1", "dupTitl", 2020, "dupArtist", "dupContentDesc");
+//
+//        // Empty list
+//        System.out.println("Empty: " + albumManager.listAlbum());
+//
+//        // Add album
+//        System.out.println("Added: " + albumManager.addAlbum(a1));
+//        System.out.println("Added: " + albumManager.addAlbum(a2));
+//        System.out.println("Added: " + albumManager.addAlbum(a3));
+//        System.out.println("Adding duplicate: " + albumManager.addAlbum(duplicate));
+//        System.out.println(3 + " : " + albumManager.listAlbum().size());
+//
+//        // Delete album
+//        System.out.println("Deleted: " + albumManager.deleteAlbum(a3.getIsrc()));
+//        System.out.println(2 + " : " + albumManager.listAlbum().size());
+//
+//        // Update album
+//        a1.setTitle("updatedTitle1");
+//        System.out.println("Updated: " + albumManager.updateAlbum(a1));
+//        System.out.println(2 + " : " + albumManager.listAlbum().size());
+//        System.out.println("Updated field: " + albumManager.getAlbum(a1.getIsrc()));
+//    }
 }
