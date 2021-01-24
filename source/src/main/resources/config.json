@@ -1,0 +1,3 @@
+{
+  "ArtistManagerImpl": "repository.implementation.ArtistManagerInMemory"
+}
