@@ -8,9 +8,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 public class AlbumManagerInMemory implements IAlbumManager {
-    CopyOnWriteArrayList<Album> albums;
+    private CopyOnWriteArrayList<Album> albums;
 
-    AlbumManagerInMemory() {
+    public AlbumManagerInMemory() {
         albums = new CopyOnWriteArrayList<>();
     }
 
@@ -18,7 +18,7 @@ public class AlbumManagerInMemory implements IAlbumManager {
         return new ArrayList<>(albums);
     }
 
-   public Album getAlbum(String isrc) {
+    public Album getAlbum(String isrc) {
         return null;
     }
 
