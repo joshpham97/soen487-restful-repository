@@ -38,34 +38,34 @@ public class ArtistManagerFactory {
 
     //TESTING CRUD
    /* public static void main(String[] args) {
-        IArtistManager albumManager = ArtistManagerFactory.loadManager();
+        IArtistManager artistManager = ArtistManagerFactory.loadManager();
 
-        // check albumManager is defined
-        System.out.println("Defined: " + (albumManager != null ? true : false));
+        // check artisManager is defined
+        System.out.println("Defined: " + (artistManager != null ? true : false));
 
-        Artist a1 = new Artist("isrc1", "title1", "2021", "artist1");
-        Artist a2 = new Artist("isrc2", "title2", "2022", "artist2");
-        Artist a3 = new Artist("isrc3", "title3", "2023", "artist3");
-        Artist duplicate = new Artist("isrc1", "dupTitl", "2020", "dupArtist");
+        Artist a1 = new Artist("stef", "stefan", "jb", "guitarist");
+        Artist a2 = new Artist("coolBob", "bob", "bobby", "singer");
+        Artist a3 = new Artist("Guy", "Guy", "Dude", "artist3");
+        Artist duplicate = new Artist("stef", "dupTitl", "2020", "dupArtist");
 
         // Empty list
-        System.out.println("Empty: " + albumManager.listArtist());
+        System.out.println("Empty: " + artistManager.listArtist());
 
-        // Add album
-        System.out.println("Added: " + albumManager.addArtist(a1));
-        System.out.println("Added: " + albumManager.addArtist(a2));
-        System.out.println("Added: " + albumManager.addArtist(a3));
-        System.out.println("Adding duplicate: " + albumManager.addArtist(duplicate));
-        System.out.println(3 + " : " + albumManager.listArtist().size());
+        // Add artist
+        System.out.println("Added: " + artistManager.addArtist(a1));
+        System.out.println("Added: " + artistManager.addArtist(a2));
+        System.out.println("Added: " + artistManager.addArtist(a3));
+        System.out.println("Adding duplicate: " + artistManager.addArtist(duplicate));
+        System.out.println(3 + " : " + artistManager.listArtist().size());
 
-        // Delete album
-        System.out.println("Deleted: " + albumManager.deleteArtist(a3.getNickname()));
-        System.out.println(2 + " : " + albumManager.listArtist().size());
+        // Delete artist
+        System.out.println("Deleted: " + artistManager.deleteArtist(a3.getNickname()));
+        System.out.println(2 + " : " + artistManager.listArtist().size());
 
-        // Update album
+        // Update artist
         a1.setFirstname("updatedTitle1");
-        System.out.println("Updated: " + albumManager.updateArtist(a1));
-        System.out.println(2 + " : " + albumManager.listArtist().size());
-        System.out.println("Updated field: " + albumManager.getArtist(a1.getNickname()));
+        System.out.println("Updated: " + artistManager.updateArtist(a1));
+        System.out.println(2 + " : " + artistManager.listArtist().size());
+        System.out.println("Updated field: " + artistManager.getArtist(a1.getNickname()));
     }*/
 }

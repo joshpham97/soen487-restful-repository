@@ -11,7 +11,6 @@
   <title>Test</title>
 </head>
 <body>
-Hello World.
 <div class="h4">Create New Artist</div>
 <form action="ArtistServlet" method="post">
   <input type="text" name="action" value="post" hidden/>

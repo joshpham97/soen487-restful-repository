@@ -39,7 +39,7 @@ public class ArtistServlet extends HttpServlet {
             System.out.println("works");
             System.out.println(itr.next());
         }
-       // response.sendRedirect("index.jsp");
+        // response.sendRedirect("index.jsp");
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
