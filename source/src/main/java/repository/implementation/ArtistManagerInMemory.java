@@ -16,9 +16,10 @@ public class ArtistManagerInMemory implements IArtistManager {
         artists = new CopyOnWriteArrayList<>();
     }
 
-    /** MAYBE NOT GOOD FOR NOW!! **/
+    /**STEFAN: MAYBE NOT GOOD FOR NOW!! **/
     public ArrayList<Artist> listArtist() {
         return artists.stream()
+                .sorted(Comparator.comparing(Artist::getNickname).thenComparing(Artist::getFirstname).thenComparing(Artist::getLastname))
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 

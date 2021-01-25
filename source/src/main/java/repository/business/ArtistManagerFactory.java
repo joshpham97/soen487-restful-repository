@@ -20,8 +20,8 @@ public class ArtistManagerFactory {
 
     public static IArtistManager loadManager() {
         try {
-            if (artistManager == null) {
-                synchronized (IArtistManager.class) {
+            synchronized (IArtistManager.class) {
+                 if (artistManager == null) {
                     Class<?> cl = Class.forName(ConfigReader.getConfigFileKey(CONFIG_FILE, CONFIG_KEY));
                     Constructor<?> cons = cl.getConstructor();
 
