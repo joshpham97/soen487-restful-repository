@@ -3,13 +3,13 @@ package com.example.rest;
 import repository.business.AlbumManagerFactory;
 import repository.core.Album;
 import repository.core.IAlbumManager;
+import utilities.ExceptionParser;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
-// TODO: fixi error message
 @Path("album")
 public class AlbumREST {
     private IAlbumManager albumManager = AlbumManagerFactory.loadManager();
@@ -30,7 +30,9 @@ public class AlbumREST {
             return albumListString;
         }
         catch(Exception e) {
-            return "An error occurred while trying to get the list of albums\n" + e.getMessage();
+            return "An error occurred while trying to get the list of albums\n\n"
+                    + "Error Details:\n"
+                    + ExceptionParser.getStackTraceString(e);
         }
     }
 
@@ -41,13 +43,15 @@ public class AlbumREST {
         try {
             Album album = albumManager.getAlbum(isrc);
             if (album == null) { // No such album
-                return "No album with ISRC: " + isrc;
+                return "No album with an ISRC of " + isrc;
             }
 
             return album.toString();
         }
         catch(Exception e) {
-            return "An error occurred while trying to get the album\n" + e.getMessage();
+            return "An error occurred while trying to get the album\n\n"
+                    + "Error Details:\n"
+                    + ExceptionParser.getStackTraceString(e);
         }
     }
 
@@ -67,7 +71,9 @@ public class AlbumREST {
             }
         }
         catch(Exception e) {
-            return "An error occurred while trying to add the album\n" + e.getMessage();
+            return "An error occurred while trying to add the album\n\n"
+                    + "Error Details:\n"
+                    + ExceptionParser.getStackTraceString(e);
         }
     }
 
@@ -85,7 +91,10 @@ public class AlbumREST {
                 return "Failed to update album \n" + album;
         }
         catch(Exception e) {
-            return "An error occurred while trying to update the album\n" + e.getMessage();
+            return "An error occurred while trying to update the album\n\n"
+                    + "Error Details:\n"
+                    + ExceptionParser.getStackTraceString(e);
+
         }
     }
 
@@ -102,7 +111,9 @@ public class AlbumREST {
                 return "Failed to delete album";
         }
         catch(Exception e) {
-            return "An error occurred while trying to delete the album\n" + e.getMessage();
+            return "An error occurred while trying to delete the album\n\n"
+                    + "Error Details:\n"
+                    + ExceptionParser.getStackTraceString(e);
         }
     }
 }
