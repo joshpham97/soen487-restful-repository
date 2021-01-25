@@ -24,65 +24,46 @@ public class ArtistManagerInMemory implements IArtistManager {
     }
 
     public Artist getArtist(String nickname) {
-        Optional<Artist> artist;
-
-        try {
-            artist = artists.stream()
+        Optional<Artist> artist = artists.stream()
                     .filter(a -> a.getNickname().equals(nickname))
                     .findFirst();
 
-            if (!artist.isPresent())
-                return null;
-        }
-        catch(Exception e) {
+        if(!artist.isPresent())
             return null;
-        }
 
         return artist.get();
     }
 
-    public boolean addArtist(Artist artist) {
-        try {
-            Artist duplicate = getArtist(artist.getNickname());
-            if(duplicate != null)  // Constraint: duplicate ISRC
-                return false;
-
-            artists.add(artist);
-        }
-        catch(Exception e) {
+    public synchronized boolean addArtist(Artist artist) {
+        Artist duplicate = getArtist(artist.getNickname());
+        if(duplicate != null)  // Constraint: duplicate nickname
             return false;
-        }
-        return true;
+
+        return artists.add(artist);
     }
 
-    public boolean updateArtist(Artist artist) {
-        try {
-            deleteArtist(artist.getNickname());
-            addArtist(artist);
-        }
-        catch(Exception e) {
+    public synchronized boolean updateArtist(Artist artist) {
+        Artist current = getArtist(artist.getNickname());
+        if(current == null)
             return false;
-        }
 
-        return true;
+        int index = artists.indexOf(current);
+        artists.set(index, artist);
+
+        return artist.equals(artists.get(index));
     }
 
-    public boolean deleteArtist(String nickname) {
-        try {
-            // Get length before deleting
-            int beforeLength = artists.size();
+    public synchronized boolean deleteArtist(String nickname) {
+        // Get length before deleting
+        int beforeLength = artists.size();
 
-            artists = artists.stream()
-                    .filter(a -> !a.getNickname().equals(nickname))
-                    .collect(Collectors.toCollection(CopyOnWriteArrayList::new));
+        artists = artists.stream()
+                .filter(a -> !a.getNickname().equals(nickname))
+                .collect(Collectors.toCollection(CopyOnWriteArrayList::new));
 
-            // Check if anything was deleted
-            if(beforeLength == artists.size())
-                return false;
-        }
-        catch(Exception e) {
+        // Check if anything was deleted
+        if(beforeLength == artists.size())
             return false;
-        }
 
         return true;
     }
