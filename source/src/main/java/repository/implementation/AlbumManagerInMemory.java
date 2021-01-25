@@ -23,65 +23,45 @@ public class AlbumManagerInMemory implements IAlbumManager  {
     }
 
     public Album getAlbum(String isrc) {
-        Optional<Album> album;
+        Optional<Album> album = albums.stream()
+                .filter(a -> a.getIsrc().equals(isrc))
+                .findFirst();
 
-        try {
-            album = albums.stream()
-                    .filter(a -> a.getIsrc().equals(isrc))
-                    .findFirst();
-
-            if (!album.isPresent())
-                return null;
-        }
-        catch(Exception e) {
+        if (!album.isPresent())
             return null;
-        }
 
         return album.get();
     }
 
-    public boolean addAlbum(Album album) {
-        try {
-            Album duplicate = getAlbum(album.getIsrc());
-            if(duplicate != null)  // Constraint: duplicate ISRC
-                return false;
-
-            albums.add(album);
-        }
-        catch(Exception e) {
+    public synchronized boolean addAlbum(Album album) {
+        Album duplicate = getAlbum(album.getIsrc());
+        if(duplicate != null)  // Constraint: duplicate ISRC
             return false;
-        }
 
-        return true;
+        return albums.add(album);
     }
 
-    public boolean updateAlbum(Album album) {
-        try {
-            deleteAlbum(album.getIsrc());
-            addAlbum(album);
-        }
-        catch(Exception e) {
+    public synchronized boolean updateAlbum(Album album) {
+        Album current = getAlbum(album.getIsrc());
+        if(current == null)
             return false;
-        }
 
-        return true;
+        int index = albums.indexOf(current);
+        albums.set(index, album);
+
+        return album.equals(albums.get(index));
     }
 
-    public boolean deleteAlbum(String isrc) {
-        try {
-            // Get length before deleting
-            int beforeLength = albums.size();
+    public synchronized boolean deleteAlbum(String isrc) {
+        // Get length before deleting
+        int beforeLength = albums.size();
 
-            albums = albums.stream()
-                    .filter(a -> !a.getIsrc().equals(isrc))
-                    .collect(Collectors.toCollection(CopyOnWriteArrayList::new));
+        albums = albums.stream()
+                .filter(a -> !a.getIsrc().equals(isrc))
+                .collect(Collectors.toCollection(CopyOnWriteArrayList::new));
 
-            if(beforeLength == albums.size()) // Nothing was deleted
-                return false;
-        }
-        catch(Exception e) {
+        if(beforeLength == albums.size()) // Nothing was deleted
             return false;
-        }
 
         return true;
     }
