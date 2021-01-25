@@ -4,6 +4,8 @@ import repository.core.Artist;
 import repository.core.IArtistManager;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
@@ -14,16 +16,36 @@ public class ArtistManagerInMemory implements IArtistManager {
         artists = new CopyOnWriteArrayList<>();
     }
 
+    /** MAYBE NOT GOOD FOR NOW!! **/
     public ArrayList<Artist> listArtist() {
-        return new ArrayList<>(artists);
+        return artists.stream()
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     public Artist getArtist(String nickname) {
-        return null;
+        Optional<Artist> artist;
+
+        try {
+            artist = artists.stream()
+                    .filter(a -> a.getNickname().equals(nickname))
+                    .findFirst();
+
+            if (!artist.isPresent())
+                return null;
+        }
+        catch(Exception e) {
+            return null;
+        }
+
+        return artist.get();
     }
 
     public boolean addArtist(Artist artist) {
         try {
+            Artist duplicate = getArtist(artist.getNickname());
+            if(duplicate != null)  // Constraint: duplicate ISRC
+                return false;
+
             artists.add(artist);
         }
         catch(Exception e) {
@@ -63,6 +85,4 @@ public class ArtistManagerInMemory implements IArtistManager {
 
         return true;
     }
-
-
 }
