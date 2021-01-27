@@ -77,7 +77,7 @@ public class AlbumREST {
                         .build();
             }
             else {
-                return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                return Response.status(Response.Status.FORBIDDEN)
                         .entity("Failed to add album \n" + album)
                         .build();
             }
@@ -103,7 +103,7 @@ public class AlbumREST {
                         .build();
             }
             else {
-                return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                return Response.status(Response.Status.FORBIDDEN)
                         .entity("Failed to update album \n" + album)
                         .build();
             }
@@ -128,7 +128,7 @@ public class AlbumREST {
                         .build();
             }
             else {
-                return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                return Response.status(Response.Status.FORBIDDEN)
                         .entity("Failed to delete album with ISRC of " + isrc)
                         .build();
             }
