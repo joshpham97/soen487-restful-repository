@@ -26,18 +26,35 @@ public class ArtistServlet extends HttpServlet {
 
         final PrintWriter out = response.getWriter();
 
+        String nickname = request.getParameter("nickname");
+
         try{
-            ArrayList<Artist> artists = artistManager.listArtist();
+            if(nickname == null)
+            {
+                ArrayList<Artist> artists = artistManager.listArtist();
 
-            if (artists.size() == 0) // No artists
-                out.write("There are no artists");
+                if (artists.size() == 0) // No artists
+                    out.write("There are no artists");
 
-            // Build string to return
-            String artistListString = artists.stream()
-                    .map(a -> a.toString())
-                    .collect(Collectors.joining("\n"));
+                // Build string to return
+                String artistListString = artists.stream()
+                        .map(a -> a.toString())
+                        .collect(Collectors.joining("\n"));
 
-            out.write(artistListString);
+                out.write(artistListString);
+            }
+            else
+            {
+                Artist artist = artistManager.getArtist(nickname);
+                if (artist == null) { // No such album
+                    out.write("No album with the nickname of " + nickname);
+                }
+                else
+                {
+                    out.write(artist.toString());
+                }
+            }
+
             response.setContentType("text/plain;charset=UTF-8");
         }
         catch(Exception e) {
