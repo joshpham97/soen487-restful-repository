@@ -34,23 +34,31 @@ public class ArtistServlet extends HttpServlet {
                 ArrayList<Artist> artists = artistManager.listArtist();
 
                 if (artists.size() == 0) // No artists
+                {
+                    response.setStatus(HttpServletResponse.SC_OK);
                     out.write("There are no artists");
+                }
+                else
+                {
+                    // Build string to return
+                    String artistListString = artists.stream()
+                            .map(a -> a.toString())
+                            .collect(Collectors.joining("\n"));
 
-                // Build string to return
-                String artistListString = artists.stream()
-                        .map(a -> a.toString())
-                        .collect(Collectors.joining("\n"));
-
-                out.write(artistListString);
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    out.write(artistListString);
+                }
             }
             else
             {
                 Artist artist = artistManager.getArtist(nickname);
                 if (artist == null) { // No such album
-                    out.write("No album with the nickname of " + nickname);
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    out.write("No artist with the nickname of " + nickname);
                 }
                 else
                 {
+                    response.setStatus(HttpServletResponse.SC_OK);
                     out.write(artist.toString());
                 }
             }
@@ -58,6 +66,7 @@ public class ArtistServlet extends HttpServlet {
             response.setContentType("text/plain;charset=UTF-8");
         }
         catch(Exception e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             out.write("An error occurred while trying to get the list of albums\n\n");
         }
     }
@@ -84,17 +93,27 @@ public class ArtistServlet extends HttpServlet {
 
                 boolean addArtist = artistManager.addArtist(artist);
 
-                out.write("Artist added: " + addArtist);
-                response.setContentType("text/plain;charset=UTF-8");
+                if(addArtist){
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    out.write("Artist was added!");
+                }
+                else
+                {
+                    //response.sendError(403, "CANNOT ADD ARTIST!!!" );
+                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                    out.write("CANNOT ADD ARTIST");
+                }
+                //response.setContentType("text/plain;charset=UTF-8");
             }
             else
             {
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 out.write("ERROR ADDING ARTIST");
             }
-
             //response.sendRedirect("index.jsp");
         }
         catch(Exception e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             out.write("An error occurred while trying to add an artist\n\n");
         }
     }
@@ -110,14 +129,17 @@ public class ArtistServlet extends HttpServlet {
             boolean deleted = artistManager.deleteArtist(nickname);
             if(deleted)
             {
+                response.setStatus(HttpServletResponse.SC_OK);
                 out.write("Artist has been deleted!!");
             }
             else
             {
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 out.write("Artist not found!");
             }
         }
         catch(Exception e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             out.write("An error occurred while trying to delete an artist\n\n");
         }
     }
@@ -136,12 +158,17 @@ public class ArtistServlet extends HttpServlet {
             Artist artist = new Artist(nickname, firstName, lastName, bio);
             boolean success = artistManager.updateArtist(artist);
 
-            if (success)
+            if (success) {
+                response.setStatus(HttpServletResponse.SC_OK);
                 out.write("Successfully updated artist \n" + artist);
-            else
+            }
+            else {
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 out.write("Failed to update artist \n" + artist);
+            }
         }
         catch(Exception e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             out.write("An error occurred while trying to update the artist\n\n");
         }
     }
