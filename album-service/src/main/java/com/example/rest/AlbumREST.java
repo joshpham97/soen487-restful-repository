@@ -64,9 +64,9 @@ public class AlbumREST {
     }
 
     @POST
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.TEXT_PLAIN)
-    @Path("{isrc}/{title}/{releaseYear}/{artist}/{contentDesc}")
-    public Response addAlbum(@PathParam("isrc") String isrc, @PathParam("title") String title, @PathParam("releaseYear") int releaseYear, @PathParam("artist") String artist, @PathParam("contentDesc") String contentDesc) {
+    public Response addAlbum(@FormParam("isrc") String isrc, @FormParam("title") String title, @FormParam("releaseYear") int releaseYear, @FormParam("artist") String artist, @FormParam("contentDesc") String contentDesc) {
         try {
             Album album = new Album(isrc, title, releaseYear, artist, contentDesc);
             boolean success = albumManager.addAlbum(album);
@@ -90,9 +90,9 @@ public class AlbumREST {
     }
 
     @PUT
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.TEXT_PLAIN)
-    @Path("{isrc}/{title}/{releaseYear}/{artist}/{contentDesc}")
-    public Response updateAlbum(@PathParam("isrc") String isrc, @PathParam("title") String title, @PathParam("releaseYear") int releaseYear, @PathParam("artist") String artist, @PathParam("contentDesc") String contentDesc) {
+    public Response updateAlbum(@FormParam("isrc") String isrc, @FormParam("title") String title, @FormParam("releaseYear") int releaseYear, @FormParam("artist") String artist, @FormParam("contentDesc") String contentDesc) {
         try {
             Album album = new Album(isrc, title, releaseYear, artist, contentDesc);
             boolean success = albumManager.updateAlbum(album);

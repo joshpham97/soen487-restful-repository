@@ -3,24 +3,20 @@ package servlet;
 import repository.business.ArtistManagerFactory;
 import repository.core.Artist;
 import repository.core.IArtistManager;
-import repository.implementation.ArtistManagerInMemory;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.stream.Collectors;
 
 @WebServlet(name = "artist")
 public class ArtistServlet extends HttpServlet {
 
-    private ArtistManagerInMemory artistManager = new ArtistManagerInMemory();
+    private IArtistManager artistManager = ArtistManagerFactory.loadManager();
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
