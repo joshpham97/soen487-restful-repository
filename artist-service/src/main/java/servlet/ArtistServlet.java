@@ -81,11 +81,11 @@ public class ArtistServlet extends HttpServlet {
             bio = "N/A";
         }
 
-        Artist artist = new Artist(nickname, firstName, lastName, bio);
 
         try{
             if(nickname!= null && firstName != null && lastName != null)
             {
+                Artist artist = new Artist(nickname, firstName, lastName, bio);
 
                 boolean addArtist = artistManager.addArtist(artist);
 
@@ -150,18 +150,32 @@ public class ArtistServlet extends HttpServlet {
         String lastName = request.getParameter("lastname");
         String bio = request.getParameter("bio");
 
-        try {
-            Artist artist = new Artist(nickname, firstName, lastName, bio);
-            boolean success = artistManager.updateArtist(artist);
+        if(bio == null)
+        {
+            bio = "N/A";
+        }
 
-            if (success) {
-                response.setStatus(HttpServletResponse.SC_OK);
-                out.write("Successfully updated artist \n" + artist);
+        try {
+            if(nickname!= null && firstName != null && lastName != null)
+            {
+                Artist artist = new Artist(nickname, firstName, lastName, bio);
+                boolean success = artistManager.updateArtist(artist);
+
+                if (success) {
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    out.write("Successfully updated artist \n" + artist);
+                }
+                else {
+                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                    out.write("Failed to update artist \n" + artist);
+                }
             }
-            else {
+            else
+            {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                out.write("Failed to update artist \n" + artist);
+                out.write("ERROR UPDATING ARTIST");
             }
+
         }
         catch(Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

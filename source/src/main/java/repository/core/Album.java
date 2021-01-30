@@ -56,7 +56,7 @@ public class Album {
     }
 
     public String toString(){
-        String description = !contentDesc.isEmpty() ? contentDesc : "N/A";
+        String description = contentDesc == null || contentDesc.isEmpty() ? "N/A" : contentDesc;
         return String.format("ISRC: %s, title: %s, release year: %d, artist: %s, description: %s", isrc, title, releaseYear, artist, description);
     }
 }
