@@ -1,0 +1,41 @@
+-------------------------------------------------------------------------------------------------------------------------------------------
+									CURL CMD FOR ARTIST
+
+POST DATA:
+curl -X POST --data "nickname=StefanJB&firstname=Stefan&lastname=JB&bio=guitarist" http://localhost:8080/artist_service__1___com_example__war_exploded/artist
+curl -X POST --data "nickname=Timmy&firstname=Tim&lastname=Rod&bio=drummer" http://localhost:8080/artist_service__1___com_example__war_exploded/artist
+curl -X POST --data "nickname=SingerJosh&firstname=Josh&lastname=TheSinger&bio=singer" http://localhost:8080/artist_service__1___com_example__war_exploded/artist
+curl -X POST --data "nickname=RandomDude&firstname=Random&lastname=Dude" http://localhost:8080/artist_service__1___com_example__war_exploded/artist
+curl -X POST --data "nickname=AnotherGuy&firstname=Another&lastname=Guy" http://localhost:8080/artist_service__1___com_example__war_exploded/artist
+
+
+GET ALL DATA:
+curl -X GET http://localhost:8080/artist_service__1___com_example__war_exploded/artist
+
+GET Specific Data using nickname
+curl -X GET http://localhost:8080/artist_service__1___com_example__war_exploded/artist?nickname=SingerJosh
+curl -X GET http://localhost:8080/artist_service__1___com_example__war_exploded/artist?nickname=RandomDude
+
+PUT (update) Artist:
+curl -X PUT "http://localhost:8080/artist_service__1___com_example__war_exploded/artist?nickname=RandomDude&firstname=Random&lastname=Dude&bio=singer"
+
+DELETE Artist:
+curl -X DELETE http://localhost:8080/artist_service__1___com_example__war_exploded/artist?nickname=RandomDude
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+									CURL CMD FOR ALBUM
+
+POST DATA:
+curl -X POST -d 'isrc=first&title=album1&releaseYear=2000&artist=Timmy&contentDesc=rock' http://localhost:8080/myapp/album
+curl -X POST -d 'isrc=second&title=album2&releaseYear=2002&artist=Timmy&contentDesc=pop' http://localhost:8080/myapp/album
+curl -X POST -d 'isrc=third&title=album3&releaseYear=2002&artist=StefanJB&contentDesc=rap' http://localhost:8080/myapp/album
+curl -X POST -d 'isrc=fourth&title=album4&releaseYear=2020&artist=SingerJosh&contentDesc=rock' http://localhost:8080/myapp/album
+
+GET ALL DATA:
+curl -X GET http://localhost:8080/myapp/album
+
+GET Specific Data using ISRC:
+curl -X GET http://localhost:8080/myapp/album/second
+
+PUT (update) album:
+curl -X PUT -d 'isrc=second&title=album2&releaseYear=2002&artist=Timmy&contentDesc=rock' http://localhost:8080/myapp/album
