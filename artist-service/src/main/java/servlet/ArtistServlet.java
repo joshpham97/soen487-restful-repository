@@ -81,6 +81,7 @@ public class ArtistServlet extends HttpServlet {
             bio = "N/A";
         }
 
+
         try{
             if(nickname!= null && firstName != null && lastName != null)
             {
