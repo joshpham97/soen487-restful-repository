@@ -8,7 +8,6 @@ curl -X POST --data "nickname=SingerJosh&firstname=Josh&lastname=TheSinger&bio=s
 curl -X POST --data "nickname=RandomDude&firstname=Random&lastname=Dude" http://localhost:8080/artist_service__1___com_example__war_exploded/artist
 curl -X POST --data "nickname=AnotherGuy&firstname=Another&lastname=Guy" http://localhost:8080/artist_service__1___com_example__war_exploded/artist
 
-
 GET ALL DATA:
 curl -X GET http://localhost:8080/artist_service__1___com_example__war_exploded/artist
 
@@ -26,10 +25,10 @@ curl -X DELETE http://localhost:8080/artist_service__1___com_example__war_explod
 									CURL CMD FOR ALBUM
 
 POST DATA:
-curl -X POST -d 'isrc=first&title=album1&releaseYear=2000&artist=Timmy&contentDesc=rock' http://localhost:8080/myapp/album
-curl -X POST -d 'isrc=second&title=album2&releaseYear=2002&artist=Timmy&contentDesc=pop' http://localhost:8080/myapp/album
-curl -X POST -d 'isrc=third&title=album3&releaseYear=2002&artist=StefanJB&contentDesc=rap' http://localhost:8080/myapp/album
-curl -X POST -d 'isrc=fourth&title=album4&releaseYear=2020&artist=SingerJosh&contentDesc=rock' http://localhost:8080/myapp/album
+curl -X POST -d "isrc=first&title=album1&releaseYear=2000&artist=Timmy&contentDesc=rock" http://localhost:8080/myapp/album
+curl -X POST -d "isrc=second&title=album2&releaseYear=2002&artist=Timmy" http://localhost:8080/myapp/album
+curl -X POST -d "isrc=third&title=album3&releaseYear=2002&artist=StefanJB&contentDesc=rap" http://localhost:8080/myapp/album
+curl -X POST -d "isrc=fourth&title=album4&releaseYear=2020&artist=SingerJosh&contentDesc=rock" http://localhost:8080/myapp/album
 
 GET ALL DATA:
 curl -X GET http://localhost:8080/myapp/album
@@ -38,4 +37,7 @@ GET Specific Data using ISRC:
 curl -X GET http://localhost:8080/myapp/album/second
 
 PUT (update) album:
-curl -X PUT -d 'isrc=second&title=album2&releaseYear=2002&artist=Timmy&contentDesc=rock' http://localhost:8080/myapp/album
+curl -X PUT -d "isrc=second&title=album2&releaseYear=2002&artist=Timmy&contentDesc=rock" http://localhost:8080/myapp/album
+
+DELETE ulbum:
+curl -X DELETE http://localhost:8080/myapp/album/fourth
