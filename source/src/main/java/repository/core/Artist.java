@@ -46,7 +46,7 @@ public class Artist {
     }
 
     public String toString(){
-        String description = !bio.isEmpty() ? bio : "N/A";
-        return String.format("Nickname: %s, first name: %s, last name: %s, bio: %s", nickname, firstname, lastname, description);
+        //String description = !bio.isEmpty() ? bio : "N/A";
+        return String.format("Nickname: %s, first name: %s, last name: %s, bio: %s", nickname, firstname, lastname, bio);
     }
 }
