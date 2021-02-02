@@ -1,4 +1,6 @@
 import client.ArtistClient;
+import enums.MainMenuAction;
+import enums.ResourceMenuAction;
 
 import java.util.Scanner;
 
