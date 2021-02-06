@@ -8,7 +8,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
@@ -63,7 +65,7 @@ public class ArtistServlet extends HttpServlet {
         }
         catch(Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            out.write("An error occurred while trying to get the list of albums\n\n");
+            out.write("An error occurred while trying to get the list of artists\n\n");
         }
     }
 
@@ -76,11 +78,10 @@ public class ArtistServlet extends HttpServlet {
         String lastName = request.getParameter("lastname");
         String bio = request.getParameter("bio");
 
-        if(bio == null)
+        if(bio == null || bio == "")
         {
             bio = "N/A";
         }
-
 
         try{
             if(nickname!= null && firstName != null && lastName != null)
@@ -97,14 +98,14 @@ public class ArtistServlet extends HttpServlet {
                 {
                     //response.sendError(403, "CANNOT ADD ARTIST!!!" );
                     response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                    out.write("CANNOT ADD ARTIST");
+                    out.write("ERROR ADDING ARTIST");
                 }
                 //response.setContentType("text/plain;charset=UTF-8");
             }
             else
             {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                out.write("ERROR ADDING ARTIST");
+                out.write("ERROR ADDING ARTIST: Nickname, firstname OR lastname cannot be null!");
             }
             //response.sendRedirect("index.jsp");
         }
@@ -131,7 +132,7 @@ public class ArtistServlet extends HttpServlet {
             else
             {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                out.write("Artist not found!");
+                out.write("Artist you're trying to delete is not found!");
             }
         }
         catch(Exception e) {
@@ -144,42 +145,35 @@ public class ArtistServlet extends HttpServlet {
     public void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         final PrintWriter out = response.getWriter();
+        String nickname, firstName, lastName, bio;
 
-        String nickname = request.getParameter("nickname");
-        String firstName = request.getParameter("firstname");
-        String lastName = request.getParameter("lastname");
-        String bio = request.getParameter("bio");
+        try{
+            BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
+            String data = br.readLine();
+            String[] args = data.split("&");
+            String[] parts1 = args[0].split("="); //nickname = parts1[1]
+            nickname = parts1[1];
+            String[] parts2 = args[1].split("="); //firstname = parts2[1]
+            firstName = parts2[1];
+            String[] parts3 = args[2].split("="); //lasttname = parts3[1]
+            lastName = parts3[1];
+            String[] parts4 = args[3].split("="); //bio = parts4[1]
+            bio = parts4[1];
 
-        if(bio == null)
-        {
-            bio = "N/A";
-        }
-
-        try {
-            if(nickname!= null && firstName != null && lastName != null)
-            {
-                Artist artist = new Artist(nickname, firstName, lastName, bio);
-                boolean success = artistManager.updateArtist(artist);
-
-                if (success) {
-                    response.setStatus(HttpServletResponse.SC_OK);
-                    out.write("Successfully updated artist \n" + artist);
-                }
-                else {
-                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                    out.write("Failed to update artist \n" + artist);
-                }
+            Artist artist = new Artist(nickname, firstName, lastName, bio);
+            boolean success = artistManager.updateArtist(artist);
+            if (success) {
+                response.setStatus(HttpServletResponse.SC_OK);
+                out.write("Successfully updated artist \n" + artist);
             }
-            else
-            {
+            else {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                out.write("ERROR UPDATING ARTIST");
+                out.write("Failed to update artist: Artist with that nickname does not exist! \n" + artist);
             }
-
         }
         catch(Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            out.write("An error occurred while trying to update the artist\n\n");
+            out.write("An error occurred while trying to update the artist: MISSING A PARAMETER!\n\n");
         }
     }
 }

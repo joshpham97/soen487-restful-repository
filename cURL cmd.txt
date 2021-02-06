@@ -16,7 +16,7 @@ curl -X GET http://localhost:8080/artist_service__1___com_example__war_exploded/
 curl -X GET http://localhost:8080/artist_service__1___com_example__war_exploded/artist?nickname=RandomDude
 
 PUT (update) Artist:
-curl -X PUT "http://localhost:8080/artist_service__1___com_example__war_exploded/artist?nickname=RandomDude&firstname=Random&lastname=Dude&bio=singer"
+curl -X PUT --data "nickname=RandomDude&firstname=Random&lastname=Dude&bio=Singer" "http://localhost:8080/artist_service__1___com_example__war_exploded/artist"
 
 DELETE Artist:
 curl -X DELETE http://localhost:8080/artist_service__1___com_example__war_exploded/artist?nickname=RandomDude
