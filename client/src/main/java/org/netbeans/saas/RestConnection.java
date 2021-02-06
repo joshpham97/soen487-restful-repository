@@ -263,4 +263,8 @@ public class RestConnection {
             }
         }
     }
+
+    public RestResponse put(Object object, String[][] queryParams) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

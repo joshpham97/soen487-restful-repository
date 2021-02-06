@@ -71,6 +71,8 @@ public class Console {
                 } else {
                     System.out.println("An error has occurred, please try again.");
                 }
+
+                System.out.println();
             }
         } while (mainMenuAction != MainMenuAction.EXIT);
     }
@@ -105,6 +107,8 @@ public class Console {
         System.out.printf("4. Update %s%n", resourceText);
         System.out.printf("5. Delete %s%n", resourceText);
         int option = scanner.nextInt();
+        scanner.nextLine(); //Consumes new line character
+        System.out.println();
 
         switch (option) {
             case 1:
@@ -127,7 +131,7 @@ public class Console {
     }
 
     public String getArtist() {
-        System.out.print("Please enter the nickname of the artist: ");
+        System.out.println("Please enter the nickname of the artist: ");
         String nickname = getUserInput("Nickname", true);
         return artistClient.get(nickname);
     }
@@ -223,15 +227,15 @@ public class Console {
 
     public String getUserInput(String inputName, boolean isRequired) {
         if (isRequired) {
-            String input;
-            do {
+            String input = "";
+            while (input.isEmpty()) {
                 System.out.print(inputName + ": ");
                 input = scanner.nextLine();
 
                 if (input.isEmpty()) {
                     System.out.println("This value is required, please enter again.");
                 }
-            } while (input.isEmpty());
+            }
 
             return input;
         } else {

@@ -32,15 +32,13 @@ public class ArtistClient {
         if (resourceBase == null){
             try
             {
-                String result = "An unknown error has occurred.";
                 InputStream resourcePath = getClass().getClassLoader().getResourceAsStream("rest_apis.json");
                 String apiResource = IOUtils.toString(resourcePath, StandardCharsets.UTF_8);
                 JSONParser jsonParser = new JSONParser();
 
                 //Read JSON file
                 JSONObject resource = (JSONObject) jsonParser.parse(apiResource);
-                JSONObject repositories = (JSONObject) resource.get("repositories");
-                resourceBase = ((String) resource.get("base")) + ((String) repositories.get("artist"));
+                resourceBase = (String) resource.get("artist");
             } catch (Exception e) {
                 System.out.println("There was an error reading the api path.");
                 e.printStackTrace();
