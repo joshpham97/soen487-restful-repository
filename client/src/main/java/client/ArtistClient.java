@@ -136,10 +136,10 @@ public class ArtistClient {
 
     public UrlEncodedFormEntity getAttribute(String nickname, String firstname, String lastname, String bio) throws UnsupportedEncodingException {
         List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
-        urlParameters.add(new BasicNameValuePair("nickname", encodeValue(nickname)));
-        urlParameters.add(new BasicNameValuePair("firstname", encodeValue(firstname)));
-        urlParameters.add(new BasicNameValuePair("lastname", encodeValue(lastname)));
-        urlParameters.add(new BasicNameValuePair("bio", encodeValue(bio)));
+        urlParameters.add(new BasicNameValuePair("nickname", nickname));
+        urlParameters.add(new BasicNameValuePair("firstname", firstname));
+        urlParameters.add(new BasicNameValuePair("lastname", lastname));
+        urlParameters.add(new BasicNameValuePair("bio", bio));
 
         return new UrlEncodedFormEntity(urlParameters);
     }
@@ -152,7 +152,7 @@ public class ArtistClient {
             StringBuilder result = new StringBuilder();
             String line = "";
             while ((line = rd.readLine()) != null)
-                result.append(line);
+                result.append(line).append("\n");
 
             return result.toString();
         }catch (Exception e) {
