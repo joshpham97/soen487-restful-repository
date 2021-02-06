@@ -25,19 +25,19 @@ curl -X DELETE http://localhost:8080/artist_service__1___com_example__war_explod
 									CURL CMD FOR ALBUM
 
 POST DATA:
-curl -X POST -d "isrc=first&title=album1&releaseYear=2000&artist=Timmy&contentDesc=rock" http://localhost:8080/myapp/album
-curl -X POST -d "isrc=second&title=album2&releaseYear=2002&artist=Timmy" http://localhost:8080/myapp/album
-curl -X POST -d "isrc=third&title=album3&releaseYear=2002&artist=StefanJB&contentDesc=rap" http://localhost:8080/myapp/album
-curl -X POST -d "isrc=fourth&title=album4&releaseYear=2020&artist=SingerJosh&contentDesc=rock" http://localhost:8080/myapp/album
+curl -X POST -d "isrc=first&title=album1&releaseYear=2000&artist=Timmy&contentDesc=rock" http://localhost:8081/myapp/album
+curl -X POST -d "isrc=second&title=album2&releaseYear=2002&artist=Timmy" http://localhost:8081/myapp/album
+curl -X POST -d "isrc=third&title=album3&releaseYear=2002&artist=StefanJB&contentDesc=rap" http://localhost:8081/myapp/album
+curl -X POST -d "isrc=fourth&title=album4&releaseYear=2020&artist=SingerJosh&contentDesc=rock" http://localhost:8081/myapp/album
 
 GET ALL DATA:
-curl -X GET http://localhost:8080/myapp/album
+curl -X GET http://localhost:8081/myapp/album
 
 GET Specific Data using ISRC:
-curl -X GET http://localhost:8080/myapp/album/second
+curl -X GET http://localhost:8081/myapp/album/second
 
 PUT (update) album:
-curl -X PUT -d "isrc=second&title=album2&releaseYear=2002&artist=Timmy&contentDesc=rock" http://localhost:8080/myapp/album
+curl -X PUT -d "isrc=second&title=album2&releaseYear=2002&artist=Timmy&contentDesc=rock" http://localhost:8081/myapp/album
 
 DELETE album:
-curl -X DELETE http://localhost:8080/myapp/album/fourth
+curl -X DELETE http://localhost:8081/myapp/album/fourth
