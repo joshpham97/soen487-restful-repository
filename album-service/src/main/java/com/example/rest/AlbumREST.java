@@ -3,11 +3,13 @@ package com.example.rest;
 import repository.business.AlbumManagerFactory;
 import repository.core.Album;
 import repository.core.IAlbumManager;
+import utilities.UrlParser;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Path("album")
@@ -92,10 +94,19 @@ public class AlbumREST {
     @PUT
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.TEXT_PLAIN)
-    public Response updateAlbum(String album) {
-        /*try {
+    public Response updateAlbum(String strAlbum) {
+        try {
+            // Parse string data
+            Map<String, String> params = UrlParser.parseStrParams(strAlbum);
+            String isrc = params.get("isrc");
+            String title = params.get("title");
+            int releaseYear = Integer.parseInt(params.get("releaseYear"));
+            String artist = params.get("artist");
+            String contentDesc = params.get("contentDesc");
+
             Album album = new Album(isrc, title, releaseYear, artist, contentDesc);
             boolean success = albumManager.updateAlbum(album);
+            System.out.println(album);
 
             if (success) {
                 return Response.status(Response.Status.OK)
@@ -108,15 +119,16 @@ public class AlbumREST {
                         .build();
             }
         }
+        catch(NumberFormatException ne) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("Failed to update album: invalid field value")
+                    .build();
+        }
         catch(Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("An error occurred while trying to update the album")
                     .build();
-        }*/
-
-        return Response.status(Response.Status.OK)
-                .entity("Successfully updated album " + album.toString())
-                .build();
+        }
     }
 
     @DELETE
