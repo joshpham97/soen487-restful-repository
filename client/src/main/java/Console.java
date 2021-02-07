@@ -142,7 +142,7 @@ public class Console {
     }
 
     public String createArtist() {
-        System.out.print("Please enter the information of the artist: ");
+        System.out.println("Please enter the information of the artist: ");
         String nickname = getUserInput("Nickname", true, String.class.getSimpleName());
         String firstname = getUserInput("First name", true, String.class.getSimpleName());
         String lastname = getUserInput("Last name", true, String.class.getSimpleName());
@@ -152,7 +152,7 @@ public class Console {
     }
 
     public String updateArtist() {
-        System.out.print("Please enter the information of the artist: ");
+        System.out.println("Please enter the information of the artist: ");
         String nickname = getUserInput("Nickname", true, String.class.getSimpleName());
         String firstname = getUserInput("First name", true, String.class.getSimpleName());
         String lastname = getUserInput("Last name", true, String.class.getSimpleName());
@@ -162,7 +162,7 @@ public class Console {
     }
 
     public String deleteArtist() {
-        System.out.print("Please enter the nickname of the artist: ");
+        System.out.println("Please enter the nickname of the artist: ");
         String nickname = getUserInput("Nickname", true, String.class.getSimpleName());
         return artistClient.delete(nickname);
     }
@@ -222,7 +222,7 @@ public class Console {
 
     public String deleteAlbum() {
         try {
-            System.out.print("Please enter the information of the album: ");
+            System.out.println("Please enter the ISRC of the album: ");
             String isrc = getUserInput("ISRC", true, String.class.getSimpleName());
             RestResponse result = Rootapplication.deleteAlbum(isrc);
             return result.getDataAsString();
@@ -245,6 +245,7 @@ public class Console {
                         Integer.parseInt(input);
                     }catch(Exception ex){
                         System.out.println("The value must be an integer");
+                        input = "";
                     }
                 }
             }
