@@ -117,7 +117,14 @@ public class RestConnection {
         conn.setRequestMethod("PUT");
         return connect(headers, is);
     }
-    
+
+    public RestResponse put(String[][] headers, String[][] params) throws IOException {
+        conn.setRequestMethod("PUT");
+        conn.setRequestProperty("ContentType", "application/x-www-form-urlencoded");
+        String data = encodeParams(params);
+        return connect(headers, new ByteArrayInputStream(data.getBytes("UTF-8")));
+    }
+
     public RestResponse post(String[][] headers) throws IOException {
         return post(headers, (InputStream) null);
     }
@@ -262,9 +269,5 @@ public class RestConnection {
                 conn.setRequestProperty(headers[i][0], headers[i][1]);
             }
         }
-    }
-
-    public RestResponse put(Object object, String[][] queryParams) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

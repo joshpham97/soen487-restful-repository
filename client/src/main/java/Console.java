@@ -25,7 +25,12 @@ public class Console {
             if (mainMenuAction == MainMenuAction.INVALID) {
                 System.out.println("Invalid option, please try again");
             } else if (mainMenuAction != MainMenuAction.EXIT) {
-                resourceMenuAction = selectResourceMenuOption();
+                do {
+                    resourceMenuAction = selectResourceMenuOption();
+                    if(resourceMenuAction == ResourceMenuAction.INVALID)
+                        System.out.println("Invalid option. Please select another one.");
+                }while(resourceMenuAction == ResourceMenuAction.INVALID);
+
 
                 String result = null;
                 if (mainMenuAction == MainMenuAction.ARTIST) {
@@ -132,33 +137,33 @@ public class Console {
 
     public String getArtist() {
         System.out.println("Please enter the nickname of the artist: ");
-        String nickname = getUserInput("Nickname", true);
+        String nickname = getUserInput("Nickname", true, String.class.getSimpleName());
         return artistClient.get(nickname);
     }
 
     public String createArtist() {
         System.out.print("Please enter the information of the artist: ");
-        String nickname = getUserInput("Nickname", true);
-        String firstname = getUserInput("First name", true);
-        String lastname = getUserInput("Last name", true);
-        String bio = getUserInput("Bio (optional)", false);
+        String nickname = getUserInput("Nickname", true, String.class.getSimpleName());
+        String firstname = getUserInput("First name", true, String.class.getSimpleName());
+        String lastname = getUserInput("Last name", true, String.class.getSimpleName());
+        String bio = getUserInput("Bio (optional)", false, String.class.getSimpleName());
 
         return artistClient.post(nickname, firstname, lastname, bio);
     }
 
     public String updateArtist() {
         System.out.print("Please enter the information of the artist: ");
-        String nickname = getUserInput("Nickname", true);
-        String firstname = getUserInput("First name", true);
-        String lastname = getUserInput("Last name", true);
-        String bio = getUserInput("Bio (optional)", false);
+        String nickname = getUserInput("Nickname", true, String.class.getSimpleName());
+        String firstname = getUserInput("First name", true, String.class.getSimpleName());
+        String lastname = getUserInput("Last name", true, String.class.getSimpleName());
+        String bio = getUserInput("Bio (optional)", false, String.class.getSimpleName());
 
         return artistClient.put(nickname, firstname, lastname, bio);
     }
 
     public String deleteArtist() {
         System.out.print("Please enter the nickname of the artist: ");
-        String nickname = getUserInput("Nickname", true);
+        String nickname = getUserInput("Nickname", true, String.class.getSimpleName());
         return artistClient.delete(nickname);
     }
 
@@ -173,8 +178,8 @@ public class Console {
 
     public String getAlbum() {
         try {
-            System.out.print("Please enter the isrc of the album: ");
-            String isrc = getUserInput("ISRC: ", true);
+            System.out.println("Please enter the isrc of the album: ");
+            String isrc = getUserInput("ISRC", true, String.class.getSimpleName());
             RestResponse result = Rootapplication.getAlbum(isrc);
             return result.getDataAsString();
         } catch (Exception ex) {
@@ -184,12 +189,12 @@ public class Console {
 
     public String createAlbum() {
         try {
-            System.out.print("Please enter the information of the album: ");
-            String isrc = getUserInput("ISRC: ", true);
-            String title = getUserInput("Title: ", true);
-            int releaseYear = Integer.parseInt(getUserInput("Release year: ", true));
-            String artist = getUserInput("Artist: ", true);
-            String contentDesc = getUserInput("Content description (optional): ", true);
+            System.out.println("Please enter the information of the album: ");
+            String isrc = getUserInput("ISRC", true, String.class.getSimpleName());
+            String title = getUserInput("Title", true, String.class.getSimpleName());
+            int releaseYear = Integer.parseInt(getUserInput("Release year", true, Integer.class.getSimpleName()));
+            String artist = getUserInput("Artist", true, String.class.getSimpleName());
+            String contentDesc = getUserInput("Content description (optional)", false, String.class.getSimpleName());
 
             RestResponse result = Rootapplication.addAlbum(isrc, title, releaseYear, artist, contentDesc);
             return result.getDataAsString();
@@ -200,16 +205,17 @@ public class Console {
 
     public String updateAlbum() {
         try {
-            System.out.print("Please enter the information of the album: ");
-            String isrc = getUserInput("ISRC: ", true);
-            String title = getUserInput("Title: ", true);
-            int releaseYear = Integer.parseInt(getUserInput("Release year: ", true));
-            String artist = getUserInput("Artist: ", true);
-            String contentDesc = getUserInput("Content description (optional): ", true);
+            System.out.println("Please enter the information of the album: ");
+            String isrc = getUserInput("ISRC", true, String.class.getSimpleName());
+            String title = getUserInput("Title", true, String.class.getSimpleName());
+            int releaseYear = Integer.parseInt(getUserInput("Release year", true, Integer.class.getSimpleName()));
+            String artist = getUserInput("Artist", true, String.class.getSimpleName());
+            String contentDesc = getUserInput("Content description (optional)", false, String.class.getSimpleName());
 
             RestResponse result = Rootapplication.updateAlbum(isrc, title, releaseYear, artist, contentDesc);
             return result.getDataAsString();
         } catch (Exception ex) {
+            ex.printStackTrace();
             return "There was an error sending the request.";
         }
     }
@@ -217,7 +223,7 @@ public class Console {
     public String deleteAlbum() {
         try {
             System.out.print("Please enter the information of the album: ");
-            String isrc = getUserInput("ISRC: ", true);
+            String isrc = getUserInput("ISRC", true, String.class.getSimpleName());
             RestResponse result = Rootapplication.deleteAlbum(isrc);
             return result.getDataAsString();
         } catch (Exception ex) {
@@ -225,7 +231,7 @@ public class Console {
         }
     }
 
-    public String getUserInput(String inputName, boolean isRequired) {
+    public String getUserInput(String inputName, boolean isRequired, String simpleClassName) {
         if (isRequired) {
             String input = "";
             while (input.isEmpty()) {
@@ -234,6 +240,12 @@ public class Console {
 
                 if (input.isEmpty()) {
                     System.out.println("This value is required, please enter again.");
+                }else if (Integer.class.getSimpleName().equals(simpleClassName)){
+                    try{
+                        Integer.parseInt(input);
+                    }catch(Exception ex){
+                        System.out.println("The value must be an integer");
+                    }
                 }
             }
 

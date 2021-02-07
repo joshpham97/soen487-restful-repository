@@ -6,6 +6,8 @@
 package org.netbeans.saas.root;
 
 import java.io.IOException;
+
+import org.json.simple.JSONObject;
 import org.netbeans.saas.RestConnection;
 import org.netbeans.saas.RestResponse;
 
@@ -65,7 +67,7 @@ public class Rootapplication {
     public static RestResponse getAlbum(String irsc) throws IOException {
         String[][] pathParams = new String[][]{};
         String[][] queryParams = new String[][]{};
-        RestConnection conn = new RestConnection(String.format("http://localhost:8081/myapp/album/%s}", irsc), pathParams, queryParams);
+        RestConnection conn = new RestConnection(String.format("http://localhost:8081/myapp/album/%s", irsc), pathParams, queryParams);
         sleep(1000);
         return conn.get(null);
     }
@@ -80,8 +82,16 @@ public class Rootapplication {
      * @return an instance of RestResponse
      */
     public static RestResponse updateAlbum(String isrc, String title, Integer releaseYear, String artist, String contentDesc) throws IOException {
-        String[][] pathParams = new String[][]{};
+        String[][] pathParams = new String[][]{{"Content-Type", "text/plain"}};
+
+        //JSONObject album = new JSONObject();
+        //album.put("isrc", isrc);
+        //album.put("title", title);
+        //album.put("releaseYear", releaseYear);
+        //album.put("contentDesc", contentDesc);
         String[][] queryParams = new String[][]{{"isrc", isrc}, {"title", title}, {"releaseYear", releaseYear.toString()}, {"artist", artist}, {"contentDesc", contentDesc}};
+
+
         RestConnection conn = new RestConnection("http://localhost:8081/myapp/album", pathParams, null);
         sleep(1000);
         return conn.put(null, queryParams);
@@ -94,7 +104,7 @@ public class Rootapplication {
     public static RestResponse deleteAlbum(String irsc) throws IOException {
         String[][] pathParams = new String[][]{};
         String[][] queryParams = new String[][]{};
-        RestConnection conn = new RestConnection(String.format("http://localhost:8081/myapp/album/%s}", irsc), pathParams, queryParams);
+        RestConnection conn = new RestConnection(String.format("http://localhost:8081/myapp/album/%s", irsc), pathParams, queryParams);
         sleep(1000);
         return conn.delete(null);
     }

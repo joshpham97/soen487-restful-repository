@@ -90,10 +90,10 @@ public class AlbumREST {
     }
 
     @PUT
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.TEXT_PLAIN)
-    public Response updateAlbum(@FormParam("isrc") String isrc, @FormParam("title") String title, @FormParam("releaseYear") int releaseYear, @FormParam("artist") String artist, @FormParam("contentDesc") String contentDesc) {
-        try {
+    public Response updateAlbum(String album) {
+        /*try {
             Album album = new Album(isrc, title, releaseYear, artist, contentDesc);
             boolean success = albumManager.updateAlbum(album);
 
@@ -112,7 +112,11 @@ public class AlbumREST {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("An error occurred while trying to update the album")
                     .build();
-        }
+        }*/
+
+        return Response.status(Response.Status.OK)
+                .entity("Successfully updated album " + album.toString())
+                .build();
     }
 
     @DELETE
