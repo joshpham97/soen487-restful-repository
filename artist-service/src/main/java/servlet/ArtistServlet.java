@@ -40,7 +40,7 @@ public class ArtistServlet extends HttpServlet {
                 {
                     // Build string to return
                     String artistListString = artists.stream()
-                            .map(a -> a.toString())
+                            .map(a -> a.artistDetails())
                             .collect(Collectors.joining("\n"));
 
                     response.setStatus(HttpServletResponse.SC_OK);
