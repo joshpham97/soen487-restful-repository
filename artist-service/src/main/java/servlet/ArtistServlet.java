@@ -157,6 +157,7 @@ public class ArtistServlet extends HttpServlet {
             firstName = parts2[1];
             String[] parts3 = args[2].split("="); //lasttname = parts3[1]
             lastName = parts3[1];
+
             if(args.length == 4){
                 String[] parts4 = args[3].split("="); //bio = parts4[1]
                 bio = parts4[1];
