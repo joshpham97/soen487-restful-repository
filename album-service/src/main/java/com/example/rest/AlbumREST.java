@@ -80,7 +80,7 @@ public class AlbumREST {
             }
             else {
                 return Response.status(Response.Status.FORBIDDEN)
-                        .entity("Failed to add album \n" + album)
+                        .entity(String.format("Failed to add album: album with an ISRC of %s already exists", isrc))
                         .build();
             }
         }
@@ -115,7 +115,7 @@ public class AlbumREST {
             }
             else {
                 return Response.status(Response.Status.FORBIDDEN)
-                        .entity("Failed to update album \n" + album)
+                        .entity("Failed to update album: no album with an ISRC of " + album.getIsrc())
                         .build();
             }
         }
