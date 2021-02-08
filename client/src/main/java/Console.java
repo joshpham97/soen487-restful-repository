@@ -199,7 +199,7 @@ public class Console {
             RestResponse result = Rootapplication.addAlbum(isrc, title, releaseYear, artist, contentDesc);
             return result.getDataAsString();
         } catch (Exception ex) {
-            return "There was an error sending the request.";
+            return "There was an error completing the request. Either an album with the same name already exists, or the server does not respond.";
         }
     }
 
@@ -216,7 +216,7 @@ public class Console {
             return result.getDataAsString();
         } catch (Exception ex) {
             ex.printStackTrace();
-            return "There was an error sending the request.";
+            return "There was an error completing the request. Either there is no album with such name, or the server did not respond";
         }
     }
 
