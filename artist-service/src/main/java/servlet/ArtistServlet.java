@@ -151,14 +151,26 @@ public class ArtistServlet extends HttpServlet {
             BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
             String data = br.readLine();
             String[] args = data.split("&");
-            String[] parts1 = args[0].split("="); //nickname = parts1[1]
-            nickname = parts1[1];
-            String[] parts2 = args[1].split("="); //firstname = parts2[1]
-            firstName = parts2[1];
-            String[] parts3 = args[2].split("="); //lasttname = parts3[1]
-            lastName = parts3[1];
-            String[] parts4 = args[3].split("="); //bio = parts4[1]
-            bio = parts4[1];
+            String[] nicknameValue = args[0].split("=");
+            nickname = nicknameValue[1];
+            String[] firstnameValue = args[1].split("=");
+            firstName = firstnameValue[1];
+            String[] lastnameValue = args[2].split("=");
+            lastName = lastnameValue[1];
+
+            if(args.length == 4){
+                String[] bioValue = args[3].split("=");
+                if(bioValue.length == 2)
+                {
+                    bio = bioValue[1];
+                }
+                else{
+                    bio = "N/A";
+                }
+            }
+            else{
+                bio = "N/A";
+            }
 
             Artist artist = new Artist(nickname, firstName, lastName, bio);
             boolean success = artistManager.updateArtist(artist);
