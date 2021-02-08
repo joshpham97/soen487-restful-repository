@@ -146,8 +146,6 @@ public class ArtistClient {
 
     public String readResponse(HttpResponse response){
         try{
-            System.out.println("Response Code: " + response.getStatusLine().getStatusCode());
-
             BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
             StringBuilder result = new StringBuilder();
             String line = "";
