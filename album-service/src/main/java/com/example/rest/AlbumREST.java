@@ -3,11 +3,13 @@ package com.example.rest;
 import repository.business.AlbumManagerFactory;
 import repository.core.Album;
 import repository.core.IAlbumManager;
+import utilities.UrlParser;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Path("album")
@@ -78,7 +80,7 @@ public class AlbumREST {
             }
             else {
                 return Response.status(Response.Status.FORBIDDEN)
-                        .entity("Failed to add album \n" + album)
+                        .entity(String.format("Failed to add album: album with an ISRC of %s already exists", isrc))
                         .build();
             }
         }
@@ -90,12 +92,21 @@ public class AlbumREST {
     }
 
     @PUT
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.TEXT_PLAIN)
-    public Response updateAlbum(@FormParam("isrc") String isrc, @FormParam("title") String title, @FormParam("releaseYear") int releaseYear, @FormParam("artist") String artist, @FormParam("contentDesc") String contentDesc) {
+    public Response updateAlbum(String strAlbum) {
         try {
+            // Parse string data
+            Map<String, String> params = UrlParser.parseStrParams(strAlbum);
+            String isrc = params.get("isrc");
+            String title = params.get("title");
+            int releaseYear = Integer.parseInt(params.get("releaseYear"));
+            String artist = params.get("artist");
+            String contentDesc = params.get("contentDesc");
+
             Album album = new Album(isrc, title, releaseYear, artist, contentDesc);
             boolean success = albumManager.updateAlbum(album);
+            System.out.println(album);
 
             if (success) {
                 return Response.status(Response.Status.OK)
@@ -104,9 +115,14 @@ public class AlbumREST {
             }
             else {
                 return Response.status(Response.Status.FORBIDDEN)
-                        .entity("Failed to update album \n" + album)
+                        .entity("Failed to update album: no album with an ISRC of " + album.getIsrc())
                         .build();
             }
+        }
+        catch(NumberFormatException ne) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("Failed to update album: invalid field value")
+                    .build();
         }
         catch(Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
