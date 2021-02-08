@@ -183,7 +183,7 @@ public class Console {
             RestResponse result = Rootapplication.getAlbum(isrc);
             return result.getDataAsString();
         } catch (Exception ex) {
-            return "There was an error sending the request.";
+            return "There was an error completing the request. Either such album did not exist, or the server did not response.";
         }
     }
 
@@ -227,7 +227,7 @@ public class Console {
             RestResponse result = Rootapplication.deleteAlbum(isrc);
             return result.getDataAsString();
         } catch (Exception ex) {
-            return "There was an error sending the request.";
+            return "There was an error sending the request. Either such album did not exist, or the server did not response.";
         }
     }
 
