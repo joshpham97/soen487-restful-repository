@@ -1,6 +1,6 @@
 package servlet;
 
-import repository.business.ArtistManagerFactory;
+import factories.ArtistManagerFactory;
 import repository.core.Artist;
 import repository.core.IArtistManager;
 
