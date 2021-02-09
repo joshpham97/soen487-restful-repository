@@ -1,4 +1,4 @@
-package repository.business;
+package factories;
 
 import repository.core.IArtistManager;
 import utilities.ConfigReader;

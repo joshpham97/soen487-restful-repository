@@ -1,5 +1,3 @@
-package repository.implementation;
-
 import repository.core.Album;
 import repository.core.IAlbumManager;
 

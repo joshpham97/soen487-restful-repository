@@ -1,6 +1,6 @@
 package com.example.rest;
 
-import repository.business.AlbumManagerFactory;
+import factories.AlbumManagerFactory;
 import repository.core.Album;
 import repository.core.IAlbumManager;
 import utilities.UrlParser;
@@ -19,6 +19,7 @@ public class AlbumREST {
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public Response listAlbum() {
+        System.out.println(albumManager);
         try {
             ArrayList<Album> albums = albumManager.listAlbum();
             if (albums.size() == 0) // No albums

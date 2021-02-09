@@ -1,5 +1,3 @@
-package repository.implementation;
-
 import repository.core.Artist;
 import repository.core.IArtistManager;
 
