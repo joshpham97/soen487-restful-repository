@@ -19,7 +19,6 @@ public class AlbumREST {
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public Response listAlbum() {
-        System.out.println(albumManager);
         try {
             ArrayList<Album> albums = albumManager.listAlbum();
             if (albums.size() == 0) // No albums
@@ -71,6 +70,19 @@ public class AlbumREST {
     @Produces(MediaType.TEXT_PLAIN)
     public Response addAlbum(@FormParam("isrc") String isrc, @FormParam("title") String title, @FormParam("releaseYear") int releaseYear, @FormParam("artist") String artist, @FormParam("contentDesc") String contentDesc) {
         try {
+            if(isrc == null || isrc.trim().isEmpty() ||
+                    title == null || title.trim().isEmpty() ||
+                    artist == null || artist.trim().isEmpty()) {
+                return Response.status(Response.Status.FORBIDDEN)
+                        .entity("Failed to add album: missing required fields")
+                        .build();
+            }
+            else if(releaseYear <= 0) {
+                return Response.status(Response.Status.FORBIDDEN)
+                        .entity("Failed to add album: invalid releaseYear")
+                        .build();
+            }
+
             Album album = new Album(isrc, title, releaseYear, artist, contentDesc);
             boolean success = albumManager.addAlbum(album);
 
@@ -105,9 +117,21 @@ public class AlbumREST {
             String artist = params.get("artist");
             String contentDesc = params.get("contentDesc");
 
+            if(isrc == null || isrc.trim().isEmpty() ||
+                    title == null || title.trim().isEmpty() ||
+                    artist == null || artist.trim().isEmpty()) {
+                return Response.status(Response.Status.FORBIDDEN)
+                        .entity("Failed to update album: missing required fields")
+                        .build();
+            }
+            else if(releaseYear <= 0) {
+                return Response.status(Response.Status.FORBIDDEN)
+                        .entity("Failed to update album: invalid releaseYear")
+                        .build();
+            }
+
             Album album = new Album(isrc, title, releaseYear, artist, contentDesc);
             boolean success = albumManager.updateAlbum(album);
-            System.out.println(album);
 
             if (success) {
                 return Response.status(Response.Status.OK)
