@@ -4,7 +4,7 @@ import { Component } from 'react';
 import { albumServer, albumApi } from '../endpoints/albumServer';
 import Navbar from './Navbar';
 
-class Test extends Component {
+class Example extends Component {
     constructor(props) {
         super(props);
 
@@ -61,7 +61,7 @@ class Test extends Component {
                 <Navbar />
 
                 <div className="mb-2">
-                    Test
+                    Example
                 </div>
 
                 {this.renderAlbums()}
@@ -70,4 +70,4 @@ class Test extends Component {
     }
 }
 
-export default Test;
+export default Example;

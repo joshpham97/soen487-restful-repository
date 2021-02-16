@@ -6,7 +6,7 @@ function Navbar() {
           </span>
 
           <span className="ml-2">
-              <a href="\t">Test</a>
+              <a href="\example">Example</a>
           </span>
       </div>
     );
