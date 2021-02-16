@@ -6,38 +6,31 @@ import repository.core.IAlbumManager;
 import utilities.UrlParser;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Path("album")
 public class AlbumREST {
     private IAlbumManager albumManager = AlbumManagerFactory.loadManager();
 
     @GET
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response listAlbum() {
         try {
-            ArrayList<Album> albums = albumManager.listAlbum();
-            if (albums.size() == 0) // No albums
-                return Response.status(Response.Status.OK)
-                        .entity("There are no albums")
-                        .build();
+            List<Album> albums = albumManager.listAlbum();
 
-            // Build string to return
-            String albumListString = albums.stream()
-                    .map(a -> a.toString())
-                    .collect(Collectors.joining("\n"));
+            GenericEntity<List<Album>> entity = new GenericEntity<List<Album>>(albums) {};
 
             return Response.status(Response.Status.OK)
-                    .entity(albumListString)
+                    .entity(entity)
                     .build();
         }
         catch(Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("An error occurred while trying to get the list of albums")
+                    .entity(null)
                     .build();
         }
     }

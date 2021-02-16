@@ -9,7 +9,7 @@ class Example extends Component {
         super(props);
 
         this.state = {
-            albums: null,
+            albums: [],
             errorMessage: null
         };
     }
@@ -28,31 +28,41 @@ class Example extends Component {
             const res = await albumServer.get(albumApi.albums);
 
             this.setState({
-                albums: res.data,
-                errorMessage: null
+                albums: res.data
             });
         } catch {
             this.setState({
-                albums: null,
-                errorMessage: "An error occurred while getting the albums"
+                albums: null
             });
         }
     }
 
     renderAlbums = () => {
-        if(this.state.albums) {
+        const albums = this.state.albums;
+
+        if(!albums) {
             return (
                 <div>
-                    {this.state.albums}
+                    An error occurred while getting the albums
+                </div>
+            );
+        } else if(albums.length === 0) {
+            return (
+                <div>
+                    There are no albums yet
                 </div>
             );
         }
 
-        return (
-            <div>
-                {this.state.errorMessage}
+        return albums.map(album => (
+            <div key={album.isrc}>
+                <span>ISRC: {album.isrc}</span>
+                <span className="ml-3">Title: {album.title}</span>
+                <span className="ml-3">Release Year: {album.releaseYear}</span>
+                <span className="ml-3">Artist: {album.artist}</span>
+                <span className="ml-3">Content Description: {album.contentDesc}</span>
             </div>
-        );
+        ));
     }
 
     render() {
