@@ -1,5 +1,3 @@
-import '../styles/home.css';
-
 import { Component } from 'react';
 import { albumServer, albumApi } from '../endpoints/albumServer';
 import Navbar from './Navbar';
@@ -23,36 +21,28 @@ class Example extends Component {
         clearInterval(this.interval);
     }
 
-    getAlbums = async () => {
-        try {
-            const res = await albumServer.get(albumApi.albums);
-
-            this.setState({
-                albums: res.data
+    getAlbums = () => {
+        albumServer.get(albumApi.albums)
+            .then(res => {
+                this.setState({
+                   albums: res.data
+                });
+            })
+            .catch(err => {
+                console.log(err);
+                this.setState({
+                    albums: null
+                });
             });
-        } catch {
-            this.setState({
-                albums: null
-            });
-        }
     }
 
     renderAlbums = () => {
         const albums = this.state.albums;
 
-        if(!albums) {
-            return (
-                <div>
-                    An error occurred while getting the albums
-                </div>
-            );
-        } else if(albums.length === 0) {
-            return (
-                <div>
-                    There are no albums yet
-                </div>
-            );
-        }
+        if(!albums)
+            return <div>An error occurred while getting the albums</div>;
+        else if(albums.length === 0)
+            return <div>There are no albums yet</div>;
 
         return albums.map(album => (
             <div key={album.isrc}>

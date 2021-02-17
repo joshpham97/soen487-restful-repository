@@ -8,6 +8,10 @@ function Navbar() {
           <span className="ml-2">
               <a href="\example">Example</a>
           </span>
+
+          <span className="ml-2">
+              <a href="\example2">Example2</a>
+          </span>
       </div>
     );
 }
