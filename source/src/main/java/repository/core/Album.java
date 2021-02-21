@@ -1,11 +1,28 @@
 package repository.core;
 
-public class Album {
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import java.io.Serializable;
+
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+public class Album implements Serializable {
+    @XmlElement
     private String isrc;
+    @XmlElement
     private String title;
-    private int releaseYear;
+    @XmlElement
+    private Integer releaseYear;
+    @XmlElement
     private String artist;
+    @XmlElement
     private String contentDesc;
+
+    public Album() {
+
+    }
 
     public Album(String isrc, String title, int releaseYear, String artist, String contentDesc) {
         this.isrc = isrc;
