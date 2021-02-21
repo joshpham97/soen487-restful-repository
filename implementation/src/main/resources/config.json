@@ -1,0 +1,4 @@
+{
+  "ArtistManagerImpl": "ArtistManagerInMemory",
+  "AlbumManagerImpl": "AlbumManagerInMemory"
+}

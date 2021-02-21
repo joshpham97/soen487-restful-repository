@@ -1,16 +1,8 @@
-package repository.business;
+package factories;
 
-import jdk.nashorn.internal.parser.JSONParser;
-import org.json.simple.JSONObject;
-import repository.core.Artist;
 import repository.core.IArtistManager;
 import utilities.ConfigReader;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
-import java.text.ParseException;
 
 public class ArtistManagerFactory {
     private static String CONFIG_FILE = "config.json";

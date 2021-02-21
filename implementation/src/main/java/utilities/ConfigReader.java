@@ -3,8 +3,6 @@ package utilities;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import repository.business.AlbumManagerFactory;
-import repository.business.ArtistManagerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;

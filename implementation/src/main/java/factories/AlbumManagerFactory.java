@@ -1,6 +1,5 @@
-package repository.business;
+package factories;
 
-import repository.core.Album;
 import repository.core.IAlbumManager;
 
 import utilities.ConfigReader;

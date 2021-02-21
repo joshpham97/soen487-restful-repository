@@ -5,10 +5,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.example</groupId>
-  <artifactId>artist-service</artifactId>
+  <artifactId>implementation</artifactId>
   <version>1.0-SNAPSHOT</version>
-  <name>artist-service</name>
-  <packaging>war</packaging>
+  <name>implementation</name>
 
   <properties>
     <maven.compiler.target>1.8</maven.compiler.target>
@@ -17,12 +16,7 @@
       </properties>
 
   <dependencies>
-                                                                        <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>javax.servlet-api</artifactId>
-      <version>4.0.1</version>
-      <scope>provided</scope>
-    </dependency>                                                                            
+                                                                                                                                                    
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
@@ -35,26 +29,16 @@
       <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
-      <dependency>
-          <groupId>com.example.rest</groupId>
-          <artifactId>soen487</artifactId>
-          <version>1.0-SNAPSHOT</version>
-          <scope>compile</scope>
-      </dependency>
-      <dependency>
-          <groupId>com.example</groupId>
-          <artifactId>implementation</artifactId>
-          <version>1.0-SNAPSHOT</version>
-          <scope>compile</scope>
-      </dependency>
+    <dependency>
+      <groupId>com.example.rest</groupId>
+      <artifactId>soen487</artifactId>
+      <version>1.0-SNAPSHOT</version>
+      <scope>compile</scope>
+    </dependency>
   </dependencies>
 
   <build>
       <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-war-plugin</artifactId>
-        <version>3.3.0</version>
-      </plugin>                </plugins>
+                      </plugins>
   </build>
 </project>
