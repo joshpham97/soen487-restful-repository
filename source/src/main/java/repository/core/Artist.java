@@ -1,8 +1,22 @@
 package repository.core;
 
-public class Artist {
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import java.io.Serializable;
+
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+public class Artist implements Serializable {
+    @XmlElement
     private String firstname;
+    @XmlElement
     private String lastname;
+
+    public Artist() {
+
+    }
 
     public Artist(String firstname, String lastname) {
         this.firstname = firstname;
