@@ -50,7 +50,7 @@ function AlbumList() {
             <Navbar />
 
             <div id="albumList">
-                Album
+                <h3>Albums</h3>
 
                 <div className="mt-2">
                     {renderAlbums()}
