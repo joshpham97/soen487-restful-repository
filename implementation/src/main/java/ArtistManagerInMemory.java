@@ -14,6 +14,7 @@ public class ArtistManagerInMemory implements IArtistManager {
         artists = new CopyOnWriteArrayList<>();
     }
 
+
     /**STEFAN: MAYBE NOT GOOD FOR NOW!! **/
     public ArrayList<Artist> listArtist() {
         return artists.stream()
@@ -65,4 +66,5 @@ public class ArtistManagerInMemory implements IArtistManager {
 
         return true;
     }
+
 }

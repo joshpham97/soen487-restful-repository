@@ -2,6 +2,7 @@ package com.example.rest;
 
 import factories.AlbumManagerFactory;
 import repository.core.Album;
+import repository.core.Artist;
 import repository.core.IAlbumManager;
 import utilities.UrlParser;
 
@@ -61,11 +62,10 @@ public class AlbumREST {
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.TEXT_PLAIN)
-    public Response addAlbum(@FormParam("isrc") String isrc, @FormParam("title") String title, @FormParam("releaseYear") int releaseYear, @FormParam("artist") String artist, @FormParam("contentDesc") String contentDesc) {
+    public Response addAlbum(@FormParam("isrc") String isrc, @FormParam("title") String title, @FormParam("releaseYear") int releaseYear, @FormParam("contentDesc") String contentDesc, @FormParam("firstName") String firstName, @FormParam("lastName") String lastName) {
         try {
             if(isrc == null || isrc.trim().isEmpty() ||
-                    title == null || title.trim().isEmpty() ||
-                    artist == null || artist.trim().isEmpty()) {
+                    title == null || title.trim().isEmpty()) {
                 return Response.status(Response.Status.FORBIDDEN)
                         .entity("Failed to add album: missing required fields")
                         .build();
@@ -75,8 +75,8 @@ public class AlbumREST {
                         .entity("Failed to add album: invalid releaseYear")
                         .build();
             }
-
-            Album album = new Album(isrc, title, releaseYear, artist, contentDesc);
+            Artist artist = new Artist(firstName, lastName);
+            Album album = new Album(isrc, title, releaseYear, contentDesc, artist);
             boolean success = albumManager.addAlbum(album);
 
             if (success) {
@@ -107,12 +107,14 @@ public class AlbumREST {
             String isrc = params.get("isrc");
             String title = params.get("title");
             int releaseYear = Integer.parseInt(params.get("releaseYear"));
-            String artist = params.get("artist");
+            //String artist = params.get("artist");
             String contentDesc = params.get("contentDesc");
+            String firstName = params.get("firstName");
+            String lastName = params.get("lastName");
+
 
             if(isrc == null || isrc.trim().isEmpty() ||
-                    title == null || title.trim().isEmpty() ||
-                    artist == null || artist.trim().isEmpty()) {
+                    title == null || title.trim().isEmpty()) {
                 return Response.status(Response.Status.FORBIDDEN)
                         .entity("Failed to update album: missing required fields")
                         .build();
@@ -122,8 +124,9 @@ public class AlbumREST {
                         .entity("Failed to update album: invalid releaseYear")
                         .build();
             }
+            Artist artistNew = new Artist(firstName, lastName);
 
-            Album album = new Album(isrc, title, releaseYear, artist, contentDesc);
+            Album album = new Album(isrc, title, releaseYear, contentDesc, artistNew);
             boolean success = albumManager.updateAlbum(album);
 
             if (success) {
