@@ -1,5 +1,6 @@
 package com.example.rest;
 
+import factories.AlbumManagerDB;
 import factories.AlbumManagerFactory;
 import repository.core.Album;
 import repository.core.Artist;
@@ -15,7 +16,8 @@ import java.util.Map;
 
 @Path("album")
 public class AlbumREST {
-    private IAlbumManager albumManager = AlbumManagerFactory.loadManager();
+    //private IAlbumManager albumManager = AlbumManagerFactory.loadManager();
+    private IAlbumManager albumManager = AlbumManagerDB.loadManager();
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
