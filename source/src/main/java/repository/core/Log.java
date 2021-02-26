@@ -2,7 +2,7 @@ package repository.core;
 
 import java.time.LocalDateTime;
 
-public class Log {
+public class Log{
     private LocalDateTime date;
     private String change;
     private String recordKey;
@@ -20,4 +20,9 @@ public class Log {
     public void setChange(String change) { this.change = change; }
     public String getRecordKey() { return recordKey; }
     public void setRecordKey(String recordKey) { this.recordKey = recordKey; }
+    public String toString(){
+        String str;
+        str = "Date: " + date + " change: " + change + " Record Key: " + recordKey;
+        return str;
+    }
 }
