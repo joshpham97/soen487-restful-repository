@@ -41,7 +41,7 @@ function AlbumList() {
 
         return albums.map(album =>
             <Album key={album.isrc} isrc={album.isrc} title={album.title} releaseYear={album.releaseYear}
-                   artist={album.artist} contentDesc={album.contentDesc} />
+                   firstname={album.artist.firstname} lastname={album.artist.lastname} contentDesc={album.contentDesc} />
         );
     };
 

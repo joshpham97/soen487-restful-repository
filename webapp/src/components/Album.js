@@ -6,7 +6,7 @@ function Album(props) {
             <AccordionSummary>
                 <div>
                     <b>{props.title}</b>
-                    <i> by {props.artist}</i>
+                    <i> by {props.firstname} {props.lastname}</i>
                 </div>
             </AccordionSummary>
             <AccordionDetails>
