@@ -1,3 +1,5 @@
+import '../styles/albumList.css';
+
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { CircularProgress } from '@material-ui/core';
@@ -16,7 +18,7 @@ function AlbumList() {
         const interval = setInterval(getAlbums, 1000);
 
         // Unmount
-        return clearInterval(interval);
+        return () => clearInterval(interval);
     }, []);
 
     const getAlbums = () => {
@@ -47,7 +49,7 @@ function AlbumList() {
         <React.Fragment>
             <Navbar />
 
-            <div>
+            <div id="albumList">
                 Album
 
                 <div className="mt-2">
