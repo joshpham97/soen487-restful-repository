@@ -15,10 +15,8 @@ public class Album implements Serializable {
     private String title;
     @XmlElement
     private Integer releaseYear;
-    /**
     @XmlElement
     private String artist;
-     */
     @XmlElement
     private String contentDesc;
     @XmlElement
