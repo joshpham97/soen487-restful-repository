@@ -37,7 +37,7 @@ function Example2() {
                 <span>ISRC: {album.isrc}</span>
                 <span className="ml-3">Title: {album.title}</span>
                 <span className="ml-3">Release Year: {album.releaseYear}</span>
-                <span className="ml-3">Artist: {album.artist}</span>
+                <span className="ml-3">Artist: {album.artist.firstname} {album.artist.lastname}</span>
                 <span className="ml-3">Content Description: {album.contentDesc}</span>
             </div>
         ));

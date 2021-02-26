@@ -15,21 +15,26 @@ public class Album implements Serializable {
     private String title;
     @XmlElement
     private Integer releaseYear;
+    /**
     @XmlElement
     private String artist;
+     */
     @XmlElement
     private String contentDesc;
+    @XmlElement
+    private Artist artist;
 
     public Album() {
 
     }
 
-    public Album(String isrc, String title, int releaseYear, String artist, String contentDesc) {
+    public Album(String isrc, String title, int releaseYear, String contentDesc, Artist artist) {
         this.isrc = isrc;
         this.title = title;
         this.releaseYear = releaseYear;
-        this.artist = artist;
+        //this.artist = artist;
         this.contentDesc = contentDesc;
+        this.artist = artist;
     }
 
     public String getIsrc() {
@@ -56,11 +61,11 @@ public class Album implements Serializable {
         this.releaseYear = releaseYear;
     }
 
-    public String getArtist() {
+    public Artist getArtist() {
         return artist;
     }
 
-    public void setArtist(String artist) {
+    public void setArtist(Artist artist) {
         this.artist = artist;
     }
 
