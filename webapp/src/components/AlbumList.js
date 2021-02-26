@@ -52,7 +52,7 @@ function AlbumList() {
             <div id="albumList">
                 <h3>Albums</h3>
 
-                <div className="mt-2">
+                <div className="albums">
                     {renderAlbums()}
                 </div>
             </div>
