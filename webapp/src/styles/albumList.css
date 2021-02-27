@@ -1,13 +1,17 @@
 #albumList {
-    margin: 0 10%;
     text-align: center;
 }
 
 #albumList .albums {
-    /*display: flex;*/
-    /*overflow-x: scroll;*/
+    display: flex;
+    overflow-x: scroll;
 }
 
-/*::-webkit-scrollbar {*/
-/*    width: 0;*/
-/*}*/
+#albumList .album {
+    float: left;
+    margin: 0 3%;
+}
+
+#albumList .album:first-child {
+    margin-left: 0;
+}

@@ -39,10 +39,12 @@ function AlbumList() {
         else if(albums.length === 0)
             return <span>There are no albums yet</span>;
 
-        return albums.map(album =>
+        return albums.map(album => (
+            <div className="album">
             <Album key={album.isrc} isrc={album.isrc} title={album.title} releaseYear={album.releaseYear}
-                   firstname={album.artist.firstname} lastname={album.artist.lastname} contentDesc={album.contentDesc} />
-        );
+                   firstname={album.artist.firstname} lastname={album.artist.lastname} contentDesc={album.contentDesc}/>
+            </div>
+        ));
     };
 
     return (
