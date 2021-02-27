@@ -22,7 +22,7 @@ const Card = withStyles({
     }
 })(MuiCard);
 
-function Album(props) {
+function AlbumSummary(props) {
     const classes = useStyles();
 
     return (
@@ -37,4 +37,4 @@ function Album(props) {
     );
 }
 
-export default Album;
+export default AlbumSummary;

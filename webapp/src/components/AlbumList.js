@@ -2,15 +2,17 @@ import '../styles/albumList.css';
 
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress, Slide } from '@material-ui/core';
 
 import Navbar from './Navbar';
-import Album from './Album';
+import AlbumSummary from './AlbumSummary';
+import AlbumDetails from './AlbumDetails';
 import {albumApi, albumServer} from "../endpoints/albumServer";
 
-function AlbumList() {
+function AlbumList(props) {
     const [loaded, setLoaded] = useState(false);
     const [albums, setAlbums] = useState([]);
+    const [current, setCurrent] = useState(null);
 
     useEffect(() => {
         // Mount
@@ -31,20 +33,54 @@ function AlbumList() {
             .finally(() => setLoaded(true));
     };
 
+    const handleDetails = (album) => {
+        if(current && current.isrc === album.isrc)
+            setCurrent(null);
+        else
+            setCurrent(album);
+    };
+
+    const handleDetailsClose = () => {
+        setCurrent(null);
+    };
+
+    const handleDetailsEdit = () => {
+        props.history.push({
+            pathname: '/album/edit',
+            state: {
+                title: current.title,
+                firstname: current.artist.firstname,
+                lastname: current.artist.lastname,
+                releaseYear: current.releaseYear,
+                contentDesc: current.contentDesc
+            }
+        });
+    };
+
     const renderAlbums = () => {
         if(!loaded)
             return <CircularProgress color="inherit" />
         else if(!albums)
-            return <span>An error occurred while getting the albums</span>;
+            return <div className="w-100 text-center">An error occurred while getting the albums</div>;
         else if(albums.length === 0)
-            return <span>There are no albums yet</span>;
+            return <div className="w-100 text-center">There are no albums yet</div>;
 
-        return albums.map(album => (
-            <div className="album">
-            <Album key={album.isrc} isrc={album.isrc} title={album.title} releaseYear={album.releaseYear}
-                   firstname={album.artist.firstname} lastname={album.artist.lastname} contentDesc={album.contentDesc}/>
+        return (
+            <div className="albums">
+                {albums.map(album => (
+                    <div key={album.isrc} className="album" onClick={() => handleDetails(album)}>
+                        <AlbumSummary title={album.title} firstname={album.artist.firstname} lastname={album.artist.lastname} />
+                    </div>
+                ))}
             </div>
-        ));
+        );
+    };
+
+    const renderAlbumDetails = () => {
+        if(current)
+            return <AlbumDetails title={current.title} firstname={current.artist.firstname} lastname={current.artist.lastname}
+                             isrc={current.isrc} releaseYear={current.releaseYear} contentDesc={current.contentDesc}
+                             handleClose={handleDetailsClose} handleEdit={handleDetailsEdit} />;
     };
 
     return (
@@ -54,9 +90,13 @@ function AlbumList() {
             <div id="albumList">
                 <h3>Albums</h3>
 
-                <div className="albums">
-                    {renderAlbums()}
-                </div>
+                {renderAlbums()}
+
+                <Slide direction="up" in={current != null} mountOnEnter unmountOnExit>
+                    <div className="albumDetails">
+                        {renderAlbumDetails()}
+                    </div>
+                </Slide>
             </div>
         </React.Fragment>
     );

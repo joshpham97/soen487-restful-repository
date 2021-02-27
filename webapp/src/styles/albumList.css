@@ -1,17 +1,33 @@
 #albumList {
     text-align: center;
+    overflow: hidden;
 }
 
 #albumList .albums {
     display: flex;
-    overflow-x: scroll;
+    overflow-x: auto;
 }
 
 #albumList .album {
     float: left;
-    margin: 0 3%;
+    margin: 0;
+    padding: 1.5pc;
 }
 
 #albumList .album:first-child {
-    margin-left: 0;
+    padding-left: 3pc;
+}
+
+#albumList .album:last-child {
+    padding-right: 3pc;
+}
+
+#albumList .albumDetails {
+    text-align: left;
+    position: fixed;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.85);
+    color: rgba(255, 255, 255, 0.9);
+    width: 100%;
+    padding: 2pc;
 }
