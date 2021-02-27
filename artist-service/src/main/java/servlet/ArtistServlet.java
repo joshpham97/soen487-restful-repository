@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 @WebServlet(name = "artist")
 public class ArtistServlet extends HttpServlet {
-
+/**
     private IArtistManager artistManager = ArtistManagerFactory.loadManager();
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -188,4 +188,5 @@ public class ArtistServlet extends HttpServlet {
             out.write("An error occurred while trying to update the artist: MISSING A PARAMETER!\n\n");
         }
     }
+    */
 }
