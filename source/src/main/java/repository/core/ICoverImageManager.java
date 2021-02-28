@@ -1,6 +1,6 @@
 package repository.core;
 
-public interface IAlbumCoverManager {
+public interface ICoverImageManager extends IManager {
     CoverImage getCoverImage();
     boolean updateCoverImage();
     boolean deleteCoverImage();

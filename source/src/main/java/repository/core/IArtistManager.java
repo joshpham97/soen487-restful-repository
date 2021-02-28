@@ -2,7 +2,7 @@ package repository.core;
 
 import java.util.ArrayList;
 
-public interface IArtistManager {
+public interface IArtistManager extends IManager{
     /**
     ArrayList<Artist> listArtist();
     Artist getArtist(String nickname);
