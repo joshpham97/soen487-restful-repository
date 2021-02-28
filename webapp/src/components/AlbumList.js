@@ -48,6 +48,7 @@ function AlbumList(props) {
         props.history.push({
             pathname: '/album/edit',
             state: {
+                isrc: current.isrc,
                 title: current.title,
                 firstname: current.artist.firstname,
                 lastname: current.artist.lastname,

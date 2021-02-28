@@ -2,6 +2,11 @@
     text-align: center;
 }
 
+#albumForm .isrc {
+    font-size: 1.5pc;
+    color: rgba(0, 0, 0, 0.35);
+}
+
 #albumForm form {
     margin: 1pc;
 }

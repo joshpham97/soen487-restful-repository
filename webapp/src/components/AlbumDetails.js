@@ -1,6 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles';
-import HighlightOffIcon from '@material-ui/icons/HighlightOff';
-import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
+import CloseRoundedIcon from '@material-ui/icons/CloseRounded';
+import EditRoundedIcon from '@material-ui/icons/EditRounded';
 
 const useStyles = makeStyles(() => ({
     header: {
@@ -8,6 +8,7 @@ const useStyles = makeStyles(() => ({
     },
     close: {
         position: 'absolute',
+        color: 'white',
         top: '1pc',
         right: '1pc',
         '&:hover': {
@@ -29,12 +30,12 @@ function AlbumDetails(props) {
 
     const renderCloseIcon = () => {
         if(props.handleClose)
-            return <HighlightOffIcon className={classes.close} fontSize="large" onClick={props.handleClose} />;
+            return <CloseRoundedIcon className={classes.close} fontSize="large" onClick={props.handleClose} />;
     };
 
     const renderEditIcon = () => {
         if(props.handleEdit)
-            return <EditOutlinedIcon className={classes.edit} fontSize="large" onClick={props.handleEdit} />;
+            return <EditRoundedIcon className={classes.edit} fontSize="large" onClick={props.handleEdit} />;
     };
 
     return (
