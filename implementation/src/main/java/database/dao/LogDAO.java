@@ -60,4 +60,22 @@ public class LogDAO {
 
         return log;
     }
+
+    public static ArrayList<Log> getLog(LocalDateTime fromDate, LocalDateTime toDate){
+        ArrayList<Log> logs = new ArrayList<>();
+        try{
+            Connection conn = DBConnection.getConnection();
+            String sql = "SELECT * FROM Log WHERE logged_time between ? AND ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setTimestamp(1, Timestamp.valueOf(fromDate));
+            stmt.setTimestamp(2, Timestamp.valueOf(toDate));
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next())
+                logs.add(mapResultSetToLog(rs));
+        } catch (Exception e) {
+            System.err.println("There was an error retrieving log in database.");
+            System.err.println(e.getMessage());
+        }
+        return logs;
+    }
 }

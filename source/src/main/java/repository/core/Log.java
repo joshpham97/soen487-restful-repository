@@ -22,7 +22,7 @@ public class Log{
     public void setRecordKey(String recordKey) { this.recordKey = recordKey; }
     public String toString(){
         String str;
-        str = "Date: " + date + " change: " + change + " Record Key: " + recordKey;
+        str = "Date: " + date + " change: " + change + " Record Key: " + recordKey + "\n";
         return str;
     }
 }

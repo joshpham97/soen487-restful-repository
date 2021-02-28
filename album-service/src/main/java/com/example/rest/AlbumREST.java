@@ -1,23 +1,22 @@
 package com.example.rest;
 
-import factories.AlbumManagerDB;
 import factories.AlbumManagerFactory;
-import repository.core.Album;
-import repository.core.Artist;
-import repository.core.IAlbumManager;
+import factories.LogManagerFactory;
+import repository.core.*;
 import utilities.UrlParser;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
 @Path("album")
 public class AlbumREST {
-    //private IAlbumManager albumManager = AlbumManagerFactory.loadManager();
-    private IAlbumManager albumManager = AlbumManagerDB.loadManager();
+    private IAlbumManager albumManager = AlbumManagerFactory.loadManager();
+    private ILogManager logManager = LogManagerFactory.loadManager();
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -82,6 +81,8 @@ public class AlbumREST {
             boolean success = albumManager.addAlbum(album);
 
             if (success) {
+                Log log = new Log(LocalDateTime.now(), "Add", isrc);
+                boolean logAdded = logManager.addLog(log);
                 return Response.status(Response.Status.OK)
                         .entity("Successfully added album \n" + album)
                         .build();
