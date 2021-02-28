@@ -2,9 +2,19 @@ import '../styles/albumForm.css';
 
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { FormControl, InputLabel, Input, OutlinedInput, TextField } from '@material-ui/core';
+import { withStyles } from '@material-ui/core/styles';
+import MuiTextField from '@material-ui/core/TextField';
+import { FormControl, InputLabel, Input } from '@material-ui/core';
 
 import Navbar from './Navbar';
+
+const TextField = withStyles({
+    root: {
+        width: '50%',
+        maxWidth: '400px',
+        minWidth: '200px'
+    }
+})(MuiTextField);
 
 function AlbumForm(props) {
     const [title, setTitle] = useState('');

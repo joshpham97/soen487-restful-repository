@@ -2,6 +2,10 @@
     text-align: center;
 }
 
+#albumForm form {
+    margin: 1pc;
+}
+
 #albumForm .formRow {
     margin: 2pc 0;
 }
