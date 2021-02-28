@@ -10,7 +10,7 @@ import SaveIcon from '@material-ui/icons/Save';
 import DeleteIcon from '@material-ui/icons/Delete';
 
 import Navbar from './Navbar';
-import {Delete} from "@material-ui/icons";
+import {albumApi, albumServer} from "../endpoints/albumServer";
 
 const TextField = withStyles({
     root: {
@@ -46,6 +46,27 @@ function AlbumForm(props) {
 
     const handleInput = (e, setState) => {
         setState(e.target.value);
+    };
+
+    const updateAlbum = () => {
+        albumServer.put(albumApi.update, {
+            isrc: props.location.state.isrc,
+            title: title,
+            releaseYear: releaseYear,
+            contentDesc: contentDesc,
+            artist: {
+                firstname: firstname,
+                lastname: lastname
+            }
+        })
+            .then(res => alert(res.data))
+            .catch(err => alert(err));
+    };
+
+    const deleteAlbum = () => {
+        albumServer.delete(albumApi.delete + '/' + props.location.state.isrc)
+            .then(res => alert(res.data))
+            .catch(err => alert(err));
     };
 
     const handleBack = () => {
@@ -101,8 +122,8 @@ function AlbumForm(props) {
                 </form>
 
                 <div>
-                    <Button className="mr-3" variant="contained" color="primary" startIcon={<SaveIcon />}>Save</Button>
-                    <Button variant="contained" color="secondary" startIcon={<DeleteIcon />}>Delete</Button>
+                    <Button className="mr-3" variant="contained" color="primary" startIcon={<SaveIcon />} onClick={updateAlbum}>Save</Button>
+                    <Button variant="contained" color="secondary" startIcon={<DeleteIcon />} onClick={deleteAlbum}>Delete</Button>
                 </div>
             </div>
         </React.Fragment>

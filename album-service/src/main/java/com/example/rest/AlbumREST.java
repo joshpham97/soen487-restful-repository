@@ -98,40 +98,35 @@ public class AlbumREST {
     }
 
     @PUT
-    @Consumes(MediaType.TEXT_PLAIN)
-    @Produces(MediaType.TEXT_PLAIN)
-    public Response updateAlbum(String strAlbum) {
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateAlbum(Album album) {
         try {
-            // Parse string data
-            Map<String, String> params = UrlParser.parseStrParams(strAlbum);
-            String isrc = params.get("isrc");
-            String title = params.get("title");
-            int releaseYear = Integer.parseInt(params.get("releaseYear"));
-            //String artist = params.get("artist");
-            String contentDesc = params.get("contentDesc");
-            String firstName = params.get("firstName");
-            String lastName = params.get("lastName");
+            String title = album.getTitle();
+            Integer releaseYear = album.getReleaseYear();
+            Artist artist = album.getArtist();
+            String firstName = artist.getFirstname();
+            String lastName = artist.getLastname();
 
-
-            if(isrc == null || isrc.trim().isEmpty() ||
-                    title == null || title.trim().isEmpty()) {
-                return Response.status(Response.Status.FORBIDDEN)
+            if(title == null || title.trim().isEmpty() ||
+                    firstName == null || firstName.trim().isEmpty() ||
+                    lastName == null || lastName.trim().isEmpty() ||
+                    releaseYear == null) {
+                return Response.status(Response.Status.BAD_REQUEST)
                         .entity("Failed to update album: missing required fields")
                         .build();
             }
             else if(releaseYear <= 0) {
-                return Response.status(Response.Status.FORBIDDEN)
+                return Response.status(Response.Status.BAD_REQUEST)
                         .entity("Failed to update album: invalid releaseYear")
                         .build();
             }
-            Artist artistNew = new Artist(firstName, lastName);
 
-            Album album = new Album(isrc, title, releaseYear, contentDesc, artistNew);
             boolean success = albumManager.updateAlbum(album);
 
             if (success) {
                 return Response.status(Response.Status.OK)
-                        .entity("Successfully updated album \n" + album)
+                        .entity(album)
                         .build();
             }
             else {
@@ -140,12 +135,8 @@ public class AlbumREST {
                         .build();
             }
         }
-        catch(NumberFormatException ne) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("Failed to update album: invalid field value")
-                    .build();
-        }
         catch(Exception e) {
+            e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("An error occurred while trying to update the album")
                     .build();
@@ -153,7 +144,7 @@ public class AlbumREST {
     }
 
     @DELETE
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     @Path("{isrc}")
     public Response deleteAlbum(@PathParam("isrc") String isrc) {
         try {
@@ -161,18 +152,18 @@ public class AlbumREST {
 
             if (success) {
                 return Response.status(Response.Status.OK)
-                        .entity("Successfully deleted album with ISRC of " + isrc)
+                        .entity("Successfully deleted album")
                         .build();
             }
             else {
                 return Response.status(Response.Status.FORBIDDEN)
-                        .entity("Failed to delete album with ISRC of " + isrc)
+                        .entity("Failed to delete album with an ISRC of " + isrc)
                         .build();
             }
         }
         catch(Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("An error occurred while trying to delete the album of ISRC of " + isrc)
+                    .entity("An error occurred while trying to delete the album")
                     .build();
         }
     }

@@ -53,7 +53,7 @@ public class Album implements Serializable {
         this.title = title;
     }
 
-    public int getReleaseYear() {
+    public Integer getReleaseYear() {
         return releaseYear;
     }
 
