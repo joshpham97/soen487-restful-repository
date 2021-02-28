@@ -1,6 +1,7 @@
 import database.dao.LogDAO;
 import repository.core.ILogManager;
 import repository.core.Log;
+import repository.core.RepException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -14,9 +15,16 @@ public class LogManagerInDB implements ILogManager {
         return logs;
     }
 
-    public ArrayList<Log> listLog(LocalDateTime from, LocalDateTime to) {
+    public ArrayList<Log> listLog(String typeOfChange) {
         ArrayList<Log> logs = new ArrayList<>();
-        logs = LogDAO.getLog(from, to);
+        logs = LogDAO.getLog(typeOfChange);
+
+        return logs;
+    }
+
+    public ArrayList<Log> listLog(LocalDateTime from, LocalDateTime to, String typeOfChange) {
+        ArrayList<Log> logs = new ArrayList<>();
+        logs = LogDAO.getLog(from, to, typeOfChange);
 
         return logs;
     }
@@ -28,5 +36,8 @@ public class LogManagerInDB implements ILogManager {
 
         boolean added = LogDAO.addLog(date, typeOfChange, recordKey);
         return added;
+    }
+    public boolean clearLog() throws RepException {
+        throw new RepException("ERROR: CLEAR LOG is not yet supported.");
     }
 }

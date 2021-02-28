@@ -25,6 +25,4 @@ public interface LogEntry {
     public String listLogs() throws LogFault;
     @WebMethod(operationName = "listLogFilter")
     public String listLogFilter(@WebParam(name="from") String from, @WebParam(name="to") String to, @WebParam(name="changeType") String changeType) throws LogFault;
-
-
 }

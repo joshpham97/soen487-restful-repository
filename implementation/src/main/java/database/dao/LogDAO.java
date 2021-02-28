@@ -78,4 +78,50 @@ public class LogDAO {
         }
         return logs;
     }
+
+    public static ArrayList<Log> getLog(LocalDateTime fromDate, LocalDateTime toDate, String typeOfChange){
+        ArrayList<Log> logs = new ArrayList<>();
+        try{
+            Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt;
+            if(!typeOfChange.equals(""))
+            {
+                String sql = "SELECT * FROM Log WHERE logged_time between ? AND ? AND typeOfChange = ?";
+                stmt = conn.prepareStatement(sql);
+                stmt.setTimestamp(1, Timestamp.valueOf(fromDate));
+                stmt.setTimestamp(2, Timestamp.valueOf(toDate));
+                stmt.setString(3, typeOfChange);
+            }
+            else{
+                String sql = "SELECT * FROM Log WHERE logged_time between ? AND ?";
+                stmt = conn.prepareStatement(sql);
+                stmt.setTimestamp(1, Timestamp.valueOf(fromDate));
+                stmt.setTimestamp(2, Timestamp.valueOf(toDate));
+            }
+
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next())
+                logs.add(mapResultSetToLog(rs));
+        } catch (Exception e) {
+            System.err.println("There was an error retrieving log in database.");
+            System.err.println(e.getMessage());
+        }
+        return logs;
+    }
+    public static ArrayList<Log> getLog(String typeOfChange){
+        ArrayList<Log> logs = new ArrayList<>();
+        try{
+            Connection conn = DBConnection.getConnection();
+            String sql = "SELECT * FROM Log WHERE typeOfChange = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, typeOfChange);
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next())
+                logs.add(mapResultSetToLog(rs));
+        } catch (Exception e) {
+            System.err.println("There was an error retrieving log in database.");
+            System.err.println(e.getMessage());
+        }
+        return logs;
+    }
 }

@@ -58,7 +58,11 @@ public class LogEntryImpl implements LogEntry {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             LocalDateTime fromDateTime = LocalDateTime.parse(from, formatter);
             LocalDateTime toDateTime = LocalDateTime.parse(to, formatter);
-            logs = logManager.listLog(fromDateTime, toDateTime);
+            logs = logManager.listLog(fromDateTime, toDateTime, changeType);
+        }
+        else if(from.equals("") && !changeType.equals(""))
+        {
+            logs = logManager.listLog(changeType);
         }
         else {
             logs = logManager.listLog();
