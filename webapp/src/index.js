@@ -20,6 +20,7 @@ const routing = (
     <Router history={history}>
         <Switch>
             <Route path="/album/edit" component={AlbumForm} />
+            <Route path="/album/add" component={AlbumForm} />
             <Route path="/album" component={AlbumList} />
             <Route path="/example2" component={Example2} />
             <Route path="/example" component={Example} />

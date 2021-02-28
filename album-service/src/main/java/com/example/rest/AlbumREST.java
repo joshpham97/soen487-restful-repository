@@ -1,21 +1,19 @@
 package com.example.rest;
 
-import factories.AlbumManagerFactory;
+import factories.ManagerFactory;
 import repository.core.Album;
 import repository.core.Artist;
 import repository.core.IAlbumManager;
-import utilities.UrlParser;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
-import java.util.Map;
 
 @Path("album")
 public class AlbumREST {
-    private IAlbumManager albumManager = AlbumManagerFactory.loadManager();
+    private IAlbumManager albumManager = (IAlbumManager) ManagerFactory.ALBUM.getManager();
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -37,7 +35,7 @@ public class AlbumREST {
     }
 
     @GET
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     @Path("{isrc}")
     public Response getAlbum(@PathParam("isrc") String isrc) {
         try {
@@ -49,7 +47,7 @@ public class AlbumREST {
             }
 
             return Response.status(Response.Status.OK)
-                    .entity(album.toString())
+                    .entity(album)
                     .build();
         }
         catch(Exception e) {
@@ -60,13 +58,23 @@ public class AlbumREST {
     }
 
     @POST
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Produces(MediaType.TEXT_PLAIN)
-    public Response addAlbum(@FormParam("isrc") String isrc, @FormParam("title") String title, @FormParam("releaseYear") int releaseYear, @FormParam("contentDesc") String contentDesc, @FormParam("firstName") String firstName, @FormParam("lastName") String lastName) {
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response addAlbum(Album album) {
         try {
+            String isrc = album.getIsrc();
+            String title = album.getTitle();
+            Integer releaseYear = album.getReleaseYear();
+            Artist artist = album.getArtist();
+            String firstName = artist.getFirstname();
+            String lastName = artist.getLastname();
+
             if(isrc == null || isrc.trim().isEmpty() ||
-                    title == null || title.trim().isEmpty()) {
-                return Response.status(Response.Status.FORBIDDEN)
+                    title == null || title.trim().isEmpty() ||
+                    firstName == null || firstName.trim().isEmpty() ||
+                    lastName == null || lastName.trim().isEmpty() ||
+                    releaseYear == null) {
+                return Response.status(Response.Status.BAD_REQUEST)
                         .entity("Failed to add album: missing required fields")
                         .build();
             }
@@ -75,13 +83,12 @@ public class AlbumREST {
                         .entity("Failed to add album: invalid releaseYear")
                         .build();
             }
-            Artist artist = new Artist(firstName, lastName);
-            Album album = new Album(isrc, title, releaseYear, contentDesc, artist);
+
             boolean success = albumManager.addAlbum(album);
 
             if (success) {
                 return Response.status(Response.Status.OK)
-                        .entity("Successfully added album \n" + album)
+                        .entity(album)
                         .build();
             }
             else {

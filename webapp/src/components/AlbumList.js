@@ -2,20 +2,31 @@ import '../styles/albumList.css';
 
 import React from 'react';
 import { useState, useEffect } from 'react';
+import { withStyles } from '@material-ui/core/styles';
 import { CircularProgress, Slide } from '@material-ui/core';
+import MuiAddCircleOutlineRoundedIcon from '@material-ui/icons/AddCircleOutlineRounded';
 
 import Navbar from './Navbar';
 import AlbumSummary from './AlbumSummary';
 import AlbumDetails from './AlbumDetails';
-import {albumApi, albumServer} from "../endpoints/albumServer";
+import { albumApi, albumServer } from "../endpoints/albumServer";
+
+const AddCircleOutlineRounded = withStyles({
+    root: {
+        cursor: 'pointer'
+    }
+})(MuiAddCircleOutlineRoundedIcon);
 
 function AlbumList(props) {
     const [loaded, setLoaded] = useState(false);
     const [albums, setAlbums] = useState([]);
     const [current, setCurrent] = useState(null);
 
-    useEffect(() => {
+    useEffect( () => {
         // Mount
+        if(props.location.state && props.location.state.isrc)
+            getAlbum();
+
         getAlbums();
         const interval = setInterval(getAlbums, 1000);
 
@@ -33,6 +44,12 @@ function AlbumList(props) {
             .finally(() => setLoaded(true));
     };
 
+    const getAlbum = () => {
+        albumServer.get(albumApi.get + '/' + props.location.state.isrc)
+            .then(res => setCurrent(res.data))
+            .catch(err => alert(err));
+    };
+
     const handleDetails = (album) => {
         if(current && current.isrc === album.isrc)
             setCurrent(null);
@@ -44,7 +61,11 @@ function AlbumList(props) {
         setCurrent(null);
     };
 
-    const handleDetailsEdit = () => {
+    const addRedirect = () => {
+        props.history.push('/album/add');
+    };
+
+    const editRedirect = () => {
         props.history.push({
             pathname: '/album/edit',
             state: {
@@ -64,16 +85,25 @@ function AlbumList(props) {
         else if(!albums)
             return <div className="w-100 text-center">An error occurred while getting the albums</div>;
         else if(albums.length === 0)
-            return <div className="w-100 text-center">There are no albums yet</div>;
+            return (
+                <React.Fragment>
+                    <div className="w-100 text-center">There are no albums yet</div>
+                    <AddCircleOutlineRounded fontSize="large" onClick={addRedirect} />
+                </React.Fragment>
+            );
 
         return (
-            <div className="albums">
-                {albums.map(album => (
-                    <div key={album.isrc} className="album" onClick={() => handleDetails(album)}>
-                        <AlbumSummary title={album.title} firstname={album.artist.firstname} lastname={album.artist.lastname} />
-                    </div>
-                ))}
-            </div>
+            <React.Fragment>
+                <div className="albums">
+                    {albums.map(album => (
+                        <div key={album.isrc} className="album" onClick={() => handleDetails(album)}>
+                            <AlbumSummary title={album.title} firstname={album.artist.firstname} lastname={album.artist.lastname} />
+                        </div>
+                    ))}
+                </div>
+
+                <AddCircleOutlineRounded fontSize="large" onClick={addRedirect} />
+            </React.Fragment>
         );
     };
 
@@ -81,7 +111,7 @@ function AlbumList(props) {
         if(current)
             return <AlbumDetails title={current.title} firstname={current.artist.firstname} lastname={current.artist.lastname}
                              isrc={current.isrc} releaseYear={current.releaseYear} contentDesc={current.contentDesc}
-                             handleClose={handleDetailsClose} handleEdit={handleDetailsEdit} />;
+                             handleClose={handleDetailsClose} handleEdit={editRedirect} />;
     };
 
     return (

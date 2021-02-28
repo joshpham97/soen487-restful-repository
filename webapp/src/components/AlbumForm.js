@@ -4,15 +4,16 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import MuiTextField from '@material-ui/core/TextField';
-import { FormControl, InputLabel, Input, Button } from '@material-ui/core';
+import { FormControl, InputLabel, Input, TextField, Button } from '@material-ui/core';
 import MuiArrowBackIosRoundedIcon from '@material-ui/icons/ArrowBackIosRounded';
+import AddIcon from '@material-ui/icons/Add';
 import SaveIcon from '@material-ui/icons/Save';
 import DeleteIcon from '@material-ui/icons/Delete';
 
 import Navbar from './Navbar';
-import {albumApi, albumServer} from "../endpoints/albumServer";
+import { albumApi, albumServer } from "../endpoints/albumServer";
 
-const TextField = withStyles({
+const DescInput = withStyles({
     root: {
         width: '50%',
         maxWidth: '400px',
@@ -29,28 +30,52 @@ const ArrowBackIosRounded = withStyles({
 })(MuiArrowBackIosRoundedIcon);
 
 function AlbumForm(props) {
+    const [isrc, setIsrc] = useState('');
     const [title, setTitle] = useState('');
     const [firstname, setFirstname] = useState('');
     const [lastname, setLastname] = useState('');
     const [releaseYear, setReleaseYear] = useState('');
     const [contentDesc, setContentDesc] = useState('');
+    const params = props.location.state;
 
     useEffect(() => {
         // Mount
-        setTitle(props.location.state.title);
-        setFirstname(props.location.state.firstname);
-        setLastname(props.location.state.lastname);
-        setReleaseYear(props.location.state.releaseYear);
-        setContentDesc(props.location.state.contentDesc);
+        if(params) {
+            setTitle(params.title);
+            setFirstname(params.firstname);
+            setLastname(params.lastname);
+            setReleaseYear(params.releaseYear);
+            setContentDesc(params.contentDesc);
+        }
     }, []);
 
     const handleInput = (e, setState) => {
         setState(e.target.value);
     };
 
+    const addAlbum = () => {
+        albumServer.post(albumApi.add, {
+            isrc: isrc,
+            title: title,
+            releaseYear: releaseYear,
+            contentDesc: contentDesc,
+            artist: {
+                firstname: firstname,
+                lastname: lastname
+            }
+        })
+            .then(res => props.history.push({
+                pathname: '/album',
+                state: {
+                    isrc: isrc
+                }
+            }))
+            .catch(err => alert(err));
+    };
+
     const updateAlbum = () => {
         albumServer.put(albumApi.update, {
-            isrc: props.location.state.isrc,
+            isrc: params.isrc,
             title: title,
             releaseYear: releaseYear,
             contentDesc: contentDesc,
@@ -64,13 +89,51 @@ function AlbumForm(props) {
     };
 
     const deleteAlbum = () => {
-        albumServer.delete(albumApi.delete + '/' + props.location.state.isrc)
-            .then(res => alert(res.data))
+        albumServer.delete(albumApi.delete + '/' + params.isrc)
+            .then(res => props.history.push('/album'))
             .catch(err => alert(err));
     };
 
     const handleBack = () => {
-        props.history.push('/album');
+        props.history.push({
+            pathname: '/album',
+            state: {
+                isrc: params && params.isrc ? params.isrc : ''
+            }
+        });
+    };
+
+    const renderHeader = () => {
+        if(!params)
+            return "Add Album";
+
+        return (
+            <React.Fragment>
+                Edit Album
+                <div className="isrc">#{params.isrc}</div>
+            </React.Fragment>
+        );
+    };
+
+    const renderIsrcInput = () => {
+        if(!params)
+            return (
+                <div className="formRow">
+                    <TextField label="ISRC" variant="outlined" value={isrc} onChange={(e) => handleInput(e, setIsrc)} />
+                </div>
+            );
+    };
+
+    const renderButtons = () => {
+        if(params)
+            return (
+                <React.Fragment>
+                    <Button className="mr-3" variant="contained" color="primary" startIcon={<SaveIcon />} onClick={updateAlbum}>Save</Button>
+                    <Button variant="contained" color="secondary" startIcon={<DeleteIcon />} onClick={deleteAlbum}>Delete</Button>
+                </React.Fragment>
+            );
+
+        return <Button variant="contained" color="primary" startIcon={<AddIcon />} onClick={addAlbum}>Add</Button>
     };
 
     return (
@@ -81,11 +144,12 @@ function AlbumForm(props) {
                 <ArrowBackIosRounded fontSize="large" onClick={handleBack} />
 
                 <h3>
-                    Album
-                    <span className="isrc">#{props.location.state.isrc}</span>
+                    {renderHeader()}
                 </h3>
 
                 <form>
+                    {renderIsrcInput()}
+
                     <div className="formRow">
                         <FormControl className="mr-5">
                             <InputLabel htmlFor="albumTitleInput">Title</InputLabel>
@@ -115,16 +179,13 @@ function AlbumForm(props) {
                     </div>
 
                     <div className="formRow">
-                        <TextField id="albumContentDescInput" value={contentDesc} label="Description"
+                        <DescInput id="albumContentDescInput" value={contentDesc} label="Description"
                                    variant="outlined" rows={5} multiline
                                    onChange={(e) => handleInput(e, setContentDesc)} />
                     </div>
                 </form>
 
-                <div>
-                    <Button className="mr-3" variant="contained" color="primary" startIcon={<SaveIcon />} onClick={updateAlbum}>Save</Button>
-                    <Button variant="contained" color="secondary" startIcon={<DeleteIcon />} onClick={deleteAlbum}>Delete</Button>
-                </div>
+                {renderButtons()}
             </div>
         </React.Fragment>
     );
