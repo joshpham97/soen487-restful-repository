@@ -2,6 +2,7 @@ package com.example.rest;
 
 import factories.AlbumManagerFactory;
 import factories.LogManagerFactory;
+import factories.ManagerFactory;
 import repository.core.*;
 import utilities.UrlParser;
 
@@ -15,8 +16,10 @@ import java.util.Map;
 
 @Path("album")
 public class AlbumREST {
-    private IAlbumManager albumManager = AlbumManagerFactory.loadManager();
-    private ILogManager logManager = LogManagerFactory.loadManager();
+    //private IAlbumManager albumManager = AlbumManagerFactory.loadManager();
+    //private ILogManager logManager = LogManagerFactory.loadManager();
+    private IAlbumManager albumManager = (IAlbumManager) ManagerFactory.ALBUM.getManager();
+    private ILogManager logManager = (ILogManager) ManagerFactory.LOG.getManager();
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
