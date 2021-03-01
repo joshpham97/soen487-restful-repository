@@ -41,7 +41,7 @@ public class LogEntryImpl implements LogEntry {
         }
         return str.toString();
     }
-     */
+
     @Override
     public String listLogs() throws LogFault {
 
@@ -50,6 +50,7 @@ public class LogEntryImpl implements LogEntry {
 
         return logs.toString();
     }
+     */
 
     @Override
     public String listLogFilter(String from, String to, String changeType) throws LogFault {
