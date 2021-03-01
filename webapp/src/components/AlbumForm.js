@@ -94,7 +94,7 @@ function AlbumForm(props) {
             .catch(err => alert(err));
     };
 
-    const handleBack = () => {
+    const backRedirect = () => {
         props.history.push({
             pathname: '/album',
             state: {
@@ -141,7 +141,7 @@ function AlbumForm(props) {
             <Navbar />
 
             <div id="albumForm">
-                <ArrowBackIosRounded fontSize="large" onClick={handleBack} />
+                <ArrowBackIosRounded fontSize="large" onClick={backRedirect} />
 
                 <h3>
                     {renderHeader()}

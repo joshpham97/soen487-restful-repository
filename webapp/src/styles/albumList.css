@@ -22,6 +22,10 @@
     padding-right: 3pc;
 }
 
+#albumList .current {
+    border: 1px dashed black;
+}
+
 #albumList .albumDetails {
     text-align: left;
     position: fixed;
