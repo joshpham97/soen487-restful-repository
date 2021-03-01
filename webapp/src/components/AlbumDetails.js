@@ -1,68 +1,104 @@
-import { makeStyles } from '@material-ui/core/styles';
-import CloseRoundedIcon from '@material-ui/icons/CloseRounded';
-import EditRoundedIcon from '@material-ui/icons/EditRounded';
+import '../styles/albumDetails.css';
 
-const useStyles = makeStyles(() => ({
-    header: {
-        textAlign: 'center'
-    },
-    close: {
+import React from 'react';
+import { useState, useEffect } from 'react';
+import { useParams } from 'react-router';
+import { withStyles } from "@material-ui/core/styles";
+import { CircularProgress, Divider } from "@material-ui/core";
+import MuiArrowBackIosRoundedIcon from '@material-ui/icons/ArrowBackIosRounded';
+
+import Navbar from './Navbar';
+import AlbumCover from './subcomponents/AlbumCover';
+import { albumApi, albumServer } from "../endpoints/albumServer";
+
+const ArrowBackIosRounded = withStyles({
+    root: {
         position: 'absolute',
-        color: 'white',
-        top: '1pc',
-        right: '1pc',
-        '&:hover': {
-            cursor: 'pointer'
-        }
-    },
-    edit: {
-        position: 'absolute',
-        bottom: '1pc',
-        right: '1pc',
-        '&:hover': {
-            cursor: 'pointer'
-        }
+        left: '2pc',
+        cursor: 'pointer'
     }
-}));
+})(MuiArrowBackIosRoundedIcon);
 
 function AlbumDetails(props) {
-    const classes = useStyles();
+    const [loaded, setLoaded] = useState(false);
+    const [album ,setAlbum] = useState(null);
+    let {isrc} = useParams();
 
-    const renderCloseIcon = () => {
-        if(props.handleClose)
-            return <CloseRoundedIcon className={classes.close} fontSize="large" onClick={props.handleClose} />;
+    useEffect( () => {
+        // Mount
+        if(!isrc)
+            isrc = props.location.state.isrc;
+
+        getAlbum();
+        const interval = setInterval(getAlbum, 1000);
+
+        // Unmount
+        return () => clearInterval(interval);
+    }, []);
+
+    const getAlbum = () => {
+        albumServer.get(albumApi.get + '/' + isrc)
+            .then(res => {
+                if(res.data.isrc)
+                    setAlbum(res.data)
+            })
+            .catch(err => console.log(err))
+            .finally(() => setLoaded(true));
     };
 
-    const renderEditIcon = () => {
-        if(props.handleEdit)
-            return <EditRoundedIcon className={classes.edit} fontSize="large" onClick={props.handleEdit} />;
+    const backRedirect = () => {
+        const propIsrc = album ? isrc : null;
+
+        props.history.push({
+            pathname: '/albums',
+            state: {
+                isrc: propIsrc
+            }
+        });
+    };
+
+    const renderAlbum = () => {
+        if(!loaded)
+            return <CircularProgress color="inherit"/>;
+        else if(!album)
+            return <div>This album doesn't exist</div>
+
+        return (
+            <React.Fragment>
+                <div className="mt-3 albumCover">
+                    <AlbumCover title={album.title} firstname={album.artist.firstname} lastname={album.artist.lastname} />
+                </div>
+
+                <Divider className="mt-3" />
+
+                <div className="releaseYear">
+                    Released in {album.releaseYear}
+                </div>
+
+                <div className="description">
+                    <div className="descHeader">Description</div>
+                    <div className="descContent">{album.contentDesc}</div>
+                </div>
+            </React.Fragment>
+        );
     };
 
     return (
-      <div>
-          <div className={classes.header}>
-              <div className="font-weight-bold">
-                  {props.title}
-              </div>
-              <div className="font-italic">
-                  {props.firstname} {props.lastname}
-              </div>
-          </div>
-          <div>
-              ISRC: {props.isrc}
-          </div>
-          <div>
-              Released: {props.releaseYear}
-          </div>
-          <div>
-              Description: {props.contentDesc}
-          </div>
+        <React.Fragment>
+            <Navbar />
 
-          {renderCloseIcon()}
+            <ArrowBackIosRounded fontSize="large" onClick={backRedirect} />
 
-          {renderEditIcon()}
-      </div>
+            <div id="albumDetails">
+                <h3>
+                    Album
+                    <div className="isrc">#{isrc}</div>
+                </h3>
+
+                {renderAlbum()}
+            </div>
+        </React.Fragment>
     );
-};
+}
 
 export default AlbumDetails;

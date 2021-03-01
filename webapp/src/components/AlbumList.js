@@ -5,10 +5,11 @@ import { useState, useEffect } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import { CircularProgress, Fab, Slide } from '@material-ui/core';
 import MuiAddIcon from '@material-ui/icons/Add';
+import { Scrollbars } from 'react-custom-scrollbars';
 
 import Navbar from './Navbar';
-import AlbumSummary from './AlbumSummary';
-import AlbumDetails from './AlbumDetails';
+import AlbumCover from './subcomponents/AlbumCover';
+import AlbumSummary from './subcomponents/AlbumSummary';
 import { albumApi, albumServer } from "../endpoints/albumServer";
 
 const AddIcon = withStyles({
@@ -20,7 +21,6 @@ const AddIcon = withStyles({
 function AlbumList(props) {
     const [loaded, setLoaded] = useState(false);
     const [albums, setAlbums] = useState([]);
-    const [currentElement, setCurrentElement] = useState(null);
     const [currentAlbum, setCurrentAlbum] = useState(null);
 
     useEffect( () => {
@@ -47,16 +47,11 @@ function AlbumList(props) {
 
     const getAlbum = () => {
         albumServer.get(albumApi.get + '/' + props.location.state.isrc)
-            .then(res => {
-                setCurrentAlbum(res.data)
-            })
-            .catch(err => alert(err));
+            .then(res => setCurrentAlbum(res.data))
+            .catch(err => console.log(err));
     };
 
-    const toggleDetails = (e, album) => {
-        // add/remove class on click
-        toggleHighlight(e.currentTarget, album);
-
+    const toggleSummary = (e, album) => {
         // Set current album to trigger details
         if(currentAlbum && currentAlbum.isrc === album.isrc)
             setCurrentAlbum(null);
@@ -64,33 +59,31 @@ function AlbumList(props) {
             setCurrentAlbum(album);
     };
 
-    const toggleHighlight = (target, album) => {
-        if(!currentElement && currentAlbum && currentAlbum == album.isrc)
-            return;
-
-        if(currentElement)
-            currentElement.firstChild.classList.remove("current");
-
-        if(target && currentElement != target) {
-            target.firstChild.classList.add("current");
-            setCurrentElement(target);
-        }
-        else
-            setCurrentElement(null);
-    };
-
-    const closeDetails = () => {
-        toggleHighlight(null, null);
+    const closeSummary = () => {
         setCurrentAlbum(null);
     };
 
+    const horizontalScroll = (e) => {
+        const delta = Math.max(-1, Math.min(1, (e.nativeEvent.wheelDelta || -e.nativeEvent.detail)));
+        e.currentTarget.scrollLeft -= (delta * 25);
+    };
+
     const addRedirect = () => {
-        props.history.push('/album/add');
+        props.history.push('/albums/add');
+    };
+
+    const getRedirect = (isrc) => {
+        props.history.push({
+            pathname: '/albums/get',
+            state: {
+                isrc: isrc
+            }
+        });
     };
 
     const editRedirect = () => {
         props.history.push({
-            pathname: '/album/edit',
+            pathname: '/albums/edit',
             state: {
                 isrc: currentAlbum.isrc,
                 title: currentAlbum.title,
@@ -119,13 +112,15 @@ function AlbumList(props) {
 
         return (
             <React.Fragment>
-                <div className="albums">
-                    {albums.map(album => (
-                        <div key={album.isrc} id={"ISRC" + album.isrc} className="album" onClick={(e) => toggleDetails(e, album)}>
-                            <AlbumSummary title={album.title} firstname={album.artist.firstname} lastname={album.artist.lastname} />
-                        </div>
-                    ))}
-                </div>
+                <Scrollbars autoHeight>
+                    <div className="albums" onWheel={(e) => horizontalScroll(e)}>
+                        {albums.map(album => (
+                            <div key={album.isrc} id={"ISRC" + album.isrc} className="album" onClick={(e) => toggleSummary(e, album)}>
+                                <AlbumCover title={album.title} firstname={album.artist.firstname} lastname={album.artist.lastname} />
+                            </div>
+                        ))}
+                    </div>
+                </Scrollbars>
 
                 <Fab className="mt-3 mb-3" size="medium" onClick={addRedirect}>
                     <AddIcon />
@@ -134,11 +129,11 @@ function AlbumList(props) {
         );
     };
 
-    const renderAlbumDetails = () => {
+    const renderAlbumSummary = () => {
         if(currentAlbum)
-            return <AlbumDetails title={currentAlbum.title} firstname={currentAlbum.artist.firstname} lastname={currentAlbum.artist.lastname}
-                             isrc={currentAlbum.isrc} releaseYear={currentAlbum.releaseYear} contentDesc={currentAlbum.contentDesc}
-                             handleClose={closeDetails} handleEdit={editRedirect} />;
+            return <AlbumSummary title={currentAlbum.title} firstname={currentAlbum.artist.firstname} lastname={currentAlbum.artist.lastname}
+                                 isrc={currentAlbum.isrc} releaseYear={currentAlbum.releaseYear} contentDesc={currentAlbum.contentDesc}
+                                 handleClose={closeSummary} handleOpenInBrowser={() => getRedirect(currentAlbum.isrc)} handleEdit={editRedirect} />;
     };
 
     return (
@@ -151,8 +146,8 @@ function AlbumList(props) {
                 {renderAlbumList()}
 
                 <Slide direction="up" in={currentAlbum != null} mountOnEnter unmountOnExit>
-                    <div className="albumDetails">
-                        {renderAlbumDetails()}
+                    <div className="albumSummary">
+                        {renderAlbumSummary()}
                     </div>
                 </Slide>
             </div>

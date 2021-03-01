@@ -1,0 +1,39 @@
+#albumDetails {
+    text-align: center;
+    margin: 0 20%;
+    min-width: 300px;
+    max-width: 700px;
+    position: relative;
+}
+
+#albumDetails .isrc {
+    font-size: 1.5pc;
+    color: rgba(0, 0, 0, 0.35);
+}
+
+#albumDetails .albumCover {
+    display: inline-block;
+}
+
+#albumDetails .releaseYear {
+    margin-top: 1.25pc;
+    text-align: right;
+    font-style: italic;
+    position: absolute;
+    width: 100%;
+    left: -1pc;
+}
+
+#albumDetails .description {
+    margin-top: 1.25pc;
+    margin-left: 1pc;
+    text-align: left;
+}
+
+#albumDetails .descHeader {
+    text-decoration: underline;
+}
+
+#albumDetails .descContent {
+    white-space: pre-line;
+}

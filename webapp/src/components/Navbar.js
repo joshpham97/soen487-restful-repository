@@ -14,7 +14,7 @@ function Navbar() {
           </span>
 
           <span className="ml-2">
-              <a href="/album">Album</a>
+              <a href="/albums">Albums</a>
           </span>
       </div>
     );

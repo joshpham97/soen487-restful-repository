@@ -1,32 +1,37 @@
 #albumList {
     text-align: center;
-    overflow: hidden;
 }
 
 #albumList .albums {
     display: flex;
-    overflow-x: auto;
+    overflow-x: hidden;
+    height: 100%;
 }
+
+/*#albumList .albums::-webkit-scrollbar {*/
+/*    display: none;*/
+/*}*/
 
 #albumList .album {
     float: left;
-    margin: 0;
-    padding: 1.5pc;
+    margin: 1.5pc;;
 }
 
 #albumList .album:first-child {
-    padding-left: 3pc;
+    margin-left: 0;
+    padding-left: 2pc;
 }
 
 #albumList .album:last-child {
-    padding-right: 3pc;
+    margin-right: 0;
+    padding-right: 2pc;
 }
 
 #albumList .current {
     border: 1px dashed black;
 }
 
-#albumList .albumDetails {
+#albumList .albumSummary {
     text-align: left;
     position: fixed;
     bottom: 0;

@@ -10,6 +10,7 @@ import Home from './components/Home';
 import Example from './components/Example';
 import Example2 from './components/Example2';
 import AlbumList from './components/AlbumList';
+import AlbumDetails from './components/AlbumDetails';
 import AlbumForm from './components/AlbumForm';
 
 
@@ -19,9 +20,11 @@ const routing = (
     <React.StrictMode>
     <Router history={history}>
         <Switch>
-            <Route path="/album/edit" component={AlbumForm} />
-            <Route path="/album/add" component={AlbumForm} />
-            <Route path="/album" component={AlbumList} />
+            <Route path="/albums/edit" component={AlbumForm} />
+            <Route path="/albums/add" component={AlbumForm} />
+            <Route path="/albums/get/:isrc" component={AlbumDetails} />
+            <Route path="/albums/get" component={AlbumDetails} />
+            <Route path="/albums" component={AlbumList} />
             <Route path="/example2" component={Example2} />
             <Route path="/example" component={Example} />
             <Route path="/" component={Home} />

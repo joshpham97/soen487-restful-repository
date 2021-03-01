@@ -65,7 +65,7 @@ function AlbumForm(props) {
             }
         })
             .then(res => props.history.push({
-                pathname: '/album',
+                pathname: '/albums',
                 state: {
                     isrc: isrc
                 }
@@ -90,13 +90,13 @@ function AlbumForm(props) {
 
     const deleteAlbum = () => {
         albumServer.delete(albumApi.delete + '/' + params.isrc)
-            .then(res => props.history.push('/album'))
+            .then(res => props.history.push('/albums'))
             .catch(err => alert(err));
     };
 
     const backRedirect = () => {
         props.history.push({
-            pathname: '/album',
+            pathname: '/albums',
             state: {
                 isrc: params && params.isrc ? params.isrc : ''
             }
@@ -140,9 +140,9 @@ function AlbumForm(props) {
         <React.Fragment>
             <Navbar />
 
-            <div id="albumForm">
-                <ArrowBackIosRounded fontSize="large" onClick={backRedirect} />
+            <ArrowBackIosRounded fontSize="large" onClick={backRedirect} />
 
+            <div id="albumForm">
                 <h3>
                     {renderHeader()}
                 </h3>
