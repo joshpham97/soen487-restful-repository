@@ -3,7 +3,7 @@
     margin: auto;
     min-width: 300px;
     max-width: 700px;
-    position: relative;
+    /*position: relative;*/
 }
 
 #albumDetails .isrc {
@@ -15,8 +15,12 @@
     display: inline-block;
 }
 
-#albumDetails .releaseYear {
+.test {
     margin-top: 1.25pc;
+    position: relative
+}
+
+#albumDetails .releaseYear {
     text-align: right;
     font-style: italic;
     position: absolute;
@@ -25,7 +29,6 @@
 }
 
 #albumDetails .description {
-    margin-top: 1.25pc;
     margin-left: 1pc;
     text-align: left;
 }

@@ -77,6 +77,17 @@ public class Album implements Serializable {
         this.contentDesc = contentDesc;
     }
 
+    public void trim() {
+        this.setIsrc(isrc != null ? isrc.trim() : null);
+        this.setTitle(title != null ? title.trim() : null);
+        this.setContentDesc(contentDesc != null ? contentDesc.trim() : null);
+
+        if(artist != null) {
+            artist.setFirstname(artist.getFirstname() != null ? artist.getFirstname().trim() : null);
+            artist.setLastname(artist.getLastname() != null ? artist.getLastname().trim() : null);
+        }
+    }
+
     public String toString(){
         String description = contentDesc == null || contentDesc.isEmpty() ? "N/A" : contentDesc;
         return String.format("ISRC: %s, title: %s, release year: %d, artist: %s, description: %s", isrc, title, releaseYear, artist, description);

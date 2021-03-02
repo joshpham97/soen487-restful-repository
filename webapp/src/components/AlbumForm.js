@@ -145,9 +145,9 @@ function AlbumForm(props) {
         <React.Fragment>
             <Navbar />
 
-            <ArrowBackIosRounded fontSize="large" onClick={backRedirect} />
-
             <div id="albumForm">
+                <ArrowBackIosRounded fontSize="large" onClick={backRedirect} />
+
                 <h3>
                     {renderHeader()}
                 </h3>

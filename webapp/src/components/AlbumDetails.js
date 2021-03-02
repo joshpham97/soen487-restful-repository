@@ -71,6 +71,7 @@ function AlbumDetails(props) {
 
                 <Divider className="mt-3" />
 
+                <div className="test">
                 <div className="releaseYear">
                     Released in {album.releaseYear}
                 </div>
@@ -78,6 +79,7 @@ function AlbumDetails(props) {
                 <div className="description">
                     <div className="descHeader">Description</div>
                     <div className="descContent">{album.contentDesc}</div>
+                </div>
                 </div>
             </React.Fragment>
         );
@@ -87,9 +89,9 @@ function AlbumDetails(props) {
         <React.Fragment>
             <Navbar />
 
-            <ArrowBackIosRounded fontSize="large" onClick={backRedirect} />
-
             <div id="albumDetails">
+                <ArrowBackIosRounded fontSize="large" onClick={backRedirect} />
+
                 <h3>
                     Album
                     <div className="isrc">#{album ? album.isrc : isrc}</div>

@@ -29,7 +29,7 @@ function AlbumCover(props) {
       <Card>
           <CardActionArea>
               <CardMedia>
-                  FRONT
+                  MEDIA
               </CardMedia>
               <CardHeader title={props.title} subheader={props.firstname + " " + props.lastname} />
           </CardActionArea>
