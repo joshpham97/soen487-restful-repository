@@ -84,8 +84,13 @@ function AlbumForm(props) {
                 lastname: lastname
             }
         })
-            .then(res => alert(res.data))
-            .catch(err => alert(err));
+            .then(res => props.history.push({
+                pathname: '/albums',
+                state: {
+                    isrc: params.isrc
+                }
+            }))
+            .catch(err => console.log(err));
     };
 
     const deleteAlbum = () => {

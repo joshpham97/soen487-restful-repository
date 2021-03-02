@@ -5,7 +5,6 @@ import { useState, useEffect } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import { CircularProgress, Fab, Slide } from '@material-ui/core';
 import MuiAddIcon from '@material-ui/icons/Add';
-import { Scrollbars } from 'react-custom-scrollbars';
 
 import Navbar from './Navbar';
 import AlbumCover from './subcomponents/AlbumCover';
@@ -112,15 +111,13 @@ function AlbumList(props) {
 
         return (
             <React.Fragment>
-                <Scrollbars autoHeight>
-                    <div className="albums" onWheel={(e) => horizontalScroll(e)}>
-                        {albums.map(album => (
-                            <div key={album.isrc} id={"ISRC" + album.isrc} className="album" onClick={(e) => toggleSummary(e, album)}>
-                                <AlbumCover title={album.title} firstname={album.artist.firstname} lastname={album.artist.lastname} />
-                            </div>
-                        ))}
-                    </div>
-                </Scrollbars>
+                <div className="albums" onWheel={(e) => horizontalScroll(e)}>
+                    {albums.map(album => (
+                        <div key={album.isrc} id={"ISRC" + album.isrc} className="album" onClick={(e) => toggleSummary(e, album)}>
+                            <AlbumCover title={album.title} firstname={album.artist.firstname} lastname={album.artist.lastname} />
+                        </div>
+                    ))}
+                </div>
 
                 <Fab className="mt-3 mb-3" size="medium" onClick={addRedirect}>
                     <AddIcon />

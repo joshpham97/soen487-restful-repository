@@ -47,7 +47,7 @@ function AlbumDetails(props) {
     };
 
     const backRedirect = () => {
-        const propIsrc = album ? isrc : null;
+        const propIsrc = album ? album.isrc : null;
 
         props.history.push({
             pathname: '/albums',
@@ -92,7 +92,7 @@ function AlbumDetails(props) {
             <div id="albumDetails">
                 <h3>
                     Album
-                    <div className="isrc">#{isrc}</div>
+                    <div className="isrc">#{album ? album.isrc : isrc}</div>
                 </h3>
 
                 {renderAlbum()}

@@ -8,10 +8,6 @@
     height: 100%;
 }
 
-/*#albumList .albums::-webkit-scrollbar {*/
-/*    display: none;*/
-/*}*/
-
 #albumList .album {
     float: left;
     margin: 1.5pc;;
@@ -39,4 +35,10 @@
     color: rgba(255, 255, 255, 0.9);
     width: 100%;
     padding: 1pc 1.5pc;
+}
+
+@media (hover: none) and (pointer: coarse) {
+    #albumList .albums {
+        overflow: auto;
+    }
 }

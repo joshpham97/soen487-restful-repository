@@ -28,6 +28,16 @@ const useStyles = makeStyles(() => ({
         right: '1pc',
         cursor: 'pointer'
     },
+    isrc: {
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap'
+    },
+    releaseYear: {
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap'
+    },
     description: {
         overflow: 'hidden',
         textOverflow: 'ellipsis',
@@ -64,10 +74,10 @@ function AlbumSummary(props) {
                   {props.firstname} {props.lastname}
               </div>
           </div>
-          <div>
+          <div className={classes.isrc}>
               ISRC: {props.isrc}
           </div>
-          <div>
+          <div className={classes.releaseYear}>
               Released: {props.releaseYear}
           </div>
           <div className={classes.description}>
