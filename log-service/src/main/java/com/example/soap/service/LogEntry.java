@@ -20,9 +20,11 @@ public interface LogEntry {
 
     @WebMethod(operationName = "listLog")
     public String listLog() throws LogFault;
-    */
     @WebMethod(operationName = "listLogs")
     public String listLogs() throws LogFault;
+     */
     @WebMethod(operationName = "listLogFilter")
     public String listLogFilter(@WebParam(name="from") String from, @WebParam(name="to") String to, @WebParam(name="changeType") String changeType) throws LogFault;
+    @WebMethod(operationName = "listLog")
+    public ArrayList<Log> listLog(@WebParam(name="from") String from, @WebParam(name="to") String to, @WebParam(name="changeType") String changeType) throws LogFault;
 }

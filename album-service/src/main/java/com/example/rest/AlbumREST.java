@@ -84,7 +84,7 @@ public class AlbumREST {
             boolean success = albumManager.addAlbum(album);
 
             if (success) {
-                Log log = new Log(LocalDateTime.now(), "Add", isrc);
+                Log log = new Log(LocalDateTime.now(), Log.ChangeType.ADD.toString(), isrc);
                 boolean logAdded = logManager.addLog(log);
                 return Response.status(Response.Status.OK)
                         .entity("Successfully added album \n" + album)
