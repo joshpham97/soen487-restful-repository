@@ -14,7 +14,7 @@ public class AlbumManagerInMemory implements IAlbumManager  {
         albums = new CopyOnWriteArrayList<>();
     }
 
-    public ArrayList<Album> listAlbum() {
+    public ArrayList<Album> listAlbum(String title, String contentDesc, Integer fromYear, Integer toYear, String name) {
         return albums.stream()
                 .sorted(Comparator.comparing(Album::getIsrc).thenComparing(Album::getTitle)) // Sort by ISRC and title
                 .collect(Collectors.toCollection(ArrayList::new));

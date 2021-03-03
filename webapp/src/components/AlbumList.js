@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import { CircularProgress, Fab, Slide } from '@material-ui/core';
 import MuiAddIcon from '@material-ui/icons/Add';
+import FilterListIcon from '@material-ui/icons/FilterList';
 
 import Navbar from './Navbar';
 import AlbumCover from './subcomponents/AlbumCover';
@@ -19,13 +20,27 @@ const AddIcon = withStyles({
 
 function AlbumList(props) {
     const [loaded, setLoaded] = useState(false);
-    const [albums, setAlbums] = useState([]);
     const [currentAlbum, setCurrentAlbum] = useState(null);
+    const [albums, setAlbums] = useState([]);
+
+    let { titleFilter, nameFilter, fromFilter, toFilter } = '';
 
     useEffect( () => {
         // Mount
-        if(props.location.state && props.location.state.isrc)
-            getAlbum();
+        const params = props.location.state;
+        if(params) {
+            if (params.isrc)
+                getAlbum();
+
+            if(params.titleFilter)
+                titleFilter = params.titleFilter;
+            if(params.nameFilter)
+                nameFilter = params.nameFilter;
+            if(params.fromFilter)
+                fromFilter = params.fromFilter;
+            if(params.toFilter)
+                toFilter = params.toFilter;
+        }
 
         getAlbumList();
         const interval = setInterval(getAlbumList, 1000);
@@ -35,7 +50,14 @@ function AlbumList(props) {
     }, []);
 
     const getAlbumList = () => {
-        albumServer.get(albumApi.albums)
+        albumServer.get(albumApi.albums, {
+            params: {
+                title: titleFilter,
+                fromYear: fromFilter,
+                toYear: toFilter,
+                name: nameFilter
+            }
+        })
             .then(res => setAlbums(res.data))
             .catch(err => {
                 console.log(err);
@@ -68,15 +90,22 @@ function AlbumList(props) {
     };
 
     const addRedirect = () => {
-        props.history.push('/albums/add');
+        let state = props.location.state ? props.location.state : {};
+        state.isrc = null;
+
+        props.history.push({
+            pathname: '/albums/add',
+            state: state
+        });
     };
 
     const getRedirect = (isrc) => {
+        let state = props.location.state ? props.location.state : {};
+        state.isrc = isrc;
+
         props.history.push({
             pathname: '/albums/get',
-            state: {
-                isrc: isrc
-            }
+            state: state
         });
     };
 
@@ -94,20 +123,45 @@ function AlbumList(props) {
         });
     };
 
+    const filterRedirect = () => {
+        props.history.push({
+            pathname: '/albums/filter',
+            state: props.location.state
+        });
+    };
+
     const renderAlbumList = () => {
         if(!loaded)
             return <CircularProgress color="inherit" />
         else if(!albums)
             return <div className="w-100 text-center">An error occurred while getting the albums</div>;
-        else if(albums.length === 0)
+        else if(albums.length === 0) {
+            const params = props.location.state;
+            if(params.titleFilter || params.nameFilter || params.fromFilter || params.toFilter)
+                return (
+                    <React.Fragment>
+                        <div className="w-100 text-center">There are no matches</div>
+                        <div className="mt-3 mb-3">
+                            <Fab className="mr-3" size="medium" onClick={addRedirect}>
+                                <AddIcon />
+                            </Fab>
+
+                            <Fab size="medium" onClick={filterRedirect}>
+                                <FilterListIcon />
+                            </Fab>
+                        </div>
+                    </React.Fragment>
+                );
+
             return (
                 <React.Fragment>
                     <div className="w-100 text-center">There are no albums yet</div>
                     <Fab className="mt-3 mb-3" size="medium" onClick={addRedirect}>
-                        <AddIcon />
+                        <AddIcon/>
                     </Fab>
                 </React.Fragment>
             );
+        }
 
         return (
             <React.Fragment>
@@ -119,9 +173,15 @@ function AlbumList(props) {
                     ))}
                 </div>
 
-                <Fab className="mt-3 mb-3" size="medium" onClick={addRedirect}>
-                    <AddIcon />
-                </Fab>
+                <div className="mt-3 mb-3">
+                    <Fab className="mr-3" size="medium" onClick={addRedirect}>
+                        <AddIcon />
+                    </Fab>
+
+                    <Fab size="medium" onClick={filterRedirect} >
+                        <FilterListIcon />
+                    </Fab>
+                </div>
             </React.Fragment>
         );
     };

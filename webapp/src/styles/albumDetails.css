@@ -15,7 +15,7 @@
     display: inline-block;
 }
 
-.test {
+#albumDetails .bottomSection {
     margin-top: 1.25pc;
     position: relative
 }

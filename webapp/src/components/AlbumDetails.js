@@ -22,7 +22,7 @@ const ArrowBackIosRounded = withStyles({
 function AlbumDetails(props) {
     const [loaded, setLoaded] = useState(false);
     const [album ,setAlbum] = useState(null);
-    let {isrc} = useParams();
+    let { isrc } = useParams();
 
     useEffect( () => {
         // Mount
@@ -47,13 +47,12 @@ function AlbumDetails(props) {
     };
 
     const backRedirect = () => {
-        const propIsrc = album ? album.isrc : null;
+        let state = props.location.state ? props.location.state : {};
+        state.isrc = album ? album.isrc : null;
 
         props.history.push({
             pathname: '/albums',
-            state: {
-                isrc: propIsrc
-            }
+            state: state
         });
     };
 
@@ -71,15 +70,15 @@ function AlbumDetails(props) {
 
                 <Divider className="mt-3" />
 
-                <div className="test">
-                <div className="releaseYear">
-                    Released in {album.releaseYear}
-                </div>
+                <div className="bottomSection">
+                    <div className="releaseYear">
+                        Released in {album.releaseYear}
+                    </div>
 
-                <div className="description">
-                    <div className="descHeader">Description</div>
-                    <div className="descContent">{album.contentDesc}</div>
-                </div>
+                    <div className="description">
+                        <div className="descHeader">Description</div>
+                        <div className="descContent">{album.contentDesc}</div>
+                    </div>
                 </div>
             </React.Fragment>
         );

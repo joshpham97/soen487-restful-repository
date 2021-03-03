@@ -40,7 +40,7 @@ function AlbumForm(props) {
 
     useEffect(() => {
         // Mount
-        if(params) {
+        if(params && params.isrc) {
             setTitle(params.title);
             setFirstname(params.firstname);
             setLastname(params.lastname);
@@ -100,28 +100,31 @@ function AlbumForm(props) {
     };
 
     const backRedirect = () => {
+        let state = props.location.state ? props.location.state : {};
+        console.log(state);
+        state.isrc = params && params.isrc ? params.isrc : '';
+
         props.history.push({
             pathname: '/albums',
-            state: {
-                isrc: params && params.isrc ? params.isrc : ''
-            }
+            state: state
         });
     };
 
     const renderHeader = () => {
-        if(!params)
-            return "Add Album";
+        if(params && params.isrc) {
+            return (
+                <React.Fragment>
+                    Edit Album
+                    <div className="isrc">#{params.isrc}</div>
+                </React.Fragment>
+            );
+        }
 
-        return (
-            <React.Fragment>
-                Edit Album
-                <div className="isrc">#{params.isrc}</div>
-            </React.Fragment>
-        );
+        return "Add Album";
     };
 
     const renderIsrcInput = () => {
-        if(!params)
+        if(!params || !params.isrc)
             return (
                 <div className="formRow">
                     <TextField label="ISRC" variant="outlined" value={isrc} onChange={(e) => handleInput(e, setIsrc)} />
@@ -130,7 +133,7 @@ function AlbumForm(props) {
     };
 
     const renderButtons = () => {
-        if(params)
+        if(params && params.isrc)
             return (
                 <React.Fragment>
                     <Button className="mr-3" variant="contained" color="primary" startIcon={<SaveIcon />} onClick={updateAlbum}>Save</Button>
@@ -152,43 +155,41 @@ function AlbumForm(props) {
                     {renderHeader()}
                 </h3>
 
-                <form>
-                    {renderIsrcInput()}
+                {renderIsrcInput()}
 
-                    <div className="formRow">
-                        <FormControl className="mr-5">
-                            <InputLabel htmlFor="albumTitleInput">Title</InputLabel>
-                            <Input id="albumTitleInput" value={title}
-                                   onChange={(e) => handleInput(e, setTitle)} />
-                        </FormControl>
+                <div className="formRow">
+                    <FormControl className="mr-5">
+                        <InputLabel htmlFor="albumTitleInput">Title</InputLabel>
+                        <Input id="albumTitleInput" value={title}
+                               onChange={(e) => handleInput(e, setTitle)} />
+                    </FormControl>
 
-                        <FormControl>
-                            <InputLabel htmlFor="albumReleaseYearInput">Release Year</InputLabel>
-                            <Input id="albumReleaseYearInput" value={releaseYear} type="number"
-                                   onChange={(e) => handleInput(e, setReleaseYear)} />
-                        </FormControl>
-                    </div>
+                    <FormControl>
+                        <InputLabel htmlFor="albumReleaseYearInput">Release Year</InputLabel>
+                        <Input id="albumReleaseYearInput" value={releaseYear} type="number"
+                               onChange={(e) => handleInput(e, setReleaseYear)} />
+                    </FormControl>
+                </div>
 
-                    <div className="formRow">
-                        <FormControl className="mr-5">
-                            <InputLabel htmlFor="albumFirstNameInput">First Name</InputLabel>
-                            <Input id="albumFirstNameInput" value={firstname}
-                                   onChange={(e) => handleInput(e, setFirstname)} />
-                        </FormControl>
+                <div className="formRow">
+                    <FormControl className="mr-5">
+                        <InputLabel htmlFor="albumFirstNameInput">First Name</InputLabel>
+                        <Input id="albumFirstNameInput" value={firstname}
+                               onChange={(e) => handleInput(e, setFirstname)} />
+                    </FormControl>
 
-                        <FormControl>
-                            <InputLabel htmlFor="albumLastNameInput">Last Name</InputLabel>
-                            <Input id="albumLastNameInput" value={lastname}
-                                   onChange={(e) => handleInput(e, setLastname)} />
-                        </FormControl>
-                    </div>
+                    <FormControl>
+                        <InputLabel htmlFor="albumLastNameInput">Last Name</InputLabel>
+                        <Input id="albumLastNameInput" value={lastname}
+                               onChange={(e) => handleInput(e, setLastname)} />
+                    </FormControl>
+                </div>
 
-                    <div className="formRow">
-                        <DescInput id="albumContentDescInput" value={contentDesc} label="Description"
-                                   variant="outlined" rows={5} multiline
-                                   onChange={(e) => handleInput(e, setContentDesc)} />
-                    </div>
-                </form>
+                <div className="formRow">
+                    <DescInput id="albumContentDescInput" value={contentDesc} label="Description"
+                               variant="outlined" rows={5} multiline
+                               onChange={(e) => handleInput(e, setContentDesc)} />
+                </div>
 
                 {renderButtons()}
             </div>
