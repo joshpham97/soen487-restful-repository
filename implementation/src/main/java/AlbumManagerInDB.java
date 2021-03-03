@@ -6,8 +6,8 @@ import repository.core.RepException;
 import java.util.ArrayList;
 
 public class AlbumManagerInDB implements IAlbumManager {
-    public ArrayList<Album> listAlbum(String title, String contentDesc, Integer fromYear, Integer toYear, String name) {
-        return AlbumDAO.filterAlbums(title, contentDesc, fromYear, toYear, name);
+    public ArrayList<Album> listAlbum() {
+        return AlbumDAO.getAllAlbums();
     }
 
     public Album getAlbum(String isrc) throws RepException {

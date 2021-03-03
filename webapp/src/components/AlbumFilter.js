@@ -1,5 +1,6 @@
 import React from "react";
 import { useState, useEffect } from 'react';
+import { useHistory, useLocation } from 'react-router';
 import { withStyles } from "@material-ui/core/styles";
 import {InputLabel, Input, FormControl, Button, TextField} from '@material-ui/core';
 import MuiArrowBackIosRoundedIcon from '@material-ui/icons/ArrowBackIosRounded';
@@ -16,7 +17,10 @@ const ArrowBackIosRounded = withStyles({
     }
 })(MuiArrowBackIosRoundedIcon);
 
-function AlbumFilter(props) {
+function AlbumFilter() {
+    const history = useHistory();
+    const location = useLocation();
+
     const [title, setTitle] = useState('');
     const [name, setName] = useState('');
     const [from, setFrom] = useState('');
@@ -24,18 +28,17 @@ function AlbumFilter(props) {
 
     useEffect( () => {
         // Mount
-        const params = props.location.state;
-        if(params) {
-            if(params.titleFilter)
-                setTitle(params.titleFilter);
-            if(params.nameFilter)
-                setName(params.nameFilter);
-            if(params.fromFilter)
-                setFrom(params.fromFilter);
-            if(params.toFilter)
-                setTo(params.toFilter);
+        const params = location.state;
+        if(params && params.filter) {
+            if(params.filter.title)
+                setTitle(params.filter.title);
+            if(params.filter.name)
+                setName(params.filter.name);
+            if(params.filter.from)
+                setFrom(params.filter.from);
+            if(params.filter.to)
+                setTo(params.filter.to);
         }
-
     }, []);
 
     const handleInput = (e, setState) => {
@@ -43,9 +46,9 @@ function AlbumFilter(props) {
     };
 
     const backRedirect = () => {
-        props.history.push({
+        history.push({
             pathname: '/albums',
-            state: props.location.state
+            state: location.state
         });
     };
 
@@ -64,20 +67,22 @@ function AlbumFilter(props) {
         // if(to)
         //     params.append('to', to);
 
-        props.history.push({
+        history.push({
             pathname: '/albums',
             state: {
-                titleFilter: title,
-                nameFilter: name,
-                fromFilter: from,
-                toFilter: to
+                filter: {
+                    title: title,
+                    name: name,
+                    from: from,
+                    to: to
+                }
             }
             // search: '?' + params.toString()
         });
     };
 
     const albumsRedirect = () => {
-        props.history.push('/albums');
+        history.push('/albums');
     };
 
     return (

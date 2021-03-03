@@ -57,47 +57,6 @@ public class AlbumDAO {
         return getAllAlbumsHelper(sql);
     }
 
-    public static ArrayList<Album> filterAlbums(String title, String contentDesc, Integer fromYear, Integer toYear, String name) {
-        String sql = "SELECT * FROM Albums";
-
-        // Conjunctions for WHERE clause (for query building)
-        String[] CONJ = new String[]{"WHERE", "AND"};
-        int conjNumb = 0; // First conjunction is WHERE
-
-        // title filtering
-        if(title != null) {
-            sql += String.format(" %s title LIKE \'%%%s%%\'", CONJ[conjNumb], title);
-            conjNumb = 1;
-        }
-
-        // contentDesc filtering
-        if(contentDesc != null) {
-            sql += String.format(" %s contentDesc LIKE \'%%%s%%\'", CONJ[conjNumb], contentDesc);
-            conjNumb = 1;
-        }
-
-        // releasedYear filtering (lower bound)
-        if(fromYear != null) {
-            sql += String.format(" %s releasedYear >=  %d", CONJ[conjNumb], fromYear);
-            conjNumb = 1;
-        }
-
-        // releasedYear filtering (upper bound)
-        if(toYear != null) {
-            sql += String.format(" %s releasedYear <=  %d", CONJ[conjNumb], toYear);
-            conjNumb = 1;
-        }
-
-        // name filtering
-        if(name != null) {
-            sql += String.format(" %s CONCAT(artistFirstName, ' ', artistLastName) LIKE \'%%%s%%\'", CONJ[conjNumb], name);
-        }
-
-        sql += " ORDER BY title DESC, isrc DESC";
-
-        return getAllAlbumsHelper(sql);
-    }
-
     private static ArrayList<Album> getAllAlbumsHelper(String sql) {
         ArrayList<Album> albums = new ArrayList<>();
 

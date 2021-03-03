@@ -2,7 +2,7 @@ import '../styles/albumDetails.css';
 
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router';
+import { useHistory, useParams, useLocation } from 'react-router';
 import { withStyles } from "@material-ui/core/styles";
 import { CircularProgress, Divider } from "@material-ui/core";
 import MuiArrowBackIosRoundedIcon from '@material-ui/icons/ArrowBackIosRounded';
@@ -19,7 +19,10 @@ const ArrowBackIosRounded = withStyles({
     }
 })(MuiArrowBackIosRoundedIcon);
 
-function AlbumDetails(props) {
+function AlbumDetails() {
+    const history = useHistory();
+    const location = useLocation();
+
     const [loaded, setLoaded] = useState(false);
     const [album ,setAlbum] = useState(null);
     let { isrc } = useParams();
@@ -27,7 +30,7 @@ function AlbumDetails(props) {
     useEffect( () => {
         // Mount
         if(!isrc)
-            isrc = props.location.state.isrc;
+            isrc = location.state.isrc;
 
         getAlbum();
         const interval = setInterval(getAlbum, 1000);
@@ -47,10 +50,10 @@ function AlbumDetails(props) {
     };
 
     const backRedirect = () => {
-        let state = props.location.state ? props.location.state : {};
+        let state = location.state ? location.state : {};
         state.isrc = album ? album.isrc : null;
 
-        props.history.push({
+        history.push({
             pathname: '/albums',
             state: state
         });

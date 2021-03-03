@@ -2,6 +2,7 @@ import '../styles/albumForm.css';
 
 import React from 'react';
 import { useState, useEffect } from 'react';
+import { useHistory, useLocation } from 'react-router';
 import { withStyles } from '@material-ui/core/styles';
 import MuiTextField from '@material-ui/core/TextField';
 import { FormControl, InputLabel, Input, TextField, Button } from '@material-ui/core';
@@ -29,14 +30,17 @@ const ArrowBackIosRounded = withStyles({
     }
 })(MuiArrowBackIosRoundedIcon);
 
-function AlbumForm(props) {
+function AlbumForm() {
+    const history = useHistory();
+    const location = useLocation();
+
     const [isrc, setIsrc] = useState('');
     const [title, setTitle] = useState('');
     const [firstname, setFirstname] = useState('');
     const [lastname, setLastname] = useState('');
     const [releaseYear, setReleaseYear] = useState('');
     const [contentDesc, setContentDesc] = useState('');
-    const params = props.location.state;
+    const params = location.state;
 
     useEffect(() => {
         // Mount
@@ -64,7 +68,7 @@ function AlbumForm(props) {
                 lastname: lastname
             }
         })
-            .then(res => props.history.push({
+            .then(res => history.push({
                 pathname: '/albums',
                 state: {
                     isrc: isrc
@@ -84,27 +88,32 @@ function AlbumForm(props) {
                 lastname: lastname
             }
         })
-            .then(res => props.history.push({
-                pathname: '/albums',
-                state: {
-                    isrc: params.isrc
-                }
-            }))
+            .then(res => {
+                let state = location.state ? location.state : {};
+                state.isrc = params.isrc;
+
+                history.push({
+                    pathname: '/albums',
+                    state: state
+                })
+            })
             .catch(err => console.log(err));
     };
 
     const deleteAlbum = () => {
         albumServer.delete(albumApi.delete + '/' + params.isrc)
-            .then(res => props.history.push('/albums'))
+            .then(res => history.push({
+                pathname: '/albums',
+                state: location.state
+            }))
             .catch(err => alert(err));
     };
 
     const backRedirect = () => {
-        let state = props.location.state ? props.location.state : {};
-        console.log(state);
+        let state = location.state ? location.state : {};
         state.isrc = params && params.isrc ? params.isrc : '';
 
-        props.history.push({
+        history.push({
             pathname: '/albums',
             state: state
         });

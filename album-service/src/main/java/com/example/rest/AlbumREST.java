@@ -17,11 +17,9 @@ public class AlbumREST {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response listAlbum(@QueryParam("title") String title, @QueryParam("contentDesc") String contentDesc,
-                              @QueryParam("fromYear") Integer fromYear, @QueryParam("toYear") Integer toYear,
-                              @QueryParam("name") String name) {
+    public Response listAlbum() {
         try {
-            List<Album> albums = albumManager.listAlbum(title, contentDesc, fromYear, toYear, name);
+            List<Album> albums = albumManager.listAlbum();
             GenericEntity<List<Album>> entity = new GenericEntity<List<Album>>(albums) {};
 
             return Response.status(Response.Status.OK)

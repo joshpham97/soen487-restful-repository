@@ -2,6 +2,7 @@ import '../styles/albumList.css';
 
 import React from 'react';
 import { useState, useEffect } from 'react';
+import { useHistory, useLocation } from "react-router";
 import { withStyles } from '@material-ui/core/styles';
 import { CircularProgress, Fab, Slide } from '@material-ui/core';
 import MuiAddIcon from '@material-ui/icons/Add';
@@ -18,7 +19,10 @@ const AddIcon = withStyles({
     }
 })(MuiAddIcon);
 
-function AlbumList(props) {
+function AlbumList() {
+    const history = useHistory();
+    const location = useLocation();
+
     const [loaded, setLoaded] = useState(false);
     const [currentAlbum, setCurrentAlbum] = useState(null);
     const [albums, setAlbums] = useState([]);
@@ -27,19 +31,22 @@ function AlbumList(props) {
 
     useEffect( () => {
         // Mount
-        const params = props.location.state;
+        const params = location.state;
+        console.log(params);
         if(params) {
             if (params.isrc)
                 getAlbum();
 
-            if(params.titleFilter)
-                titleFilter = params.titleFilter;
-            if(params.nameFilter)
-                nameFilter = params.nameFilter;
-            if(params.fromFilter)
-                fromFilter = params.fromFilter;
-            if(params.toFilter)
-                toFilter = params.toFilter;
+            if(params.filter) {
+                if (params.filter.title)
+                    titleFilter = params.filter.title;
+                if (params.filter.name)
+                    nameFilter = params.filter.name;
+                if (params.filter.from)
+                    fromFilter = params.filter.from;
+                if (params.filter.to)
+                    toFilter = params.filter.to;
+            }
         }
 
         getAlbumList();
@@ -58,7 +65,14 @@ function AlbumList(props) {
                 name: nameFilter
             }
         })
-            .then(res => setAlbums(res.data))
+            .then(res => {
+                setAlbums(res.data.filter((album) => {
+                    return album.title.match(new RegExp(titleFilter, 'i')) &&
+                        (!fromFilter || album.releaseYear >= fromFilter) &&
+                        (!toFilter || album.releaseYear <= toFilter) &&
+                        (album.artist.firstname + ' ' + album.artist.lastname).match(new RegExp(nameFilter, 'i'));
+                }));
+            })
             .catch(err => {
                 console.log(err);
                 setAlbums(null);
@@ -67,13 +81,12 @@ function AlbumList(props) {
     };
 
     const getAlbum = () => {
-        albumServer.get(albumApi.get + '/' + props.location.state.isrc)
+        albumServer.get(albumApi.get + '/' + location.state.isrc)
             .then(res => setCurrentAlbum(res.data))
             .catch(err => console.log(err));
     };
 
     const toggleSummary = (e, album) => {
-        // Set current album to trigger details
         if(currentAlbum && currentAlbum.isrc === album.isrc)
             setCurrentAlbum(null);
         else
@@ -90,43 +103,44 @@ function AlbumList(props) {
     };
 
     const addRedirect = () => {
-        let state = props.location.state ? props.location.state : {};
+        let state = location.state ? location.state : {};
         state.isrc = null;
 
-        props.history.push({
+        history.push({
             pathname: '/albums/add',
             state: state
         });
     };
 
     const getRedirect = (isrc) => {
-        let state = props.location.state ? props.location.state : {};
+        let state = location.state ? location.state : {};
         state.isrc = isrc;
 
-        props.history.push({
+        history.push({
             pathname: '/albums/get',
             state: state
         });
     };
 
     const editRedirect = () => {
-        props.history.push({
+        let state = location.state ? location.state : {};
+        state.isrc = currentAlbum.isrc;
+        state.title = currentAlbum.title;
+        state.firstname = currentAlbum.artist.firstname;
+        state.lastname = currentAlbum.artist.lastname;
+        state.releaseYear = currentAlbum.releaseYear;
+        state.contentDesc = currentAlbum.contentDesc;
+
+        history.push({
             pathname: '/albums/edit',
-            state: {
-                isrc: currentAlbum.isrc,
-                title: currentAlbum.title,
-                firstname: currentAlbum.artist.firstname,
-                lastname: currentAlbum.artist.lastname,
-                releaseYear: currentAlbum.releaseYear,
-                contentDesc: currentAlbum.contentDesc
-            }
+            state: state
         });
     };
 
     const filterRedirect = () => {
-        props.history.push({
+        history.push({
             pathname: '/albums/filter',
-            state: props.location.state
+            state: location.state
         });
     };
 
@@ -136,8 +150,7 @@ function AlbumList(props) {
         else if(!albums)
             return <div className="w-100 text-center">An error occurred while getting the albums</div>;
         else if(albums.length === 0) {
-            const params = props.location.state;
-            if(params.titleFilter || params.nameFilter || params.fromFilter || params.toFilter)
+            if(location.state && location.state.filter)
                 return (
                     <React.Fragment>
                         <div className="w-100 text-center">There are no matches</div>
