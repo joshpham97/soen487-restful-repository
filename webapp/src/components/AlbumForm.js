@@ -1,7 +1,7 @@
 import '../styles/albumForm.css';
 
 import React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useHistory, useLocation } from 'react-router';
 import { withStyles } from '@material-ui/core/styles';
 import MuiTextField from '@material-ui/core/TextField';
@@ -40,6 +40,9 @@ function AlbumForm() {
     const [lastname, setLastname] = useState('');
     const [releaseYear, setReleaseYear] = useState('');
     const [contentDesc, setContentDesc] = useState('');
+    const yearRef = useRef(new Date().getFullYear());
+
+    const [releaseYearError, setReleaseYearError] = useState(false);
 
     useEffect(() => {
         // Mount
@@ -55,6 +58,15 @@ function AlbumForm() {
 
     const handleInput = (e, setState) => {
         setState(e.target.value);
+    };
+
+    const submit = (operation) => {
+        if(releaseYear < 1901 || releaseYear > yearRef.current) {
+            setReleaseYearError(true);
+            return;
+        }
+
+        operation();
     };
 
     const addAlbum = () => {
@@ -146,12 +158,12 @@ function AlbumForm() {
         if(location.state && location.state.isrc)
             return (
                 <React.Fragment>
-                    <Button className="mr-3" variant="contained" color="primary" startIcon={<SaveIcon />} onClick={updateAlbum}>Save</Button>
+                    <Button className="mr-3" variant="contained" color="primary" startIcon={<SaveIcon />} onClick={() => submit(updateAlbum)}>Save</Button>
                     <Button variant="contained" color="secondary" startIcon={<DeleteIcon />} onClick={deleteAlbum}>Delete</Button>
                 </React.Fragment>
             );
 
-        return <Button variant="contained" color="primary" startIcon={<AddIcon />} onClick={addAlbum}>Add</Button>
+        return <Button variant="contained" color="primary" startIcon={<AddIcon />} onClick={() => submit(addAlbum)}>Add</Button>
     };
 
     return (
@@ -175,9 +187,9 @@ function AlbumForm() {
                     </FormControl>
 
                     <FormControl>
-                        <InputLabel htmlFor="albumReleaseYearInput">Release Year</InputLabel>
-                        <Input id="albumReleaseYearInput" value={releaseYear} type="number"
-                               onChange={(e) => handleInput(e, setReleaseYear)} />
+                        <TextField type="number" label="Release Year" value={releaseYear} error={releaseYearError}
+                                   helperText={releaseYearError ? "Accepted values: 1901 to " + yearRef.current : ""}
+                                   onChange={(e) => handleInput(e, setReleaseYear)} />
                     </FormControl>
                 </div>
 

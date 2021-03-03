@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useRef} from "react";
 import { useState, useEffect } from 'react';
 import { useHistory, useLocation } from 'react-router';
 import { withStyles } from "@material-ui/core/styles";
@@ -25,6 +25,10 @@ function AlbumFilter() {
     const [name, setName] = useState('');
     const [from, setFrom] = useState('');
     const [to, setTo] = useState('');
+    const yearRef = useRef(new Date().getFullYear());
+
+    const [fromError, setFromError] = useState(false);
+    const [toError, setToError] = useState(false);
 
     useEffect( () => {
         // Mount
@@ -66,6 +70,20 @@ function AlbumFilter() {
         //
         // if(to)
         //     params.append('to', to);
+        let valid = true;
+
+        if(from && (from <= 0 || to > yearRef.current)) {
+            setFromError(true);
+            valid = false;
+        }
+        if(to && (to <= 0 || to > yearRef.current)) {
+            setToError(true);
+            valid = false;
+        }
+
+        if(!valid)
+            return;
+
 
         history.push({
             pathname: '/albums',
@@ -109,9 +127,13 @@ function AlbumFilter() {
                 </div>
 
                 <div className="formRow">
-                    <TextField className="mr-5" type="number" label="From" variant="outlined" value={from} onChange={(e) => handleInput(e, setFrom)} />
+                    <TextField className="mr-5" type="number" label="From" variant="outlined" value={from} errr={fromError}
+                               helperText={fromError ? "Invalid value" : ""}
+                               onChange={(e) => handleInput(e, setFrom)} />
 
-                    <TextField type="number" label="To" variant="outlined" value={to} onChange={(e) => handleInput(e, setTo)} />
+                    <TextField type="number" label="To" variant="outlined" value={to} error={toError}
+                               helperText={toError ? "Invalid value" : ""}
+                               onChange={(e) => handleInput(e, setTo)} />
 
                 </div>
 
