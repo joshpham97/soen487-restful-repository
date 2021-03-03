@@ -65,34 +65,21 @@ public class LogDAO {
         ArrayList<Log> logs = new ArrayList<>();
         try{
             Connection conn = DBConnection.getConnection();
-            String sql = "SELECT * FROM Log WHERE logged_time between ? AND ?";
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setTimestamp(1, Timestamp.valueOf(fromDate));
-            stmt.setTimestamp(2, Timestamp.valueOf(toDate));
-            ResultSet rs = stmt.executeQuery();
-            while(rs.next())
-                logs.add(mapResultSetToLog(rs));
-        } catch (Exception e) {
-            System.err.println("There was an error retrieving log in database.");
-            System.err.println(e.getMessage());
-        }
-        return logs;
-    }
-
-    public static ArrayList<Log> getLog(LocalDateTime fromDate, LocalDateTime toDate, String typeOfChange){
-        ArrayList<Log> logs = new ArrayList<>();
-        try{
-            Connection conn = DBConnection.getConnection();
             PreparedStatement stmt;
-            if(!typeOfChange.equals(""))
+            if(fromDate != null && toDate == null)
             {
-                String sql = "SELECT * FROM Log WHERE logged_time between ? AND ? AND typeOfChange = ?";
+                String sql = "SELECT * FROM Log WHERE logged_time >= ?";
                 stmt = conn.prepareStatement(sql);
                 stmt.setTimestamp(1, Timestamp.valueOf(fromDate));
-                stmt.setTimestamp(2, Timestamp.valueOf(toDate));
-                stmt.setString(3, typeOfChange);
             }
-            else{
+            else if(fromDate == null && toDate != null)
+            {
+                String sql = "SELECT * FROM Log WHERE logged_time <= ?";
+                stmt = conn.prepareStatement(sql);
+                stmt.setTimestamp(1, Timestamp.valueOf(toDate));
+            }
+            else
+            {
                 String sql = "SELECT * FROM Log WHERE logged_time between ? AND ?";
                 stmt = conn.prepareStatement(sql);
                 stmt.setTimestamp(1, Timestamp.valueOf(fromDate));
@@ -108,6 +95,45 @@ public class LogDAO {
         }
         return logs;
     }
+
+    public static ArrayList<Log> getLog(LocalDateTime fromDate, LocalDateTime toDate, String typeOfChange){
+        ArrayList<Log> logs = new ArrayList<>();
+        try{
+            Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt;
+            if(fromDate != null && toDate != null && !typeOfChange.equals(""))
+            {
+                String sql = "SELECT * FROM Log WHERE logged_time between ? AND ? AND typeOfChange = ?";
+                stmt = conn.prepareStatement(sql);
+                stmt.setTimestamp(1, Timestamp.valueOf(fromDate));
+                stmt.setTimestamp(2, Timestamp.valueOf(toDate));
+                stmt.setString(3, typeOfChange);
+            }
+            else if(fromDate == null && (toDate != null && !typeOfChange.equals("")))
+            {
+                String sql = "SELECT * FROM Log WHERE logged_time <= ? AND typeOfChange = ?";
+                stmt = conn.prepareStatement(sql);
+                stmt.setTimestamp(1, Timestamp.valueOf(toDate));
+                stmt.setString(2, typeOfChange);
+            }
+            else /**if(toDate == null && (fromDate != null && !typeOfChange.equals("")))*/
+            {
+                String sql = "SELECT * FROM Log WHERE logged_time >= ? AND typeOfChange = ?";
+                stmt = conn.prepareStatement(sql);
+                stmt.setTimestamp(1, Timestamp.valueOf(fromDate));
+                stmt.setString(2, typeOfChange);
+            }
+
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next())
+                logs.add(mapResultSetToLog(rs));
+        } catch (Exception e) {
+            System.err.println("There was an error retrieving log in database.");
+            System.err.println(e.getMessage());
+        }
+        return logs;
+    }
+
     public static ArrayList<Log> getLog(String typeOfChange){
         ArrayList<Log> logs = new ArrayList<>();
         try{

@@ -29,6 +29,13 @@ public class LogManagerInDB implements ILogManager {
         return logs;
     }
 
+    public ArrayList<Log> listLog(LocalDateTime from, LocalDateTime to) {
+        ArrayList<Log> logs = new ArrayList<>();
+        logs = LogDAO.getLog(from, to);
+
+        return logs;
+    }
+
     public synchronized boolean addLog(Log log) {
         LocalDateTime date = log.getDate();
         String typeOfChange = log.getChange();

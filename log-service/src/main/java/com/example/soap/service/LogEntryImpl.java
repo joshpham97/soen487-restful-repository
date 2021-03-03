@@ -79,21 +79,34 @@ public class LogEntryImpl implements LogEntry {
     @Override
     public ArrayList<Log> listLog(String from, String to, String changeType) throws LogFault {
         ArrayList<Log> logs = new ArrayList<>();
-        if((!from.equals("") && to.equals("")) || (from.equals("") && !to.equals("")))
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime fromDateTime = null;
+        LocalDateTime toDateTime = null;
+
+        //Format date if not null
+        if(!from.equals(""))
         {
-            throw new LogFault("ERROR: Missing data!!");
+            fromDateTime = LocalDateTime.parse(from, formatter);
         }
-        else if(!from.equals("") && !to.equals("")){
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            LocalDateTime fromDateTime = LocalDateTime.parse(from, formatter);
-            LocalDateTime toDateTime = LocalDateTime.parse(to, formatter);
+        if(!to.equals("")){
+            toDateTime = LocalDateTime.parse(to, formatter);
+        }
+
+        if((fromDateTime != null && toDateTime != null && !changeType.equals("")) || (fromDateTime == null && toDateTime != null && !changeType.equals("")) || (fromDateTime != null && toDateTime == null && !changeType.equals("")))
+        {
             logs = logManager.listLog(fromDateTime, toDateTime, changeType);
         }
-        else if(from.equals("") && !changeType.equals(""))
+        else if((fromDateTime != null && toDateTime == null && changeType.equals("")) || (fromDateTime == null && toDateTime != null && changeType.equals("")) || (fromDateTime != null && toDateTime != null && changeType.equals("")))
+        {
+            logs = logManager.listLog(fromDateTime, toDateTime);
+        }
+        else if(fromDateTime == null && toDateTime == null && !changeType.equals(""))
         {
             logs = logManager.listLog(changeType);
         }
-        else {
+        else
+        {
             logs = logManager.listLog();
         }
         return logs;
