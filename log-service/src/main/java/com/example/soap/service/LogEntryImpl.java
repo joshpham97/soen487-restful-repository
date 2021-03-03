@@ -20,62 +20,6 @@ public class LogEntryImpl implements LogEntry {
     private CopyOnWriteArrayList<Log> logList = new CopyOnWriteArrayList<>();
     private ILogManager logManager = LogManagerFactory.loadManager();
 
-    /**
-    @Override
-    public void addLog(String change, String recordKey) throws LogFault {
-        LocalDateTime date = LocalDateTime.now();
-        if(change.equals("") || recordKey.equals(""))
-        {
-            throw new LogFault("ERROR: change type or recordKey CANNOT be null!!");
-        }
-        else {
-            logList.add(new Log(date, change, recordKey));
-        }
-    }
-
-    @Override
-    public String listLog() throws LogFault {
-
-        StringBuilder str = new StringBuilder("");
-        for(Log log: logList){
-             str.append(log.toString() + "\n");
-        }
-        return str.toString();
-    }
-
-    @Override
-    public String listLogs() throws LogFault {
-
-        ArrayList<Log> logs = new ArrayList<>();
-        logs = logManager.listLog();
-
-        return logs.toString();
-    }
-     */
-
-    @Override
-    public String listLogFilter(String from, String to, String changeType) throws LogFault {
-        ArrayList<Log> logs = new ArrayList<>();
-        if((!from.equals("") && to.equals("")) || (from.equals("") && !to.equals("")))
-        {
-            throw new LogFault("ERROR: Missing data!!");
-        }
-        else if(!from.equals("") && !to.equals("")){
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            LocalDateTime fromDateTime = LocalDateTime.parse(from, formatter);
-            LocalDateTime toDateTime = LocalDateTime.parse(to, formatter);
-            logs = logManager.listLog(fromDateTime, toDateTime, changeType);
-        }
-        else if(from.equals("") && !changeType.equals(""))
-        {
-            logs = logManager.listLog(changeType);
-        }
-        else {
-            logs = logManager.listLog();
-        }
-        return logs.toString();
-    }
-
     @Override
     public ArrayList<Log> listLog(String from, String to, String changeType) throws LogFault {
         ArrayList<Log> logs = new ArrayList<>();
@@ -93,6 +37,7 @@ public class LogEntryImpl implements LogEntry {
             toDateTime = LocalDateTime.parse(to, formatter);
         }
 
+        //FILTERING
         if((fromDateTime != null && toDateTime != null && !changeType.equals("")) || (fromDateTime == null && toDateTime != null && !changeType.equals("")) || (fromDateTime != null && toDateTime == null && !changeType.equals("")))
         {
             logs = logManager.listLog(fromDateTime, toDateTime, changeType);
