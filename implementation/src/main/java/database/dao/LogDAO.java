@@ -53,9 +53,22 @@ public class LogDAO {
 
     private static Log mapResultSetToLog(ResultSet rs) throws SQLException {
         Log log = new Log();
+        String str = rs.getString("typeOfChange");
+        if(str.equals("ADD"))
+        {
+            log.setChange(Log.ChangeType.ADD);
+        }
+        else if(str.equals("UPDATE"))
+        {
+            log.setChange(Log.ChangeType.UPDATE);
+        }
+        else
+        {
+            log.setChange(Log.ChangeType.DELETE);
+        }
 
         log.setDate(rs.getTimestamp("logged_time").toLocalDateTime());
-        log.setChange(rs.getString("typeOfChange"));
+        //log.setChange(rs.getString("typeOfChange"));
         log.setRecordKey(rs.getString("recordKey"));
 
         return log;

@@ -38,7 +38,7 @@ public class LogManagerInDB implements ILogManager {
 
     public synchronized boolean addLog(Log log) {
         LocalDateTime date = log.getDate();
-        String typeOfChange = log.getChange();
+        String typeOfChange = log.getChange().toString();
         String recordKey = log.getRecordKey();
 
         boolean added = LogDAO.addLog(date, typeOfChange, recordKey);

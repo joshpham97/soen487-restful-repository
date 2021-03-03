@@ -18,12 +18,14 @@ public class Log implements Serializable {
 
     @XmlJavaTypeAdapter(LocalDateTimeXmlAdapter.class)
     private LocalDateTime date;
+    //@XmlElement
+    //private String change;
     @XmlElement
-    private String change;
+    private ChangeType change;
     @XmlElement
     private String recordKey;
 
-    public Log(LocalDateTime date, String change, String recordKey) {
+    public Log(LocalDateTime date, ChangeType change, String recordKey) {
         this.date = date;
         this.change = change;
         this.recordKey = recordKey;
@@ -32,8 +34,8 @@ public class Log implements Serializable {
 
     public LocalDateTime getDate() { return date; }
     public void setDate(LocalDateTime date) { this.date = date; }
-    public String getChange() { return change; }
-    public void setChange(String change) { this.change = change; }
+    public ChangeType getChange() { return change; }
+    public void setChange(ChangeType change) { this.change = change; }
     public String getRecordKey() { return recordKey; }
     public void setRecordKey(String recordKey) { this.recordKey = recordKey; }
     public String toString(){
