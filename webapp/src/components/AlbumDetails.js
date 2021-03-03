@@ -1,7 +1,7 @@
 import '../styles/albumDetails.css';
 
 import React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useHistory, useParams, useLocation } from 'react-router';
 import { withStyles } from "@material-ui/core/styles";
 import { CircularProgress, Divider } from "@material-ui/core";
@@ -25,22 +25,25 @@ function AlbumDetails() {
 
     const [loaded, setLoaded] = useState(false);
     const [album ,setAlbum] = useState(null);
-    let { isrc } = useParams();
+    const isrcRef = useRef(null);
+    const { isrc } = useParams();
 
     useEffect( () => {
         // Mount
-        if(!isrc)
-            isrc = location.state.isrc;
+        if(isrc)
+            isrcRef.current = isrc;
+        else
+            isrcRef.current = location.state.isrc;
 
         getAlbum();
         const interval = setInterval(getAlbum, 1000);
 
         // Unmount
         return () => clearInterval(interval);
-    }, []);
+    }, [location.state, isrc]);
 
     const getAlbum = () => {
-        albumServer.get(albumApi.get + '/' + isrc)
+        albumServer.get(albumApi.get + '/' + isrcRef.current)
             .then(res => {
                 if(res.data.isrc)
                     setAlbum(res.data)
@@ -51,7 +54,7 @@ function AlbumDetails() {
 
     const backRedirect = () => {
         let state = location.state ? location.state : {};
-        state.isrc = album ? album.isrc : null;
+        state.album = album ? album : null;
 
         history.push({
             pathname: '/albums',

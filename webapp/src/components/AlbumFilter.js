@@ -39,7 +39,7 @@ function AlbumFilter() {
             if(params.filter.to)
                 setTo(params.filter.to);
         }
-    }, []);
+    }, [location.state]);
 
     const handleInput = (e, setState) => {
         setState(e.currentTarget.value);

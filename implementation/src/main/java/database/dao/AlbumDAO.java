@@ -52,7 +52,7 @@ public class AlbumDAO {
     }
     public static ArrayList<Album> getAllAlbums() {
         // Get query result
-        String sql = "SELECT * FROM Albums";
+        String sql = "SELECT * FROM Albums ORDER BY title ASC, isrc ASC";
 
         return getAllAlbumsHelper(sql);
     }

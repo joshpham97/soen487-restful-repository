@@ -40,10 +40,10 @@ function AlbumForm() {
     const [lastname, setLastname] = useState('');
     const [releaseYear, setReleaseYear] = useState('');
     const [contentDesc, setContentDesc] = useState('');
-    const params = location.state;
 
     useEffect(() => {
         // Mount
+        const params = location.state;
         if(params && params.isrc) {
             setTitle(params.title);
             setFirstname(params.firstname);
@@ -51,7 +51,7 @@ function AlbumForm() {
             setReleaseYear(params.releaseYear);
             setContentDesc(params.contentDesc);
         }
-    }, []);
+    }, [location.state]);
 
     const handleInput = (e, setState) => {
         setState(e.target.value);
@@ -71,7 +71,7 @@ function AlbumForm() {
             .then(res => history.push({
                 pathname: '/albums',
                 state: {
-                    isrc: isrc
+                    album: res.data
                 }
             }))
             .catch(err => alert(err));
@@ -79,7 +79,7 @@ function AlbumForm() {
 
     const updateAlbum = () => {
         albumServer.put(albumApi.update, {
-            isrc: params.isrc,
+            isrc: location.state.isrc,
             title: title,
             releaseYear: releaseYear,
             contentDesc: contentDesc,
@@ -88,30 +88,31 @@ function AlbumForm() {
                 lastname: lastname
             }
         })
-            .then(res => {
-                let state = location.state ? location.state : {};
-                state.isrc = params.isrc;
-
-                history.push({
-                    pathname: '/albums',
-                    state: state
-                })
-            })
-            .catch(err => console.log(err));
+            .then(res => history.push({
+                pathname: '/albums',
+                state: {
+                    album: res.data
+                }
+            }))
+            .catch(err => alert(err));
     };
 
     const deleteAlbum = () => {
-        albumServer.delete(albumApi.delete + '/' + params.isrc)
-            .then(res => history.push({
-                pathname: '/albums',
-                state: location.state
-            }))
+        albumServer.delete(albumApi.delete + '/' + location.state.isrc)
+            .then(() => {
+                location.state.album = null;
+
+                history.push({
+                    pathname: '/albums',
+                    state: location.state
+                });
+            })
             .catch(err => alert(err));
     };
 
     const backRedirect = () => {
         let state = location.state ? location.state : {};
-        state.isrc = params && params.isrc ? params.isrc : '';
+        state.album = location.state && location.state.album ? location.state.album : null;
 
         history.push({
             pathname: '/albums',
@@ -120,11 +121,11 @@ function AlbumForm() {
     };
 
     const renderHeader = () => {
-        if(params && params.isrc) {
+        if(location.state && location.state.isrc) {
             return (
                 <React.Fragment>
                     Edit Album
-                    <div className="isrc">#{params.isrc}</div>
+                    <div className="isrc">#{location.state.isrc}</div>
                 </React.Fragment>
             );
         }
@@ -133,7 +134,7 @@ function AlbumForm() {
     };
 
     const renderIsrcInput = () => {
-        if(!params || !params.isrc)
+        if(!location.state || !location.state.isrc)
             return (
                 <div className="formRow">
                     <TextField label="ISRC" variant="outlined" value={isrc} onChange={(e) => handleInput(e, setIsrc)} />
@@ -142,7 +143,7 @@ function AlbumForm() {
     };
 
     const renderButtons = () => {
-        if(params && params.isrc)
+        if(location.state && location.state.isrc)
             return (
                 <React.Fragment>
                     <Button className="mr-3" variant="contained" color="primary" startIcon={<SaveIcon />} onClick={updateAlbum}>Save</Button>

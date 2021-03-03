@@ -1,15 +1,6 @@
-import { makeStyles, withStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 import MuiCard from '@material-ui/core/Card';
 import { CardActionArea, CardMedia, CardHeader } from '@material-ui/core';
-
-const useStyles = makeStyles(() => ({
-    title: {
-        fontWeight: 'bold'
-    },
-    artist: {
-        fontStyle: 'italic'
-    }
-}));
 
 const Card = withStyles({
     root: {
@@ -23,8 +14,6 @@ const Card = withStyles({
 })(MuiCard);
 
 function AlbumCover(props) {
-    const classes = useStyles();
-
     return (
       <Card>
           <CardActionArea>

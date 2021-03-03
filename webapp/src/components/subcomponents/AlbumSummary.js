@@ -91,6 +91,6 @@ function AlbumSummary(props) {
           {renderEditIcon()}
       </div>
     );
-};
+}
 
 export default AlbumSummary;

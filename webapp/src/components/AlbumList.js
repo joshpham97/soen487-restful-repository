@@ -1,7 +1,7 @@
 import '../styles/albumList.css';
 
 import React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useHistory, useLocation } from "react-router";
 import { withStyles } from '@material-ui/core/styles';
 import { CircularProgress, Fab, Slide } from '@material-ui/core';
@@ -26,26 +26,27 @@ function AlbumList() {
     const [loaded, setLoaded] = useState(false);
     const [currentAlbum, setCurrentAlbum] = useState(null);
     const [albums, setAlbums] = useState([]);
-
-    let { titleFilter, nameFilter, fromFilter, toFilter } = '';
+    const titleFilterRef = useRef('');
+    const nameFilterRef = useRef('');
+    const fromFilterRef = useRef('');
+    const toFilterRef = useRef('');
 
     useEffect( () => {
         // Mount
         const params = location.state;
-        console.log(params);
         if(params) {
-            if (params.isrc)
-                getAlbum();
+            if (params.album)
+                setCurrentAlbum(params.album);
 
             if(params.filter) {
                 if (params.filter.title)
-                    titleFilter = params.filter.title;
+                    titleFilterRef.current = params.filter.title;
                 if (params.filter.name)
-                    nameFilter = params.filter.name;
+                    nameFilterRef.current = params.filter.name;
                 if (params.filter.from)
-                    fromFilter = params.filter.from;
+                    fromFilterRef.current = params.filter.from;
                 if (params.filter.to)
-                    toFilter = params.filter.to;
+                    toFilterRef.current = params.filter.to;
             }
         }
 
@@ -54,23 +55,23 @@ function AlbumList() {
 
         // Unmount
         return () => clearInterval(interval);
-    }, []);
+    }, [location.state]);
 
     const getAlbumList = () => {
         albumServer.get(albumApi.albums, {
             params: {
-                title: titleFilter,
-                fromYear: fromFilter,
-                toYear: toFilter,
-                name: nameFilter
+                title: titleFilterRef.current,
+                fromYear: fromFilterRef.current,
+                toYear: toFilterRef.current,
+                name: nameFilterRef.current
             }
         })
             .then(res => {
                 setAlbums(res.data.filter((album) => {
-                    return album.title.match(new RegExp(titleFilter, 'i')) &&
-                        (!fromFilter || album.releaseYear >= fromFilter) &&
-                        (!toFilter || album.releaseYear <= toFilter) &&
-                        (album.artist.firstname + ' ' + album.artist.lastname).match(new RegExp(nameFilter, 'i'));
+                    return album.title.match(new RegExp(titleFilterRef.current, 'i')) &&
+                        (!fromFilterRef.current || album.releaseYear >= fromFilterRef.current) &&
+                        (!toFilterRef.current || album.releaseYear <= toFilterRef.current) &&
+                        (album.artist.firstname + ' ' + album.artist.lastname).match(new RegExp(nameFilterRef.current, 'i'));
                 }));
             })
             .catch(err => {
@@ -78,12 +79,6 @@ function AlbumList() {
                 setAlbums(null);
             })
             .finally(() => setLoaded(true));
-    };
-
-    const getAlbum = () => {
-        albumServer.get(albumApi.get + '/' + location.state.isrc)
-            .then(res => setCurrentAlbum(res.data))
-            .catch(err => console.log(err));
     };
 
     const toggleSummary = (e, album) => {
