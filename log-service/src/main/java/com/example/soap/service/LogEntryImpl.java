@@ -1,18 +1,14 @@
 package com.example.soap.service;
 
-import database.dao.LogDAO;
 import factories.LogManagerFactory;
-import org.glassfish.grizzly.http.util.TimeStamp;
 import repository.core.ILogManager;
 import repository.core.Log;
 import repository.core.LogFault;
 
 import javax.jws.WebService;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @WebService(endpointInterface = "com.example.soap.service.LogEntry")
