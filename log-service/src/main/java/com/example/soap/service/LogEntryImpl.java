@@ -1,6 +1,6 @@
 package com.example.soap.service;
 
-import factories.LogManagerFactory;
+import factories.ManagerFactory;
 import repository.core.ILogManager;
 import repository.core.Log;
 import repository.core.LogFault;
@@ -9,11 +9,10 @@ import javax.jws.WebService;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 @WebService(endpointInterface = "com.example.soap.service.LogEntry")
 public class LogEntryImpl implements LogEntry {
-    private ILogManager logManager = LogManagerFactory.loadManager();
+    private ILogManager logManager = (ILogManager) ManagerFactory.LOG.getManager();
 
     @Override
     public ArrayList<Log> listLog(String from, String to, String changeType) throws LogFault {
@@ -51,6 +50,7 @@ public class LogEntryImpl implements LogEntry {
         }
         return logs;
     }
+
     @Override
     public String clearLog() throws LogFault {
         throw new LogFault("ERROR: CLEAR LOG is not yet supported.");
