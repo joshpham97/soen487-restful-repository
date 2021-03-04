@@ -1,0 +1,21 @@
+#albumForm {
+    text-align: center;
+}
+#albumForm .back {
+    position: absolute;
+    left: 2pc;
+    cursor: pointer;
+}
+
+#albumForm .isrc {
+    font-size: 0.85em;
+    color: #A6A6A6;
+}
+
+#albumForm .formRow {
+    margin: 2em 0;
+}
+
+#albumForm .formColumn {
+    margin: 0 1.5pc
+}

@@ -53,7 +53,7 @@ public class Album implements Serializable {
         this.title = title;
     }
 
-    public int getReleaseYear() {
+    public Integer getReleaseYear() {
         return releaseYear;
     }
 
@@ -75,6 +75,17 @@ public class Album implements Serializable {
 
     public void setContentDesc(String contentDesc) {
         this.contentDesc = contentDesc;
+    }
+
+    public void trim() {
+        this.setIsrc(isrc != null ? isrc.trim() : null);
+        this.setTitle(title != null ? title.trim() : null);
+        this.setContentDesc(contentDesc != null ? contentDesc.trim() : null);
+
+        if(artist != null) {
+            artist.setFirstname(artist.getFirstname() != null ? artist.getFirstname().trim() : null);
+            artist.setLastname(artist.getLastname() != null ? artist.getLastname().trim() : null);
+        }
     }
 
     public String toString(){
