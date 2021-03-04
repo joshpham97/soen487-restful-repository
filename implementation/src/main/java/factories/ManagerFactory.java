@@ -1,5 +1,8 @@
 package factories;
 
+import repository.core.IAlbumManager;
+import repository.core.IArtistManager;
+import repository.core.ICoverImageManager;
 import repository.core.IManager;
 import utilities.ConfigReader;
 
@@ -27,5 +30,4 @@ public enum ManagerFactory {
     public IManager getManager(){
         return manager;
     }
-
 }
