@@ -1,4 +1,5 @@
 {
   "ArtistManagerImpl": "ArtistManagerInMemory",
-  "AlbumManagerImpl": "AlbumManagerInDB"
+  "AlbumManagerImpl": "AlbumManagerInDB",
+  "LogManagerImpl": "LogManagerInDB"
 }

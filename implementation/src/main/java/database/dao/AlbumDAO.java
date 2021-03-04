@@ -45,14 +45,11 @@ public class AlbumDAO {
         artist.setLastname(rs.getString("artistLastName"));
         album.setArtist(artist);
 
-        //HARDCODED PART
-        //album.setArtist("Artist Name");
-
         return album;
     }
     public static ArrayList<Album> getAllAlbums() {
         // Get query result
-        String sql = "SELECT * FROM Albums";
+        String sql = "SELECT * FROM Albums ORDER BY title ASC, isrc ASC";
 
         return getAllAlbumsHelper(sql);
     }
