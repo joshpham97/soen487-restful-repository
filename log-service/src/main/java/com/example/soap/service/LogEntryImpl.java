@@ -13,7 +13,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 @WebService(endpointInterface = "com.example.soap.service.LogEntry")
 public class LogEntryImpl implements LogEntry {
-    private CopyOnWriteArrayList<Log> logList = new CopyOnWriteArrayList<>();
     private ILogManager logManager = LogManagerFactory.loadManager();
 
     @Override
@@ -51,5 +50,9 @@ public class LogEntryImpl implements LogEntry {
             logs = logManager.listLog();
         }
         return logs;
+    }
+    @Override
+    public String clearLog() throws LogFault {
+        throw new LogFault("ERROR: CLEAR LOG is not yet supported.");
     }
 }

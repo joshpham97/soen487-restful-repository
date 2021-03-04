@@ -18,8 +18,6 @@ public class Log implements Serializable {
 
     @XmlJavaTypeAdapter(LocalDateTimeXmlAdapter.class)
     private LocalDateTime date;
-    //@XmlElement
-    //private String change;
     @XmlElement
     private ChangeType change;
     @XmlElement

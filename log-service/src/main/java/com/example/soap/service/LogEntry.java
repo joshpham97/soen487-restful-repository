@@ -16,4 +16,6 @@ import java.util.ArrayList;
 public interface LogEntry {
     @WebMethod(operationName = "listLog")
     public ArrayList<Log> listLog(@WebParam(name="from") String from, @WebParam(name="to") String to, @WebParam(name="changeType") String changeType) throws LogFault;
+    @WebMethod(operationName = "clearLog")
+    public String clearLog() throws LogFault;
 }
