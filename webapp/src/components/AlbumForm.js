@@ -6,7 +6,7 @@ import { useHistory, useLocation } from 'react-router';
 import { withStyles } from '@material-ui/core/styles';
 import MuiTextField from '@material-ui/core/TextField';
 import { FormControl, TextField, Button } from '@material-ui/core';
-import MuiArrowBackIosRoundedIcon from '@material-ui/icons/ArrowBackIosRounded';
+import ArrowBackIosRoundedIcon from '@material-ui/icons/ArrowBackIosRounded';
 import AddIcon from '@material-ui/icons/Add';
 import SaveIcon from '@material-ui/icons/Save';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -21,14 +21,6 @@ const DescInput = withStyles({
         minWidth: '200px'
     }
 })(MuiTextField);
-
-const ArrowBackIosRounded = withStyles({
-    root: {
-        position: 'absolute',
-        left: '2pc',
-        cursor: 'pointer'
-    }
-})(MuiArrowBackIosRoundedIcon);
 
 function AlbumForm() {
     const history = useHistory();
@@ -200,7 +192,7 @@ function AlbumForm() {
             <Navbar />
 
             <div id="albumForm">
-                <ArrowBackIosRounded fontSize="large" onClick={backRedirect} />
+                <ArrowBackIosRoundedIcon className="back" fontSize="large" onClick={backRedirect} />
 
                 <h3>
                     {renderHeader()}
@@ -209,24 +201,24 @@ function AlbumForm() {
                 {renderIsrcInput()}
 
                 <div className="formRow">
-                    <FormControl className="mr-5">
+                    <FormControl className="formColumn">
                         <TextField label="Title" value={title} error={titleError !== ''} helperText={titleError}
                                    onChange={(e) => setTitle(e.currentTarget.value)} />
                     </FormControl>
 
-                    <FormControl>
+                    <FormControl className="formColumn">
                         <TextField type="number" label="Release Year" value={releaseYear} error={releaseYearError !== ''} helperText={releaseYearError}
                                    onChange={(e) => setReleaseYear(e.currentTarget.value)} />
                     </FormControl>
                 </div>
 
                 <div className="formRow">
-                    <FormControl className="mr-5">
+                    <FormControl className="formColumn">
                         <TextField label="First Name" value={firstname} error={firstnameError !== ''} helperText={firstnameError}
                                    onChange={(e) => setFirstname(e.currentTarget.value)} />
                     </FormControl>
 
-                    <FormControl>
+                    <FormControl className="formColumn">
                         <TextField label="Last Name" value={lastname} error={lastnameError !== ''} helperText={lastnameError}
                                    onChange={(e) => setLastname(e.currentTarget.value)} />
                     </FormControl>

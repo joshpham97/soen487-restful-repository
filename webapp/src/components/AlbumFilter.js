@@ -1,21 +1,12 @@
 import React, {useRef} from "react";
 import { useState, useEffect } from 'react';
 import { useHistory, useLocation } from 'react-router';
-import { withStyles } from "@material-ui/core/styles";
-import {InputLabel, Input, FormControl, Button, TextField} from '@material-ui/core';
-import MuiArrowBackIosRoundedIcon from '@material-ui/icons/ArrowBackIosRounded';
+import { InputLabel, Input, FormControl, Button, TextField } from '@material-ui/core';
+import ArrowBackIosRoundedIcon from '@material-ui/icons/ArrowBackIosRounded';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 
 import Navbar from './Navbar';
-
-const ArrowBackIosRounded = withStyles({
-    root: {
-        position: 'absolute',
-        left: '2pc',
-        cursor: 'pointer'
-    }
-})(MuiArrowBackIosRoundedIcon);
 
 function AlbumFilter() {
     const history = useHistory();
@@ -90,20 +81,20 @@ function AlbumFilter() {
             <Navbar />
 
             <div id="albumForm">
-                <ArrowBackIosRounded fontSize="large" onClick={backRedirect} />
+                <ArrowBackIosRoundedIcon fontSize="large" className="back" onClick={backRedirect} />
 
                 <h3>
                     Filter Album
                 </h3>
 
                 <div className="formRow">
-                    <FormControl className="mr-5">
+                    <FormControl className="formColumn">
                         <InputLabel htmlFor="albumTitleInput">Title</InputLabel>
                         <Input id="albumTitleInput" value={title}
                                onChange={(e) => setTitle(e.currentTarget.value)}/>
                     </FormControl>
 
-                    <FormControl>
+                    <FormControl className="formColumn">
                         <InputLabel htmlFor="albumNameInput">Name</InputLabel>
                         <Input id="albumNameInput" value={name}
                                onChange={(e) => setName(e.currentTarget.value)}/>
@@ -111,11 +102,11 @@ function AlbumFilter() {
                 </div>
 
                 <div className="formRow">
-                    <TextField className="mr-5" type="number" label="From" variant="outlined" value={from}
+                    <TextField className="formColumn" type="number" label="From" variant="outlined" value={from}
                                error={fromError !== ''} helperText={fromError}
                                onChange={(e) => setFrom(e.currentTarget.value)} />
 
-                    <TextField type="number" label="To" variant="outlined" value={to}
+                    <TextField className="formColumn" type="number" label="To" variant="outlined" value={to}
                                error={toError !== ''} helperText={toError}
                                onChange={(e) => setTo(e.currentTarget.value)} />
                 </div>

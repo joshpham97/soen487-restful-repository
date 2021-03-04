@@ -11,7 +11,7 @@ import Navbar from './Navbar';
 import AlbumCover from './subcomponents/AlbumCover';
 import { albumApi, albumServer } from "../endpoints/albumServer";
 
-const ArrowBackIosRounded = withStyles({
+const ArrowBackIosRoundedIcon = withStyles({
     root: {
         position: 'absolute',
         left: '2pc',
@@ -95,7 +95,7 @@ function AlbumDetails() {
             <Navbar />
 
             <div id="albumDetails">
-                <ArrowBackIosRounded fontSize="large" onClick={backRedirect} />
+                <ArrowBackIosRoundedIcon fontSize="large" onClick={backRedirect} />
 
                 <h3>
                     Album
