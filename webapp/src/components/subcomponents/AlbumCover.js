@@ -1,6 +1,8 @@
 import { withStyles } from '@material-ui/core/styles';
 import MuiCard from '@material-ui/core/Card';
-import { CardActionArea, CardMedia, CardHeader } from '@material-ui/core';
+import MuiCardMedia from '@material-ui/core/CardMedia';
+import MuiCardHeader from '@material-ui/core/CardHeader';
+import { CardActionArea } from '@material-ui/core';
 
 const Card = withStyles({
     root: {
@@ -12,6 +14,23 @@ const Card = withStyles({
         boxShadow: 'none'
     }
 })(MuiCard);
+
+const CardMedia = withStyles({
+    root: {
+        height: '175px',
+        width: '200px',
+        color: 'white',
+        backgroundColor: '#4D4D4D'
+    }
+})(MuiCardMedia);
+
+const CardHeader = withStyles({
+    root: {
+        paddingTop: '0.25pc',
+        paddingBottom: '0.25pc',
+        border: 0
+    }
+})(MuiCardHeader);
 
 function AlbumCover(props) {
     return (

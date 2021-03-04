@@ -1,37 +1,58 @@
 package com.example.soap.service;
 
+import factories.ManagerFactory;
+import repository.core.ILogManager;
 import repository.core.Log;
 import repository.core.LogFault;
 
 import javax.jws.WebService;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 @WebService(endpointInterface = "com.example.soap.service.LogEntry")
 public class LogEntryImpl implements LogEntry {
-    private CopyOnWriteArrayList<Log> logList = new CopyOnWriteArrayList<>();
+    private ILogManager logManager = (ILogManager) ManagerFactory.LOG.getManager();
 
     @Override
-    public void addLog(String change, String recordKey) throws LogFault {
-        LocalDateTime date = LocalDateTime.now();
-        if(change.equals("") || recordKey.equals(""))
+    public ArrayList<Log> listLog(String from, String to, String changeType) throws LogFault {
+        ArrayList<Log> logs = new ArrayList<>();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime fromDateTime = null;
+        LocalDateTime toDateTime = null;
+
+        //Format date if not null
+        if(!from.equals(""))
         {
-            throw new LogFault("ERROR: change type or recordKey CANNOT be null!!");
+            fromDateTime = LocalDateTime.parse(from, formatter);
         }
-        else {
-            logList.add(new Log(date, change, recordKey));
+        if(!to.equals("")){
+            toDateTime = LocalDateTime.parse(to, formatter);
         }
+
+        //FILTERING
+        if((fromDateTime != null && toDateTime != null && !changeType.equals("")) || (fromDateTime == null && toDateTime != null && !changeType.equals("")) || (fromDateTime != null && toDateTime == null && !changeType.equals("")))
+        {
+            logs = logManager.listLog(fromDateTime, toDateTime, changeType);
+        }
+        else if((fromDateTime != null && toDateTime == null && changeType.equals("")) || (fromDateTime == null && toDateTime != null && changeType.equals("")) || (fromDateTime != null && toDateTime != null && changeType.equals("")))
+        {
+            logs = logManager.listLog(fromDateTime, toDateTime);
+        }
+        else if(fromDateTime == null && toDateTime == null && !changeType.equals(""))
+        {
+            logs = logManager.listLog(changeType);
+        }
+        else
+        {
+            logs = logManager.listLog();
+        }
+        return logs;
     }
 
     @Override
-    public String listLog() throws LogFault {
-
-        StringBuilder str = new StringBuilder("");
-        for(Log log: logList){
-             str.append(log.toString() + "\n");
-        }
-        return str.toString();
+    public String clearLog() throws LogFault {
+        throw new LogFault("ERROR: CLEAR LOG is not yet supported.");
     }
 }

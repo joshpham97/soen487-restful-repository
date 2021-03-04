@@ -3,6 +3,7 @@ package com.example.rest;
 import factories.ManagerFactory;
 import repository.core.Album;
 import repository.core.IAlbumManager;
+import repository.core.ILogManager;
 import repository.core.RepException;
 
 import javax.ws.rs.*;
@@ -14,6 +15,7 @@ import java.util.List;
 @Path("album")
 public class AlbumREST {
     private IAlbumManager albumManager = (IAlbumManager) ManagerFactory.ALBUM.getManager();
+    private ILogManager logManager = (ILogManager) ManagerFactory.LOG.getManager();
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)

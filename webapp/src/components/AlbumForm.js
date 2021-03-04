@@ -5,7 +5,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useHistory, useLocation } from 'react-router';
 import { withStyles } from '@material-ui/core/styles';
 import MuiTextField from '@material-ui/core/TextField';
-import { FormControl, InputLabel, Input, TextField, Button } from '@material-ui/core';
+import { FormControl, TextField, Button } from '@material-ui/core';
 import MuiArrowBackIosRoundedIcon from '@material-ui/icons/ArrowBackIosRounded';
 import AddIcon from '@material-ui/icons/Add';
 import SaveIcon from '@material-ui/icons/Save';
@@ -42,7 +42,12 @@ function AlbumForm() {
     const [contentDesc, setContentDesc] = useState('');
     const yearRef = useRef(new Date().getFullYear());
 
-    const [releaseYearError, setReleaseYearError] = useState(false);
+    const [isrcError, setIsrcError] = useState('');
+    const [titleError, setTitleError] = useState('');
+    const [releaseYearError, setReleaseYearError] = useState('');
+    const [firstnameError, setFirstnameError] = useState('');
+    const [lastnameError, setLastnameError] = useState('');
+
 
     useEffect(() => {
         // Mount
@@ -56,17 +61,40 @@ function AlbumForm() {
         }
     }, [location.state]);
 
-    const handleInput = (e, setState) => {
-        setState(e.target.value);
-    };
-
     const submit = (operation) => {
-        if(releaseYear < 1901 || releaseYear > yearRef.current) {
-            setReleaseYearError(true);
-            return;
+        let valid = true;
+
+        if((!location.state || !location.state.isrc) && !isrc) {
+            setIsrcError('Required');
+            valid = false;
         }
 
-        operation();
+        if(!title || !title.trim()) {
+            setTitleError('Required');
+            valid = false;
+        }
+
+        if(!releaseYear) {
+            setReleaseYearError('Required');
+            valid = false;
+        }
+        else if(releaseYear < 1901 || releaseYear > yearRef.current) {
+            setReleaseYearError('Accepted values: 1901 to ' + yearRef.current);
+            valid = false;
+        }
+
+        if(!firstname || !firstname.trim()) {
+            setFirstnameError('Required');
+            valid = false;
+        }
+
+        if(!lastname || !lastname.trim()) {
+            setLastnameError('Required');
+            valid = false;
+        }
+
+        if(valid)
+            operation();
     };
 
     const addAlbum = () => {
@@ -149,7 +177,8 @@ function AlbumForm() {
         if(!location.state || !location.state.isrc)
             return (
                 <div className="formRow">
-                    <TextField label="ISRC" variant="outlined" value={isrc} onChange={(e) => handleInput(e, setIsrc)} />
+                    <TextField label="ISRC" variant="outlined" value={isrc} error={isrcError !== ''} helperText={isrcError}
+                               onChange={(e) => setIsrc(e.currentTarget.value)} />
                 </div>
             );
     };
@@ -181,36 +210,31 @@ function AlbumForm() {
 
                 <div className="formRow">
                     <FormControl className="mr-5">
-                        <InputLabel htmlFor="albumTitleInput">Title</InputLabel>
-                        <Input id="albumTitleInput" value={title}
-                               onChange={(e) => handleInput(e, setTitle)} />
+                        <TextField label="Title" value={title} error={titleError !== ''} helperText={titleError}
+                                   onChange={(e) => setTitle(e.currentTarget.value)} />
                     </FormControl>
 
                     <FormControl>
-                        <TextField type="number" label="Release Year" value={releaseYear} error={releaseYearError}
-                                   helperText={releaseYearError ? "Accepted values: 1901 to " + yearRef.current : ""}
-                                   onChange={(e) => handleInput(e, setReleaseYear)} />
+                        <TextField type="number" label="Release Year" value={releaseYear} error={releaseYearError !== ''} helperText={releaseYearError}
+                                   onChange={(e) => setReleaseYear(e.currentTarget.value)} />
                     </FormControl>
                 </div>
 
                 <div className="formRow">
                     <FormControl className="mr-5">
-                        <InputLabel htmlFor="albumFirstNameInput">First Name</InputLabel>
-                        <Input id="albumFirstNameInput" value={firstname}
-                               onChange={(e) => handleInput(e, setFirstname)} />
+                        <TextField label="First Name" value={firstname} error={firstnameError !== ''} helperText={firstnameError}
+                                   onChange={(e) => setFirstname(e.currentTarget.value)} />
                     </FormControl>
 
                     <FormControl>
-                        <InputLabel htmlFor="albumLastNameInput">Last Name</InputLabel>
-                        <Input id="albumLastNameInput" value={lastname}
-                               onChange={(e) => handleInput(e, setLastname)} />
+                        <TextField label="Last Name" value={lastname} error={lastnameError !== ''} helperText={lastnameError}
+                                   onChange={(e) => setLastname(e.currentTarget.value)} />
                     </FormControl>
                 </div>
 
                 <div className="formRow">
-                    <DescInput id="albumContentDescInput" value={contentDesc} label="Description"
-                               variant="outlined" rows={5} multiline
-                               onChange={(e) => handleInput(e, setContentDesc)} />
+                    <DescInput id="albumContentDescInput" value={contentDesc} label="Description" variant="outlined" rows={5} multiline
+                               onChange={(e) => setContentDesc(e.currentTarget.value)} />
                 </div>
 
                 {renderButtons()}

@@ -27,8 +27,8 @@ function AlbumFilter() {
     const [to, setTo] = useState('');
     const yearRef = useRef(new Date().getFullYear());
 
-    const [fromError, setFromError] = useState(false);
-    const [toError, setToError] = useState(false);
+    const [fromError, setFromError] = useState('');
+    const [toError, setToError] = useState('');
 
     useEffect( () => {
         // Mount
@@ -45,10 +45,6 @@ function AlbumFilter() {
         }
     }, [location.state]);
 
-    const handleInput = (e, setState) => {
-        setState(e.currentTarget.value);
-    };
-
     const backRedirect = () => {
         history.push({
             pathname: '/albums',
@@ -57,46 +53,32 @@ function AlbumFilter() {
     };
 
     const filterAlbums = () => {
-        // let params = new URLSearchParams();
-
-        // if(title)
-        //     params.append('title', title);
-        //
-        // if(name)
-        //     params.append('name', name);
-        //
-        // if(from)
-        //     params.append('from', from);
-        //
-        // if(to)
-        //     params.append('to', to);
         let valid = true;
 
         if(from && (from <= 0 || to > yearRef.current)) {
-            setFromError(true);
+            setFromError('Invalid value');
             valid = false;
         }
+
+
         if(to && (to <= 0 || to > yearRef.current)) {
-            setToError(true);
+            setToError('Invalid value');
             valid = false;
         }
 
-        if(!valid)
-            return;
-
-
-        history.push({
-            pathname: '/albums',
-            state: {
-                filter: {
-                    title: title,
-                    name: name,
-                    from: from,
-                    to: to
+        if(valid) {
+            history.push({
+                pathname: '/albums',
+                state: {
+                    filter: {
+                        title: title,
+                        name: name,
+                        from: from,
+                        to: to
+                    }
                 }
-            }
-            // search: '?' + params.toString()
-        });
+            });
+        }
     };
 
     const albumsRedirect = () => {
@@ -117,24 +99,25 @@ function AlbumFilter() {
                 <div className="formRow">
                     <FormControl className="mr-5">
                         <InputLabel htmlFor="albumTitleInput">Title</InputLabel>
-                        <Input id="albumTitleInput" value={title} onChange={(e) => handleInput(e, setTitle)}/>
+                        <Input id="albumTitleInput" value={title}
+                               onChange={(e) => setTitle(e.currentTarget.value)}/>
                     </FormControl>
 
                     <FormControl>
                         <InputLabel htmlFor="albumNameInput">Name</InputLabel>
-                        <Input id="albumNameInput" value={name} onChange={(e) => handleInput(e, setName)}/>
+                        <Input id="albumNameInput" value={name}
+                               onChange={(e) => setName(e.currentTarget.value)}/>
                     </FormControl>
                 </div>
 
                 <div className="formRow">
-                    <TextField className="mr-5" type="number" label="From" variant="outlined" value={from} errr={fromError}
-                               helperText={fromError ? "Invalid value" : ""}
-                               onChange={(e) => handleInput(e, setFrom)} />
+                    <TextField className="mr-5" type="number" label="From" variant="outlined" value={from}
+                               error={fromError !== ''} helperText={fromError}
+                               onChange={(e) => setFrom(e.currentTarget.value)} />
 
-                    <TextField type="number" label="To" variant="outlined" value={to} error={toError}
-                               helperText={toError ? "Invalid value" : ""}
-                               onChange={(e) => handleInput(e, setTo)} />
-
+                    <TextField type="number" label="To" variant="outlined" value={to}
+                               error={toError !== ''} helperText={toError}
+                               onChange={(e) => setTo(e.currentTarget.value)} />
                 </div>
 
                 <Button className="mr-3" variant="contained" color="primary" startIcon={<FilterListIcon />} onClick={filterAlbums}>Filter</Button>

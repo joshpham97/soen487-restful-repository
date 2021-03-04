@@ -11,7 +11,8 @@ import java.lang.reflect.Constructor;
 public enum ManagerFactory {
     ALBUM("AlbumManagerImpl"),
     //COVER_IMAGE("CoverImageManagerImpl"),
-    ARTIST("ArtistManagerImpl");
+    ARTIST("ArtistManagerImpl"),
+    LOG("LogManagerImpl");
 
     private IManager manager;
 
@@ -29,5 +30,4 @@ public enum ManagerFactory {
     public IManager getManager(){
         return manager;
     }
-
 }

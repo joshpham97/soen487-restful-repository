@@ -45,9 +45,6 @@ public class AlbumDAO {
         artist.setLastname(rs.getString("artistLastName"));
         album.setArtist(artist);
 
-        //HARDCODED PART
-        //album.setArtist("Artist Name");
-
         return album;
     }
     public static ArrayList<Album> getAllAlbums() {

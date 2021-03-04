@@ -31,8 +31,8 @@
     text-align: left;
     position: fixed;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.85);
-    color: rgba(255, 255, 255, 0.9);
+    background-color: #262626;
+    color: #E9E9E9;
     width: 100%;
     padding: 1pc 1.5pc;
 }
