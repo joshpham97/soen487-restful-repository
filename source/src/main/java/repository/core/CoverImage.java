@@ -14,4 +14,37 @@ public class CoverImage {
     @XmlElement
     private String mimeType;
     private Blob blob; //blob should not be serialized
+    private String isrc;
+
+    public String getIsrc() {
+        return isrc;
+    }
+
+    public void setIsrc(String isrc) {
+        this.isrc = isrc;
+    }
+
+    public String getCoverImageId() {
+        return coverImageId;
+    }
+
+    public void setCoverImageId(String coverImageId) {
+        this.coverImageId = coverImageId;
+    }
+
+    public String getMimeType() {
+        return mimeType;
+    }
+
+    public void setMimeType(String mimeType) {
+        this.mimeType = mimeType;
+    }
+
+    public Blob getBlob() {
+        return blob;
+    }
+
+    public void setBlob(Blob blob) {
+        this.blob = blob;
+    }
 }
