@@ -1,15 +1,13 @@
 package com.example.rest;
 
 import factories.ManagerFactory;
-import repository.core.Album;
-import repository.core.IAlbumManager;
-import repository.core.ILogManager;
-import repository.core.RepException;
+import repository.core.*;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Path("album")
@@ -69,6 +67,8 @@ public class AlbumREST {
                         .build();
             }
 
+            logManager.addLog(new Log(LocalDateTime.now(), Log.ChangeType.ADD, album.getIsrc()));
+
             return Response.status(Response.Status.OK)
                     .entity(album)
                     .build();
@@ -98,6 +98,8 @@ public class AlbumREST {
                         .build();
             }
 
+            logManager.addLog(new Log(LocalDateTime.now(), Log.ChangeType.UPDATE, album.getIsrc()));
+
             return Response.status(Response.Status.OK)
                     .entity(album)
                     .build();
@@ -124,6 +126,8 @@ public class AlbumREST {
                         .entity("Failed to delete album with an ISRC of " + isrc)
                         .build();
             }
+
+            logManager.addLog(new Log(LocalDateTime.now(), Log.ChangeType.DELETE, isrc));
 
             return Response.status(Response.Status.OK)
                     .entity("Successfully deleted album")
