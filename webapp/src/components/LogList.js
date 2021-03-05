@@ -18,43 +18,54 @@ function LogList() {
     const location = useLocation();
 
     const [recordKey, setRecordKey] = useState('');
+    const [changeType, setChangeType] = useState('');
     const [fromDateTime, setFromDateTime] = useState('');
     const [toDateTime, setToDateTime] = useState('');
 
     const [recordKeyError, setRecordKeyError] = useState('');
+    const [changeTypeError, setChangeTypeError] = useState('');
     const [fromDateTimeError, setFromDateTimeError] = useState('');
     const [toDateTimeError, setToDateTimeError] = useState('');
-
+/**
     useEffect( () => {
         // Mount
         const params = location.state;
-        if(params && params.filter) {
-            if(params.filter.recordKey)
-                setRecordKey(params.filter.recordKey);
+        if(params && params.changeType) {
+            if(params.filter.changeType)
+                setChangeType(params.filter.changeType);
             if(params.filter.from)
                 setFromDateTime(params.filter.from);
             if(params.filter.to)
                 setToDateTime(params.filter.to);
         }
     }, [location.state]);
-
+*/
     const getList = () => {
-        let xmls='<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\ xmlns:ser="http://service.soap.example.com/">\
+        /**
+        let str ="<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ser=\"http://service.soap.example.com/\">"+
+            "<soapenv:Header/>" +
+            "<soapenv:Body> <ser:listLog>" +
+            "<from>2021-03-04 12:02:50</from>"+
+            "<to>2021-03-04 12:02:50</to>" +
+            "<changeType>add</changeType>" +
+            "</ser:listLog> </soapenv:Body> </soapenv:Envelope>";
+         */
+        let xmls='<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://service.soap.example.com/">\
                <soapenv:Header/>\
                <soapenv:Body>\
                   <ser:listLog>\
                      <!--Optional:-->\
-                     <from></from>\
+                     <from>2021-03-04 12:02:50</from>\
                      <!--Optional:-->\
-                     <to></to>\
+                     <to>2021-03-04 12:02:50</to>\
                      <!--Optional:-->\
-                     <changeType>ADD</changeType>\
+                     <changeType>add</changeType>\
                   </ser:listLog>\
                </soapenv:Body>\
             </soapenv:Envelope>';
-        axios.post('http://localhost:8090/log?wsdl', xmls,
+        axios.post('http://localhost:8090/log', xmls,
             {headers:
-                    {'Content-Type': 'text/xml'}
+                    {'Content-Type': 'text/xml', 'Access-Control-Allow-Origin': '*'}
             }).then(res=>{
             console.log(res);
         }).catch(err=>{console.log(err)});
@@ -79,8 +90,8 @@ function LogList() {
 
                 <div className="formRow">
                     <FormControl className="formColumn">
-                        <TextField label="recordKey" value={recordKey} error={recordKeyError !== ''} helperText={recordKeyError}
-                                   onChange={(e) => setRecordKey(e.currentTarget.value)} />
+                        <TextField label="changeType" value={changeType} error={changeTypeError !== ''} helperText={changeTypeError}
+                                   onChange={(e) => setChangeType(e.currentTarget.value)} />
                     </FormControl>
 
                     <FormControl className="formColumn">
