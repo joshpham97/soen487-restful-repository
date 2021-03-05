@@ -7,5 +7,9 @@ export const albumServer = axios.create({
 });
 
 export const albumApi = {
-    albums: '/myapp/album'
+    albums: '/myapp/album',
+    get: '/myapp/album',
+    add: '/myapp/album',
+    update: '/myapp/album',
+    delete: '/myapp/album'
 };

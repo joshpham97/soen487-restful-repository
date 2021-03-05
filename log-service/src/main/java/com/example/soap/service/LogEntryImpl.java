@@ -17,7 +17,6 @@ public class LogEntryImpl implements LogEntry {
     @Override
     public ArrayList<Log> listLog(String from, String to, String changeType) throws LogFault {
         ArrayList<Log> logs = new ArrayList<>();
-
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime fromDateTime = null;
         LocalDateTime toDateTime = null;

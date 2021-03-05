@@ -1,10 +1,7 @@
 package com.example.rest;
 
-import factories.AlbumManagerFactory;
-import factories.LogManagerFactory;
 import factories.ManagerFactory;
 import repository.core.*;
-import utilities.UrlParser;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.GenericEntity;
@@ -12,12 +9,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 @Path("album")
 public class AlbumREST {
-    //private IAlbumManager albumManager = AlbumManagerFactory.loadManager();
-    //private ILogManager logManager = LogManagerFactory.loadManager();
     private IAlbumManager albumManager = (IAlbumManager) ManagerFactory.ALBUM.getManager();
     private ILogManager logManager = (ILogManager) ManagerFactory.LOG.getManager();
 
@@ -26,37 +20,33 @@ public class AlbumREST {
     public Response listAlbum() {
         try {
             List<Album> albums = albumManager.listAlbum();
-
             GenericEntity<List<Album>> entity = new GenericEntity<List<Album>>(albums) {};
 
             return Response.status(Response.Status.OK)
                     .entity(entity)
                     .build();
-        }
-        catch(Exception e) {
+        } catch(Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(null)
+                    .entity("An error occurred while trying to get the list of albums")
                     .build();
         }
     }
 
     @GET
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     @Path("{isrc}")
     public Response getAlbum(@PathParam("isrc") String isrc) {
         try {
             Album album = albumManager.getAlbum(isrc);
-            if (album == null) { // No such album
-                return Response.status(Response.Status.OK)
-                        .entity("No album with an ISRC of " + isrc)
-                        .build();
-            }
 
             return Response.status(Response.Status.OK)
-                    .entity(album.toString())
+                    .entity(album)
                     .build();
-        }
-        catch(Exception e) {
+        } catch(RepException re) {
+            return Response.status(Response.Status.FORBIDDEN)
+                    .entity(re.getMessage())
+                    .build();
+        } catch(Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("An error occurred while trying to get the album")
                     .build();
@@ -64,37 +54,28 @@ public class AlbumREST {
     }
 
     @POST
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Produces(MediaType.TEXT_PLAIN)
-    public Response addAlbum(@FormParam("isrc") String isrc, @FormParam("title") String title, @FormParam("releaseYear") int releaseYear, @FormParam("contentDesc") String contentDesc, @FormParam("firstName") String firstName, @FormParam("lastName") String lastName) {
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response addAlbum(Album album) {
         try {
-            if(isrc == null || isrc.trim().isEmpty() ||
-                    title == null || title.trim().isEmpty()) {
-                return Response.status(Response.Status.FORBIDDEN)
-                        .entity("Failed to add album: missing required fields")
-                        .build();
-            }
-            else if(releaseYear <= 0) {
-                return Response.status(Response.Status.FORBIDDEN)
-                        .entity("Failed to add album: invalid releaseYear")
-                        .build();
-            }
-            Artist artist = new Artist(firstName, lastName);
-            Album album = new Album(isrc, title, releaseYear, contentDesc, artist);
+            album.trim();
             boolean success = albumManager.addAlbum(album);
 
-            if (success) {
-                Log log = new Log(LocalDateTime.now(), Log.ChangeType.ADD, isrc);
-                boolean logAdded = logManager.addLog(log);
-                return Response.status(Response.Status.OK)
-                        .entity("Successfully added album \n" + album)
-                        .build();
-            }
-            else {
+            if(!success) {
                 return Response.status(Response.Status.FORBIDDEN)
-                        .entity(String.format("Failed to add album: album with an ISRC of %s already exists", isrc))
+                        .entity(String.format("Failed to add album: album with an ISRC of %s already exists", album.getIsrc()))
                         .build();
             }
+
+            logManager.addLog(new Log(LocalDateTime.now(), Log.ChangeType.ADD, album.getIsrc()));
+
+            return Response.status(Response.Status.OK)
+                    .entity(album)
+                    .build();
+        } catch(RepException re) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(re.getMessage())
+                    .build();
         }
         catch(Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -104,54 +85,29 @@ public class AlbumREST {
     }
 
     @PUT
-    @Consumes(MediaType.TEXT_PLAIN)
-    @Produces(MediaType.TEXT_PLAIN)
-    public Response updateAlbum(String strAlbum) {
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateAlbum(Album album) {
         try {
-            // Parse string data
-            Map<String, String> params = UrlParser.parseStrParams(strAlbum);
-            String isrc = params.get("isrc");
-            String title = params.get("title");
-            int releaseYear = Integer.parseInt(params.get("releaseYear"));
-            //String artist = params.get("artist");
-            String contentDesc = params.get("contentDesc");
-            String firstName = params.get("firstName");
-            String lastName = params.get("lastName");
-
-
-            if(isrc == null || isrc.trim().isEmpty() ||
-                    title == null || title.trim().isEmpty()) {
-                return Response.status(Response.Status.FORBIDDEN)
-                        .entity("Failed to update album: missing required fields")
-                        .build();
-            }
-            else if(releaseYear <= 0) {
-                return Response.status(Response.Status.FORBIDDEN)
-                        .entity("Failed to update album: invalid releaseYear")
-                        .build();
-            }
-            Artist artistNew = new Artist(firstName, lastName);
-
-            Album album = new Album(isrc, title, releaseYear, contentDesc, artistNew);
+            album.trim();
             boolean success = albumManager.updateAlbum(album);
 
-            if (success) {
-                return Response.status(Response.Status.OK)
-                        .entity("Successfully updated album \n" + album)
-                        .build();
-            }
-            else {
+            if (!success) {
                 return Response.status(Response.Status.FORBIDDEN)
                         .entity("Failed to update album: no album with an ISRC of " + album.getIsrc())
                         .build();
             }
-        }
-        catch(NumberFormatException ne) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("Failed to update album: invalid field value")
+
+            logManager.addLog(new Log(LocalDateTime.now(), Log.ChangeType.UPDATE, album.getIsrc()));
+
+            return Response.status(Response.Status.OK)
+                    .entity(album)
                     .build();
-        }
-        catch(Exception e) {
+        } catch(RepException re) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(re.getMessage())
+                    .build();
+        } catch(Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("An error occurred while trying to update the album")
                     .build();
@@ -159,26 +115,26 @@ public class AlbumREST {
     }
 
     @DELETE
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     @Path("{isrc}")
     public Response deleteAlbum(@PathParam("isrc") String isrc) {
         try {
             boolean success = albumManager.deleteAlbum(isrc);
 
-            if (success) {
-                return Response.status(Response.Status.OK)
-                        .entity("Successfully deleted album with ISRC of " + isrc)
-                        .build();
-            }
-            else {
+            if(!success) {
                 return Response.status(Response.Status.FORBIDDEN)
-                        .entity("Failed to delete album with ISRC of " + isrc)
+                        .entity("Failed to delete album with an ISRC of " + isrc)
                         .build();
             }
-        }
-        catch(Exception e) {
+
+            logManager.addLog(new Log(LocalDateTime.now(), Log.ChangeType.DELETE, isrc));
+
+            return Response.status(Response.Status.OK)
+                    .entity("Successfully deleted album")
+                    .build();
+        } catch(Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("An error occurred while trying to delete the album of ISRC of " + isrc)
+                    .entity("An error occurred while trying to delete the album")
                     .build();
         }
     }

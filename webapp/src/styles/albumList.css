@@ -1,0 +1,44 @@
+#albumList {
+    text-align: center;
+}
+
+#albumList .albums {
+    display: flex;
+    overflow-x: hidden;
+    height: 100%;
+}
+
+#albumList .album {
+    float: left;
+    margin: 1.5pc;;
+}
+
+#albumList .album:first-child {
+    margin-left: 0;
+    padding-left: 2pc;
+}
+
+#albumList .album:last-child {
+    margin-right: 0;
+    padding-right: 2pc;
+}
+
+#albumList .current {
+    border: 1px dashed black;
+}
+
+#albumList .albumSummary {
+    text-align: left;
+    position: fixed;
+    bottom: 0;
+    background-color: #262626;
+    color: #E9E9E9;
+    width: 100%;
+    padding: 1pc 1.5pc;
+}
+
+@media (hover: none) and (pointer: coarse) {
+    #albumList .albums {
+        overflow: auto;
+    }
+}

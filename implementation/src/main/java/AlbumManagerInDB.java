@@ -1,56 +1,54 @@
 import database.dao.AlbumDAO;
 import repository.core.Album;
 import repository.core.IAlbumManager;
+import repository.core.RepException;
 
 import java.util.ArrayList;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public class AlbumManagerInDB implements IAlbumManager {
-    private CopyOnWriteArrayList<Album> albums;
-
-    public AlbumManagerInDB() {
-        albums = new CopyOnWriteArrayList<>();
-    }
-
     public ArrayList<Album> listAlbum() {
-        ArrayList<Album> albums = null;
-        albums = (AlbumDAO.getAllAlbums());
-
-        return albums;
+        return AlbumDAO.getAllAlbums();
     }
 
-    public Album getAlbum(String isrc) {
-        Album album = null;
-        album = AlbumDAO.getAlbumDatabase(isrc);
+    public Album getAlbum(String isrc) throws RepException {
+        Album album = AlbumDAO.getAlbumDatabase(isrc);
+
+        if(album == null)
+            throw new RepException("No album with an ISRC of " + isrc);
+
         return album;
     }
 
-    public synchronized boolean addAlbum(Album album) {
-        String isrc = album.getIsrc();
-        String title = album.getTitle();
-        String contentDesc = album.getContentDesc();
-        int year = album.getReleaseYear();
-        String fname = album.getArtist().getFirstname();
-        String lname= album.getArtist().getLastname();
-        //String img = "none";
-        boolean posted = AlbumDAO.insertAlbum(isrc, title, contentDesc, year, fname, lname);
-        return posted;
+    public boolean addAlbum(Album album) throws RepException {
+        if(album.getIsrc() == null || album.getIsrc().isEmpty() ||
+                album.getTitle() == null || album.getTitle().isEmpty() ||
+                album.getArtist() == null ||
+                album.getArtist().getFirstname() == null || album.getArtist().getFirstname().isEmpty() ||
+                album.getArtist().getLastname() == null || album.getArtist().getLastname().isEmpty() ||
+                album.getReleaseYear() == null)
+            throw new RepException("Failed to add album: missing required fields");
+        else if(album.getReleaseYear() <= 0)
+            throw new RepException("Failed to add album: invalid releaseYear");
+
+        return AlbumDAO.insertAlbum(album.getIsrc(), album.getTitle(), album.getContentDesc(),
+                album.getReleaseYear(), album.getArtist().getFirstname(), album.getArtist().getLastname());
     }
 
-    public synchronized boolean updateAlbum(Album album) {
-        String isrc = album.getIsrc();
-        String title = album.getTitle();
-        String contentDesc = album.getContentDesc();
-        int year = album.getReleaseYear();
-        String fname = album.getArtist().getFirstname();
-        String lname= album.getArtist().getLastname();
+    public boolean updateAlbum(Album album) throws RepException {
+        if(album.getTitle() == null || album.getTitle().isEmpty() ||
+                album.getArtist() == null ||
+                album.getArtist().getFirstname() == null || album.getArtist().getFirstname().isEmpty() ||
+                album.getArtist().getLastname() == null || album.getArtist().getLastname().isEmpty() ||
+                album.getReleaseYear() == null)
+            throw new RepException("Failed to update album: missing required fields");
+        else if(album.getReleaseYear() <= 0)
+            throw new RepException("Failed to update album: invalid releaseYear");
 
-        boolean updated = AlbumDAO.updateAlbum(isrc, title, contentDesc, year, fname, lname);
-        return updated;
+        return AlbumDAO.updateAlbum(album.getIsrc(), album.getTitle(), album.getContentDesc(),
+                album.getReleaseYear(), album.getArtist().getFirstname(), album.getArtist().getLastname());
     }
 
-    public synchronized boolean deleteAlbum(String isrc) {
-        boolean deleted = AlbumDAO.deleteAlbum(isrc);
-        return deleted;
+    public boolean deleteAlbum(String isrc) {
+        return AlbumDAO.deleteAlbum(isrc);
     }
 }
