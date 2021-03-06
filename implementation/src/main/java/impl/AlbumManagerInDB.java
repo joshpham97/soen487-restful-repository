@@ -1,3 +1,5 @@
+package impl;
+
 import database.dao.AlbumDAO;
 import repository.core.Album;
 import repository.core.IAlbumManager;
