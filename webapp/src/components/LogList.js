@@ -3,7 +3,7 @@ import MuiAddIcon from "@material-ui/icons/Add";
 import AlbumList from "./AlbumList";
 import {useHistory, useLocation} from "react-router";
 import React from "react";
-import Navbar from "./Navbar";
+import Navbar from "./subcomponents/Navbar";
 import ArrowBackIosRoundedIcon from "@material-ui/icons/ArrowBackIosRounded";
 import {Button, FormControl, Input, InputLabel, TextField} from "@material-ui/core";
 import { useState, useEffect, useRef } from 'react';

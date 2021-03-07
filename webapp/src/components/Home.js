@@ -1,7 +1,7 @@
 import '../styles/home.css';
 
 import { Component } from 'react';
-import Navbar from './Navbar';
+import Navbar from './subcomponents/Navbar';
 
 class Home extends Component {
     render() {

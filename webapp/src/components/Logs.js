@@ -1,4 +1,4 @@
-import Navbar from "./Navbar";
+import Navbar from "./subcomponents/Navbar";
 import React, {Component, useEffect, useRef, useState} from "react";
 import { logApi, logServer} from '../endpoints/logServer';
 import {albumApi, albumServer} from "../endpoints/albumServer";

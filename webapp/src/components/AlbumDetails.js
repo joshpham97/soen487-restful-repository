@@ -7,7 +7,7 @@ import { withStyles } from "@material-ui/core/styles";
 import { CircularProgress, Divider } from "@material-ui/core";
 import MuiArrowBackIosRoundedIcon from '@material-ui/icons/ArrowBackIosRounded';
 
-import Navbar from './Navbar';
+import Navbar from './subcomponents/Navbar';
 import AlbumCover from './subcomponents/AlbumCover';
 import { albumApi, albumServer } from "../endpoints/albumServer";
 
