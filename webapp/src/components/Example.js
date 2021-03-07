@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import { albumServer, albumApi } from '../endpoints/albumServer';
-import Navbar from './Navbar';
+import Navbar from './subcomponents/Navbar';
 
 class Example extends Component {
     constructor(props) {

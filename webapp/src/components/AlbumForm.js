@@ -11,7 +11,7 @@ import AddIcon from '@material-ui/icons/Add';
 import SaveIcon from '@material-ui/icons/Save';
 import DeleteIcon from '@material-ui/icons/Delete';
 
-import Navbar from './Navbar';
+import Navbar from './subcomponents/Navbar';
 import { albumApi, albumServer } from "../endpoints/albumServer";
 
 const DescInput = withStyles({
