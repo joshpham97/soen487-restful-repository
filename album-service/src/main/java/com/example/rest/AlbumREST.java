@@ -39,12 +39,13 @@ public class AlbumREST {
         try {
             Album album = albumManager.getAlbum(isrc);
 
+            if(album == null)
+                return Response.status(Response.Status.FORBIDDEN)
+                        .entity("No album with an ISRC of " + isrc)
+                        .build();
+
             return Response.status(Response.Status.OK)
                     .entity(album)
-                    .build();
-        } catch(RepException re) {
-            return Response.status(Response.Status.FORBIDDEN)
-                    .entity(re.getMessage())
                     .build();
         } catch(Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -63,7 +64,7 @@ public class AlbumREST {
 
             if(!success) {
                 return Response.status(Response.Status.FORBIDDEN)
-                        .entity(String.format("Failed to add album: album with an ISRC of %s already exists", album.getIsrc()))
+                        .entity(String.format("Failed to add album"))
                         .build();
             }
 
@@ -76,8 +77,7 @@ public class AlbumREST {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(re.getMessage())
                     .build();
-        }
-        catch(Exception e) {
+        } catch(Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("An error occurred while trying to add the album")
                     .build();
@@ -119,18 +119,16 @@ public class AlbumREST {
     @Path("{isrc}")
     public Response deleteAlbum(@PathParam("isrc") String isrc) {
         try {
-            boolean success = albumManager.deleteAlbum(isrc);
-
-            if(!success) {
-                return Response.status(Response.Status.FORBIDDEN)
-                        .entity("Failed to delete album with an ISRC of " + isrc)
-                        .build();
-            }
+            albumManager.deleteAlbum(isrc);
 
             logManager.addLog(new Log(LocalDateTime.now(), Log.ChangeType.DELETE, isrc));
 
             return Response.status(Response.Status.OK)
                     .entity("Successfully deleted album")
+                    .build();
+        } catch(RepException re) {
+            return Response.status(Response.Status.FORBIDDEN)
+                    .entity(re.getMessage())
                     .build();
         } catch(Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
