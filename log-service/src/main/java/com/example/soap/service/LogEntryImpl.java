@@ -6,9 +6,12 @@ import repository.core.Log;
 import repository.core.LogFault;
 
 import javax.jws.WebService;
+import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.IllegalFormatException;
 
 @WebService(endpointInterface = "com.example.soap.service.LogEntry")
 public class LogEntryImpl implements LogEntry {
@@ -24,10 +27,22 @@ public class LogEntryImpl implements LogEntry {
         //Format date if not null
         if(!from.equals(""))
         {
-            fromDateTime = LocalDateTime.parse(from, formatter);
+            try {
+                fromDateTime = LocalDateTime.parse(from, formatter);
+            }
+            catch (DateTimeParseException pe)
+            {
+                throw new LogFault("ERROR: Date format should be yyyy-MM-dd HH:mm:ss");
+            }
         }
         if(!to.equals("")){
-            toDateTime = LocalDateTime.parse(to, formatter);
+            try {
+                toDateTime = LocalDateTime.parse(to, formatter);
+            }
+            catch (DateTimeParseException pe)
+            {
+                throw new LogFault("ERROR: Date format should be yyyy-MM-dd HH:mm:ss");
+            }
         }
 
         //FILTERING

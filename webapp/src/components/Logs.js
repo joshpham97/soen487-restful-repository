@@ -13,21 +13,28 @@ function Logs() {
     const history = useHistory();
     const location = useLocation();
 
-    const [currentAlbum, setCurrentLog] = useState(null);
-    const recordKeyFilterRef = useRef('');
-    const [logs, setLogs] = useState([]);
     const [loaded, setLoaded] = useState(false);
+    const changeTypeFilterRef = useRef('');
+    const fromFilterRef = useRef('');
+    const toFilterRef = useRef('');
+
+    const [logs, setLogs] = useState([]);
+    const [currentLog, setCurrentLog] = useState(null);
 
     useEffect( () => {
         // Mount
         const params = location.state;
         if(params) {
-            if (params.album)
+            if (params.log)
                 setCurrentLog(params.log);
 
             if(params.filter) {
-                if (params.filter.recordKey)
-                    recordKeyFilterRef.current = params.filter.recordKey;
+                if (params.filter.changeType)
+                    changeTypeFilterRef.current = params.filter.changeType;
+                if (params.filter.from)
+                    fromFilterRef.current = params.filter.from;
+                if (params.filter.to)
+                    toFilterRef.current = params.filter.to;
             }
         }
 
@@ -39,21 +46,23 @@ function Logs() {
     }, [location.state]);
 
     const getLogList = () => {
-        logServer.get(logApi.logs, {
-            params: {
-                recordKey: recordKeyFilterRef.current,
-            }
+    logServer.get(logApi.get, {
+        params: {
+            changeType: changeTypeFilterRef.current,
+            from: fromFilterRef.current,
+            to: toFilterRef.current
+        }
+    })
+        .then(res => {
+            setLogs(res.data.filter((log) => {
+                return log.change.match(new RegExp(changeTypeFilterRef.current, 'i'));
+            }));
         })
-            .then(res => {
-                setLogs(res.data.filter((log) => {
-                    return log.recordKey.match(new RegExp(recordKeyFilterRef.current, 'i'));
-                }));
-            })
-            .catch(err => {
-                console.log(err);
-                setLogs(null);
-            })
-            .finally(() => setLoaded(true));
+        .catch(err => {
+            console.log(err);
+            setLogs(null);
+        })
+        .finally(() => setLoaded(true));
     };
 
     const filterRedirect = () => {
@@ -64,6 +73,25 @@ function Logs() {
     };
 
     const renderLogList = () => {
+
+        if(!logs)
+            return <div>An error occurred while getting the logs. Date format should be: yyyy-MM-dd HH:mm:ss</div>;
+        else if(logs.length === 0)
+            return <div>There are no matches</div>;
+
+
+        return logs.map(log => (
+            <div key={log.date}>
+                <span>changeType: {log.change}</span>
+                <span className="ml-3">Date: {log.date}</span>
+                <span className="ml-3">ISRC: {log.recordKey}</span>
+            </div>
+
+        ));
+
+    }
+
+    const addFilter = () => {
         return (
             <React.Fragment>
                 <div className="mt-3 mb-3">
@@ -82,6 +110,7 @@ function Logs() {
             <div id="albumList">
                 <h3>Logs</h3>
                 {renderLogList()}
+                {addFilter()}
             </div>
         </React.Fragment>
     );
