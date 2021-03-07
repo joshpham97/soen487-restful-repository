@@ -62,6 +62,7 @@ const useStyles = makeStyles(() => ({
         opacity: 0
     },
     menu: {
+        zIndex: 1000,
         backgroundColor: 'white',
         position: 'absolute',
         borderRadius: '3px',
