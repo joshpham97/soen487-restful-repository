@@ -8,7 +8,7 @@ import { CircularProgress, Fab, Slide } from '@material-ui/core';
 import MuiAddIcon from '@material-ui/icons/Add';
 import FilterListIcon from '@material-ui/icons/FilterList';
 
-import Navbar from './Navbar';
+import Navbar from './subcomponents/Navbar';
 import AlbumCover from './subcomponents/AlbumCover';
 import AlbumSummary from './subcomponents/AlbumSummary';
 import { albumApi, albumServer } from "../endpoints/albumServer";

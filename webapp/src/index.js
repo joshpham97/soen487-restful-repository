@@ -13,6 +13,8 @@ import AlbumList from './components/AlbumList';
 import AlbumFilter from './components/AlbumFilter';
 import AlbumDetails from './components/AlbumDetails';
 import AlbumForm from './components/AlbumForm';
+import Logs from './components/Logs';
+import LogList from './components/LogList';
 
 const history = createBrowserHistory();
 
@@ -28,6 +30,8 @@ const routing = (
             <Route path="/albums" component={AlbumList} />
             <Route path="/example2" component={Example2} />
             <Route path="/example" component={Example} />
+            <Route path="/logs" component={Logs} />
+            <Route path="/logList" component={LogList} />
             <Route path="/" component={Home} />
         </Switch>
     </Router>

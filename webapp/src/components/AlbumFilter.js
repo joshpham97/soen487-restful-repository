@@ -6,7 +6,7 @@ import ArrowBackIosRoundedIcon from '@material-ui/icons/ArrowBackIosRounded';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 
-import Navbar from './Navbar';
+import Navbar from './subcomponents/Navbar';
 
 function AlbumFilter() {
     const history = useHistory();
