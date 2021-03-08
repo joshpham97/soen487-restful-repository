@@ -17,6 +17,9 @@ const links = [
     }, {
         label: 'Albums',
         path: '/albums'
+    },  {
+        label: 'Logs',
+        path: '/logs'
     }
 ];
 
