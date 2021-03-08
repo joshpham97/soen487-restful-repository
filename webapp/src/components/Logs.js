@@ -1,12 +1,8 @@
 import Navbar from "./subcomponents/Navbar";
 import React, {Component, useEffect, useRef, useState} from "react";
 import { logApi, logServer} from '../endpoints/logServer';
-import {albumApi, albumServer} from "../endpoints/albumServer";
-import AlbumCover from "./subcomponents/AlbumCover";
 import {Fab, Slide} from "@material-ui/core";
 import FilterListIcon from "@material-ui/icons/FilterList";
-import MuiAddIcon from '@material-ui/icons/Add';
-import {withStyles} from "@material-ui/core/styles";
 import {useHistory, useLocation} from "react-router";
 
 function Logs() {
@@ -114,6 +110,5 @@ function Logs() {
             </div>
         </React.Fragment>
     );
-
 }
 export default Logs;

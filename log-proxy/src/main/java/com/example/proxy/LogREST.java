@@ -18,7 +18,6 @@ import java.util.List;
 @Path("log")
 public class LogREST {
 
-    private ILogManager logManager = (ILogManager) ManagerFactory.LOG.getManager();
     private LogEntryImplService service = new LogEntryImplService();
     LogEntry port = service.getLogEntryImplPort();
 
