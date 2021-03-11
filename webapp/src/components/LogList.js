@@ -32,14 +32,28 @@ function LogList() {
 
         if(fromDateTime.length !== 0)
         {
-            if(isNaN(Date.parse(fromDateTime))){
+            if(fromDateTime.length === 19)
+            {
+                if(isNaN(Date.parse(fromDateTime))){
+                    alert("Date format should be: yyyy-MM-dd HH:mm:ss")
+                    valid = false;
+                }
+            }
+            else{
                 alert("Date format should be: yyyy-MM-dd HH:mm:ss")
                 valid = false;
             }
         }
         if(toDateTime.length !== 0)
         {
-            if(isNaN(Date.parse(toDateTime))){
+            if(toDateTime.length === 19)
+            {
+                if(isNaN(Date.parse(toDateTime))){
+                    alert("Date format should be: yyyy-MM-dd HH:mm:ss")
+                    valid = false;
+                }
+            }
+            else{
                 alert("Date format should be: yyyy-MM-dd HH:mm:ss")
                 valid = false;
             }

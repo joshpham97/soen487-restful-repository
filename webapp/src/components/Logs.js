@@ -1,9 +1,10 @@
 import Navbar from "./subcomponents/Navbar";
 import React, {Component, useEffect, useRef, useState} from "react";
 import { logApi, logServer} from '../endpoints/logServer';
-import {Fab, Slide} from "@material-ui/core";
+import {Button, Fab, Slide} from "@material-ui/core";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import {useHistory, useLocation} from "react-router";
+import DeleteIcon from "@material-ui/icons/Delete";
 
 function Logs() {
     const history = useHistory();
@@ -94,10 +95,18 @@ function Logs() {
                     <Fab size="medium" onClick={filterRedirect} >
                         <FilterListIcon />
                     </Fab>
+                    &nbsp;&nbsp;&nbsp;
+                    <Fab size="medium" onClick={clearLog} >
+                        <DeleteIcon />
+                    </Fab>
                 </div>
             </React.Fragment>
         );
     }
+
+    const clearLog = () => {
+        alert("ERROR: CLEAR LOG is not yet supported.")
+    };
 
     return (
         <React.Fragment>

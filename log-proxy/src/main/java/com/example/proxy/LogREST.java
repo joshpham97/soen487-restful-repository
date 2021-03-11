@@ -31,6 +31,7 @@ public class LogREST {
                 to="";
             if(changeType == null)
                 changeType="";
+
             List<Log> logs = port.listLog(from, to, changeType);
             GenericEntity<List<Log>> entity = new GenericEntity<List<Log>>(logs) {};
 
