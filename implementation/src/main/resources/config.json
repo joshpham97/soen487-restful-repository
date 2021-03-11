@@ -1,4 +1,6 @@
 {
   "ArtistManagerImpl": "ArtistManagerInMemory",
-  "AlbumManagerImpl": "AlbumManagerInDB"
+  "AlbumManagerImpl": "AlbumManagerInDB",
+  "CoverImageManagerImpl": "impl.db.CoverImageManager"
+
 }

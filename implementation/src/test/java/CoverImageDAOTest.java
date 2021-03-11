@@ -151,4 +151,32 @@ public class CoverImageDAOTest {
         //Clean up
         AlbumDAO.deleteAlbum(testAlbum.getIsrc());
     }
+
+    @Test
+    public void createOrUpdate() throws SQLException{
+        //arrange
+        AlbumDAO.insertAlbum(testAlbum.getIsrc(),
+                testAlbum.getTitle(),
+                testAlbum.getContentDesc(),
+                testAlbum.getReleaseYear(),
+                testAlbum.getArtist().getFirstname(),
+                testAlbum.getArtist().getLastname());
+
+        //Action
+        CoverImage coverImage = CoverImageDAO.createOrUpdateCoverImageIfExist(imageInputStream, mimeType, testAlbum.getIsrc());
+        assertTrue(coverImage.getCoverImageId() > 0);
+        assertNotNull(coverImage);
+        assertEquals(coverImage.getMimeType(), mimeType);
+        assertEquals(coverImage.getIsrc(), testAlbum.getIsrc());
+
+        CoverImage updatedCoverImage = CoverImageDAO.createOrUpdateCoverImageIfExist(imageUpdatedInputStream, updatedMimeType, testAlbum.getIsrc());
+        assertEquals(coverImage.getCoverImageId(), updatedCoverImage.getCoverImageId());
+        assertNotNull(updatedCoverImage);
+        assertEquals(updatedCoverImage.getMimeType(), updatedMimeType);
+        //assertTrue(IOUtils.contentEquals(imageUpdatedInputStream, updatedCoverImage.getBlob().getBinaryStream()));
+        assertEquals(updatedCoverImage.getIsrc(), testAlbum.getIsrc());
+
+        CoverImageDAO.deleteCoverImage(testAlbum.getIsrc());
+        AlbumDAO.deleteAlbum(testAlbum.getIsrc());
+    }
 }

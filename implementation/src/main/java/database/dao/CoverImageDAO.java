@@ -32,25 +32,22 @@ public class CoverImageDAO {
         return coverImageId;
     }
 
-    public static CoverImage getCoverImageByAlbumIsrc(String isrc){
+    public static CoverImage getCoverImageByAlbumIsrc(String isrc) throws SQLException{
         CoverImage coverImage = null;
 
-        try {
-            Connection conn = DBConnection.getConnection();
-            String query = "SELECT * FROM images WHERE isrc =?";
+        Connection conn = DBConnection.getConnection();
+        String query = "SELECT * FROM images WHERE isrc =?";
 
-            PreparedStatement stmt = conn.prepareStatement(query);
-            stmt.setString(1, isrc);
-            ResultSet rs = stmt.executeQuery();
+        PreparedStatement stmt = conn.prepareStatement(query);
+        stmt.setString(1, isrc);
+        ResultSet rs = stmt.executeQuery();
 
-            if (rs.next())
-                coverImage = mapResultSetToCoverImage(rs);
-        } catch (Exception e) {
-            System.err.println("There was an error retrieving specific album from database.");
-            System.err.println(e.getMessage());
+        if (rs.next()){
+            coverImage = mapResultSetToCoverImage(rs);
+            return coverImage;
+        }else{
+            return null;
         }
-
-        return coverImage;
     }
 
     public static CoverImage updateCoverImage(InputStream imageInputStream, String mimeType, String isrc) throws SQLException {
@@ -70,6 +67,29 @@ public class CoverImageDAO {
         }
     }
 
+    public static CoverImage createOrUpdateCoverImageIfExist(InputStream imageInputStream, String mimeType, String isrc) throws SQLException {
+        Connection conn = DBConnection.getConnection();
+        //String query = "UPDATE images SET coverImage = ?, coverImageMIMEType = ? WHERE isrc = ?";
+
+        String query = "INSERT INTO images (coverImage, coverImageMIMEType, isrc) VALUES (?,?,?) ON DUPLICATE KEY " +
+                       "UPDATE coverImage = ?, coverImageMIMEType = ?";
+
+
+        PreparedStatement stmt = conn.prepareStatement(query);
+        stmt.setBlob(1, imageInputStream);
+        stmt.setString(2, mimeType);
+        stmt.setString(3, isrc);
+        stmt.setBlob(4, imageInputStream);
+        stmt.setString(5, mimeType);
+        int row = stmt.executeUpdate();
+
+        if (row > 0){
+            return getCoverImageByAlbumIsrc(isrc);
+        }else{
+            throw new SQLException("Insert or update cover image failed.");
+        }
+    }
+
     public static boolean deleteCoverImage(String isrc) throws SQLException {
         Connection conn = DBConnection.getConnection();
         String query = "DELETE FROM images WHERE isrc = ?";
@@ -86,7 +106,7 @@ public class CoverImageDAO {
 
     private static CoverImage mapResultSetToCoverImage(ResultSet rs) throws SQLException {
         CoverImage coverImage = new CoverImage();
-        coverImage.setCoverImageId(rs.getString("img_id"));
+        coverImage.setCoverImageId(rs.getInt("img_id"));
         coverImage.setMimeType(rs.getString("coverImageMIMEType"));
         coverImage.setBlob(rs.getBlob("coverImage"));
         coverImage.setIsrc(rs.getString("isrc"));

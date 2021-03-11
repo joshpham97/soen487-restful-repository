@@ -10,7 +10,7 @@ import java.lang.reflect.Constructor;
 
 public enum ManagerFactory {
     ALBUM("AlbumManagerImpl"),
-    //COVER_IMAGE("CoverImageManagerImpl"),
+    COVER_IMAGE("CoverImageManagerImpl"),
     ARTIST("ArtistManagerImpl");
 
     private IManager manager;

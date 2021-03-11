@@ -10,7 +10,7 @@ import java.sql.Blob;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CoverImage {
     @XmlElement
-    private String coverImageId;
+    private int coverImageId;
     @XmlElement
     private String mimeType;
     private Blob blob; //blob should not be serialized
@@ -24,11 +24,11 @@ public class CoverImage {
         this.isrc = isrc;
     }
 
-    public String getCoverImageId() {
+    public int getCoverImageId() {
         return coverImageId;
     }
 
-    public void setCoverImageId(String coverImageId) {
+    public void setCoverImageId(int coverImageId) {
         this.coverImageId = coverImageId;
     }
 
