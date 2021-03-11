@@ -12,6 +12,7 @@ public enum ManagerFactory {
     ALBUM("AlbumManagerImpl"),
     COVER_IMAGE("CoverImageManagerImpl"),
     ARTIST("ArtistManagerImpl");
+    LOG("LogManagerImpl");
 
     private IManager manager;
 
@@ -29,5 +30,4 @@ public enum ManagerFactory {
     public IManager getManager(){
         return manager;
     }
-
 }

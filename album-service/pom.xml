@@ -109,7 +109,7 @@
           </execution>
         </executions>
         <configuration>
-          <mainClass>com.example.rest.Main</mainClass>
+          <mainClass>Main</mainClass>
         </configuration>
       </plugin>
     </plugins>
