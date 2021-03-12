@@ -1,6 +1,3 @@
-import {withStyles} from "@material-ui/core/styles";
-import MuiAddIcon from "@material-ui/icons/Add";
-import AlbumList from "./AlbumList";
 import {useHistory, useLocation} from "react-router";
 import React from "react";
 import Navbar from "./subcomponents/Navbar";
@@ -8,10 +5,6 @@ import ArrowBackIosRoundedIcon from "@material-ui/icons/ArrowBackIosRounded";
 import {Button, FormControl, Input, InputLabel, TextField} from "@material-ui/core";
 import { useState, useEffect, useRef } from 'react';
 import FilterListIcon from "@material-ui/icons/FilterList";
-import {albumApi, albumServer} from "../endpoints/albumServer";
-import {logServer, logApi} from "../endpoints/logServer";
-import axios from "axios";
-
 
 function LogList() {
     const history = useHistory();
@@ -25,7 +18,7 @@ function LogList() {
         // Mount
         const params = location.state;
         if(params && params.filter) {
-            if(params.filter.change)
+            if(params.filter.changeType)
                 setChangeType(params.filter.changeType);
             if(params.filter.from)
                 setFromDateTime(params.filter.from);
@@ -35,16 +28,50 @@ function LogList() {
     }, [location.state]);
 
     const getList = () => {
-        history.push({
-            pathname: '/logs',
-            state: {
-                filter: {
-                    from: fromDateTime,
-                    to: toDateTime,
-                    changeType: changeType
+        let valid = true;
+
+        if(fromDateTime.length !== 0)
+        {
+            if(fromDateTime.length === 19)
+            {
+                if(isNaN(Date.parse(fromDateTime))){
+                    alert("Date format should be: yyyy-MM-dd HH:mm:ss")
+                    valid = false;
                 }
             }
-        });
+            else{
+                alert("Date format should be: yyyy-MM-dd HH:mm:ss")
+                valid = false;
+            }
+        }
+        if(toDateTime.length !== 0)
+        {
+            if(toDateTime.length === 19)
+            {
+                if(isNaN(Date.parse(toDateTime))){
+                    alert("Date format should be: yyyy-MM-dd HH:mm:ss")
+                    valid = false;
+                }
+            }
+            else{
+                alert("Date format should be: yyyy-MM-dd HH:mm:ss")
+                valid = false;
+            }
+        }
+
+        if(valid)
+        {
+            history.push({
+                pathname: '/logs',
+                state: {
+                    filter: {
+                        from: fromDateTime,
+                        to: toDateTime,
+                        changeType: changeType
+                    }
+                }
+            });
+        }
     };
 
     const backRedirect = () => {
@@ -87,6 +114,5 @@ function LogList() {
             </div>
         </React.Fragment>
     );
-
 }
 export default LogList;

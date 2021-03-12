@@ -1,5 +1,5 @@
 {
-  "ArtistManagerImpl": "ArtistManagerInMemory",
   "AlbumManagerImpl": "impl.AlbumManagerInDB",
+  "CoverImageManagerImpl": "impl.db.CoverImageManager",
   "LogManagerImpl": "LogManagerInDB"
 }
