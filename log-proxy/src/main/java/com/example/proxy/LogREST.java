@@ -7,6 +7,7 @@ import com.example.soap.service.LogEntryImplService;
 import factories.ManagerFactory;
 import repository.core.Album;
 import repository.core.ILogManager;
+import repository.core.RepException;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.GenericEntity;
@@ -41,6 +42,22 @@ public class LogREST {
         } catch(Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("An error occurred while trying to get the list of logs. Date Format should be: 'yyyy-MM-dd HH:mm:ss' ")
+                    .build();
+        }
+    }
+    @DELETE
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteLogs() {
+        try {
+            String log = port.clearLog();
+            GenericEntity<String> entity = new GenericEntity<String>(log) {};
+
+            return Response.status(Response.Status.OK)
+                    .entity(entity)
+                    .build();
+        } catch(Exception re) {
+            return Response.status(Response.Status.NOT_IMPLEMENTED)
+                    .entity(re.getMessage())
                     .build();
         }
     }

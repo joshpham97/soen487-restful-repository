@@ -105,7 +105,14 @@ function Logs() {
     }
 
     const clearLog = () => {
-        alert("ERROR: CLEAR LOG is not yet supported.")
+        logServer.delete(logApi.delete)
+            .then(res => {
+                history.push({
+                    pathname: '/logs',
+                    state: location.state
+                });
+            })
+            .catch(err => alert("ERROR: CLEAR LOG is not yet supported."));
     };
 
     return (
