@@ -1,20 +1,24 @@
 package impl.db;
 
 import database.dao.CoverImageDAO;
-import database.dao.LogDAO;
-import repository.core.CoverImage;
-import repository.core.ICoverImageManager;
-import repository.core.IManager;
+import factories.ManagerFactory;
+import repository.core.*;
 
 import java.io.InputStream;
-import java.sql.Blob;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 
 public class CoverImageManager implements ICoverImageManager {
     public CoverImage getCoverImageByAlbumIsrc(String isrc) throws SQLException{
         //Logging the data first
-        return CoverImageDAO.getCoverImageByAlbumIsrc(isrc);
+        ILogManager logManager = (ILogManager) ManagerFactory.LOG.getManager();
+        CoverImage coverImage = CoverImageDAO.getCoverImageByAlbumIsrc(isrc);
+
+        if(coverImage != null){
+            logManager.addLog(new Log(LocalDateTime.now(), Log.ChangeType.ADD, isrc));
+        }
+
+        return coverImage;
     }
 
     public static int insertCoverImage(InputStream imageBlob, String mimeType, String isrc) throws SQLException {
@@ -31,10 +35,23 @@ public class CoverImageManager implements ICoverImageManager {
     }
 
     public CoverImage createOrUpdateCoverImageIfExist(InputStream imageBlob, String mimeType, String isrc) throws SQLException {
-        return CoverImageDAO.createOrUpdateCoverImageIfExist(imageBlob, mimeType, isrc);
+        ILogManager logManager = (ILogManager) ManagerFactory.LOG.getManager();
+        CoverImage coverImage = CoverImageDAO.createOrUpdateCoverImageIfExist(imageBlob, mimeType, isrc);
+        if (coverImage != null){
+            logManager.addLog(new Log(LocalDateTime.now(), Log.ChangeType.UPDATE, isrc));
+        }
+
+        return coverImage;
     }
 
     public boolean deleteCoverImage(String isrc) throws SQLException {
-        return CoverImageDAO.deleteCoverImage(isrc);
+        ILogManager logManager = (ILogManager) ManagerFactory.LOG.getManager();
+        boolean isDeleted = CoverImageDAO.deleteCoverImage(isrc);
+
+        if(isDeleted){
+            logManager.addLog(new Log(LocalDateTime.now(), Log.ChangeType.DELETE, isrc));
+        }
+
+        return isDeleted;
     }
 }
