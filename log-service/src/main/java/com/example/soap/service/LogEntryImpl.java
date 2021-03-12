@@ -6,12 +6,12 @@ import repository.core.Log;
 import repository.core.LogFault;
 
 import javax.jws.WebService;
-import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.IllegalFormatException;
+
+import static repository.core.Log.ChangeType.*;
 
 @WebService(endpointInterface = "com.example.soap.service.LogEntry")
 public class LogEntryImpl implements LogEntry {
@@ -23,6 +23,20 @@ public class LogEntryImpl implements LogEntry {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime fromDateTime = null;
         LocalDateTime toDateTime = null;
+
+        Log.ChangeType type = null;
+        if(changeType.equalsIgnoreCase("add"))
+        {
+            type = ADD;
+        }
+        if(changeType.equalsIgnoreCase("update"))
+        {
+            type = UPDATE;
+        }
+        if(changeType.equalsIgnoreCase("delete"))
+        {
+            type = DELETE;
+        }
 
         //Format date if not null
         if(!from.equals(""))
@@ -48,7 +62,7 @@ public class LogEntryImpl implements LogEntry {
         //FILTERING
         if((fromDateTime != null && toDateTime != null && !changeType.equals("")) || (fromDateTime == null && toDateTime != null && !changeType.equals("")) || (fromDateTime != null && toDateTime == null && !changeType.equals("")))
         {
-            logs = logManager.listLog(fromDateTime, toDateTime, changeType);
+            logs = logManager.listLog(fromDateTime, toDateTime, type);
         }
         else if((fromDateTime != null && toDateTime == null && changeType.equals("")) || (fromDateTime == null && toDateTime != null && changeType.equals("")) || (fromDateTime != null && toDateTime != null && changeType.equals("")))
         {
@@ -56,7 +70,7 @@ public class LogEntryImpl implements LogEntry {
         }
         else if(fromDateTime == null && toDateTime == null && !changeType.equals(""))
         {
-            logs = logManager.listLog(changeType);
+            logs = logManager.listLog(type);
         }
         else
         {

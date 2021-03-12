@@ -15,16 +15,16 @@ public class LogManagerInDB implements ILogManager {
         return logs;
     }
 
-    public ArrayList<Log> listLog(String typeOfChange) {
+    public ArrayList<Log> listLog(Log.ChangeType typeOfChange) {
         ArrayList<Log> logs = new ArrayList<>();
-        logs = LogDAO.getLog(typeOfChange);
+        logs = LogDAO.getLog(typeOfChange.toString());
 
         return logs;
     }
 
-    public ArrayList<Log> listLog(LocalDateTime from, LocalDateTime to, String typeOfChange) {
+    public ArrayList<Log> listLog(LocalDateTime from, LocalDateTime to, Log.ChangeType typeOfChange) {
         ArrayList<Log> logs = new ArrayList<>();
-        logs = LogDAO.getLog(from, to, typeOfChange);
+        logs = LogDAO.getLog(from, to, typeOfChange.toString());
 
         return logs;
     }

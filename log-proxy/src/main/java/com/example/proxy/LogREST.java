@@ -2,18 +2,13 @@ package com.example.proxy;
 
 import com.example.soap.service.Log;
 import com.example.soap.service.LogEntry;
-import com.example.soap.service.LogEntryImpl;
 import com.example.soap.service.LogEntryImplService;
-import factories.ManagerFactory;
-import repository.core.Album;
-import repository.core.ILogManager;
-import repository.core.RepException;
+
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
 import java.util.List;
 
 @Path("log")
