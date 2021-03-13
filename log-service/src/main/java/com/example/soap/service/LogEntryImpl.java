@@ -23,8 +23,20 @@ public class LogEntryImpl implements LogEntry {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime fromDateTime = null;
         LocalDateTime toDateTime = null;
-
         Log.ChangeType type = null;
+
+        if(!changeType.equals(""))
+        {
+            if(changeType.equals("ADD") || changeType.equals("UPDATE") || changeType.equals("DELETE"))
+            {
+                type = Log.ChangeType.valueOf(changeType);
+            }
+            else{
+                throw new LogFault("Enter a valid ChangeType (CASE SENSITIVE): ADD , UPDATE, DELETE");
+            }
+        }
+
+        /**
         if(changeType.equalsIgnoreCase("add"))
         {
             type = ADD;
@@ -37,6 +49,7 @@ public class LogEntryImpl implements LogEntry {
         {
             type = DELETE;
         }
+         */
 
         //Format date if not null
         if(!from.equals(""))
