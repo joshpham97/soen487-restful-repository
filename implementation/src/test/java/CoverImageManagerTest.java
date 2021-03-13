@@ -124,9 +124,9 @@ public class CoverImageManagerTest {
     }*/
 
     @Test
-    public void deleteNonExistingImage() throws SQLException {
+    public void deleteNonExistingImage() throws RepException {
         ICoverImageManager coverImageManager = (ICoverImageManager) ManagerFactory.COVER_IMAGE.getManager();
-        assertThrows(SQLException.class, () -> {
+        assertThrows(RepException.class, () -> {
             coverImageManager.deleteCoverImage(testAlbum.getIsrc());
         });
     }

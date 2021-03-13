@@ -6,6 +6,7 @@ import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import repository.core.CoverImage;
 import repository.core.ICoverImageManager;
+import repository.core.RepException;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -21,7 +22,6 @@ public class CoverImageRest {
     @GET
     @Path("{isrc}")
     public Response getCoverImage(@PathParam("isrc") String isrc) {
-        String errorMessage;
         try{
             CoverImage coverImage = coverImageManager.getCoverImageByAlbumIsrc(isrc);
             int blobLength = (int) coverImage.getBlob().length();
@@ -32,13 +32,15 @@ public class CoverImageRest {
                     output.write(blobAsBytes);
                 }}).header("Content-Type", coverImage.getMimeType()).build();
 
+        }catch (RepException ex){
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(ex.getMessage())
+                    .build();
         }catch (SQLException ex){
-            errorMessage = "There was an error getting the cover image from the server database.";
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("There was an error reading the cover image of the album with isrc: " + isrc + " on the server.")
+                    .build();
         }
-
-        return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                .entity("There was an error getting the cover image from the server database.")
-                .build();
     }
 
     @PUT
@@ -61,13 +63,13 @@ public class CoverImageRest {
                             .build();
             }else{
                 return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                        .entity("Unable to create or update cover image")
+                        .entity("Unable to create or update cover image for album with the isrc: " + isrc)
                         .build();
             }
         }
-        catch(SQLException e) {
+        catch(RepException ex) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("There was an error creating or updating the cover image in the server database.")
+                    .entity(ex.getMessage())
                     .build();
         }
     }
@@ -81,13 +83,13 @@ public class CoverImageRest {
                         .build();
             }else{
                 return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                        .entity("Unable to delete cover image.")
+                        .entity("There was error deleting the cover image of the album with the isrc: " + isrc)
                         .build();
             }
         }
-        catch(SQLException e) {
+        catch(RepException ex) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("There was an error creating or updating the cover image in the server database.")
+                    .entity(ex.getMessage())
                     .build();
         }
     }
