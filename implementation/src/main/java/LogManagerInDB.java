@@ -36,10 +36,15 @@ public class LogManagerInDB implements ILogManager {
         return logs;
     }
 
-    public synchronized boolean addLog(Log log) {
+    public synchronized boolean addLog(Log log) throws RepException {
         LocalDateTime date = log.getDate();
         String typeOfChange = log.getChange().toString();
         String recordKey = log.getRecordKey();
+
+        if(recordKey.equals("") || typeOfChange.equals(""))
+        {
+            throw new RepException("ERROR: MISSING VALUE");
+        }
 
         boolean added = LogDAO.addLog(date, typeOfChange, recordKey);
         return added;
