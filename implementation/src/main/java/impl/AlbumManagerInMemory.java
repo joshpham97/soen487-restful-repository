@@ -1,3 +1,5 @@
+package impl;
+
 import repository.core.Album;
 import repository.core.CoverImage;
 import repository.core.IAlbumManager;

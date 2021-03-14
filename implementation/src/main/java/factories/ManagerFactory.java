@@ -10,7 +10,6 @@ import java.lang.reflect.Constructor;
 
 public enum ManagerFactory {
     ALBUM("AlbumManagerImpl"),
-    ARTIST("ArtistManagerImpl"),
     LOG("LogManagerImpl");
 
     private IManager manager;

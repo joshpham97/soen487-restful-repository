@@ -1,3 +1,5 @@
+package impl;
+
 import database.dao.LogDAO;
 import repository.core.ILogManager;
 import repository.core.Log;

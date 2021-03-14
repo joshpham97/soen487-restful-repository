@@ -1,3 +1,5 @@
+package impl;
+
 import repository.core.Artist;
 import repository.core.IArtistManager;
 
