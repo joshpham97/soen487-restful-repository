@@ -5,6 +5,9 @@ import {Button, Fab, Slide} from "@material-ui/core";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import {useHistory, useLocation} from "react-router";
 import DeleteIcon from "@material-ui/icons/Delete";
+import * as xml2js from "acorn";
+import { parse } from 'fast-xml-parser';
+import axios from "axios";
 
 function Logs() {
     const history = useHistory();
@@ -16,6 +19,7 @@ function Logs() {
     const toFilterRef = useRef('');
 
     const [logs, setLogs] = useState([]);
+    const [logs1, setLogs1] = useState([]);
     const [currentLog, setCurrentLog] = useState(null);
 
     useEffect( () => {
@@ -35,15 +39,16 @@ function Logs() {
             }
         }
 
-        getLogList();
-        const interval = setInterval(getLogList, 1000);
-
+        //getLogList();
+        //const interval = setInterval(getLogList, 1000);
+        const interval = setInterval(soap, 1000);
         // Unmount
         return () => clearInterval(interval);
     }, [location.state]);
 
+/**
     const getLogList = () => {
-    logServer.get(logApi.get, {
+        logServer.get(logApi.get, {
         params: {
             changeType: changeTypeFilterRef.current,
             from: fromFilterRef.current,
@@ -61,7 +66,7 @@ function Logs() {
         })
         .finally(() => setLoaded(true));
     };
-
+*/
     const filterRedirect = () => {
         history.push({
             pathname: '/logList',
@@ -76,16 +81,13 @@ function Logs() {
         else if(logs.length === 0)
             return <div>There are no matches</div>;
 
-
         return logs.map(log => (
             <div key={log.date}>
                 <span>changeType: {log.change}</span>
                 <span className="ml-3">Date: {log.date}</span>
                 <span className="ml-3">ISRC: {log.recordKey}</span>
             </div>
-
         ));
-
     }
 
     const addFilter = () => {
@@ -115,12 +117,49 @@ function Logs() {
             .catch(err => alert("ERROR: CLEAR LOG is not yet supported."));
     };
 
+    const soap = () => {
+        let xmlhttp = new XMLHttpRequest();
+        xmlhttp.open('POST', 'http://localhost:8082/logapp/log', true);
+        let type = 'DELETE';
+        let xml = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://service.soap.example.com/">\n' +
+            '   <soapenv:Header/>\n' +
+            '   <soapenv:Body>\n' +
+            '      <ser:listLog>\n' +
+            '         <!--Optional:-->\n' +
+            '         <from>'+fromFilterRef.current+'</from>\n' +
+            '         <!--Optional:-->\n' +
+            '         <to>' +toFilterRef.current+ '</to>\n' +
+            '         <!--Optional:-->\n' +
+            '         <changeType>' +changeTypeFilterRef.current+ '</changeType>\n' +
+            '      </ser:listLog>\n' +
+            '   </soapenv:Body>\n' +
+            '</soapenv:Envelope>';
+
+        xmlhttp.onreadystatechange = function () {
+            if (xmlhttp.readyState === 4) {
+                if (xmlhttp.status === 200) {
+                    //alert(xmlhttp.responseText);
+                    //alert(changeTypeFilterRef.current);
+                    //let doc = xmlhttp.responseXML;
+                    //let date = doc.getElementsByTagName("date");
+                  // let value = date[0].childNodes[0].nodeValue;
+                    //console.log(value);
+                    console.log(xmlhttp.responseXML);
+                }
+            }
+        }
+        // Send the POST request
+        xmlhttp.setRequestHeader('Content-Type', 'application/xml');
+        xmlhttp.send(xml);
+    }
+
     return (
         <React.Fragment>
             <Navbar />
 
             <div id="albumList">
                 <h3>Logs</h3>
+                {soap()}
                 {renderLogList()}
                 {addFilter()}
             </div>
