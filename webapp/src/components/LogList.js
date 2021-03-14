@@ -67,7 +67,7 @@ function LogList() {
                     filter: {
                         from: fromDateTime,
                         to: toDateTime,
-                        changeType: changeType
+                        changeType: changeType.toUpperCase()
                     }
                 }
             });
