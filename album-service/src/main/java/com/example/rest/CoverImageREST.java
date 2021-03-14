@@ -5,6 +5,7 @@ import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import repository.core.CoverImage;
+import repository.core.IAlbumManager;
 import repository.core.ICoverImageManager;
 import repository.core.RepException;
 
@@ -16,14 +17,15 @@ import java.io.*;
 import java.sql.SQLException;
 
 @Path("albumImage")
-public class CoverImageRest {
-    private ICoverImageManager coverImageManager = (ICoverImageManager) ManagerFactory.COVER_IMAGE.getManager();
+public class CoverImageREST {
+    private IAlbumManager albumManager = (IAlbumManager) ManagerFactory.ALBUM.getManager();
 
     @GET
     @Path("{isrc}")
     public Response getCoverImage(@PathParam("isrc") String isrc) {
         try{
-            CoverImage coverImage = coverImageManager.getCoverImageByAlbumIsrc(isrc);
+            CoverImage coverImage = albumManager.getCoverImageByAlbumIsrc(isrc);
+            long x = coverImage.getBlob().length();
             int blobLength = (int) coverImage.getBlob().length();
             byte[] blobAsBytes = coverImage.getBlob().getBytes(1, blobLength);
 
@@ -51,8 +53,8 @@ public class CoverImageRest {
                                      @FormDataParam("file") final FormDataBodyPart body,
                                      @PathParam("isrc") String isrc) {
         try {
-            boolean isCreated = coverImageManager.getCoverImageByAlbumIsrc(isrc) != null;
-            CoverImage coverImage = coverImageManager.createOrUpdateCoverImageIfExist(fileInputStream, body.getMediaType().toString(), isrc);
+            boolean isCreated = albumManager.getCoverImageByAlbumIsrc(isrc) != null;
+            CoverImage coverImage = albumManager.createOrUpdateCoverImageIfExist(fileInputStream, body.getMediaType().toString(), isrc);
 
             if (coverImage != null){
                 if (isCreated)
@@ -78,7 +80,7 @@ public class CoverImageRest {
     @Path("{isrc}")
     public Response deleteCoverImage(@PathParam("isrc") String isrc){
         try {
-            if(coverImageManager.deleteCoverImage(isrc)){
+            if(albumManager.deleteCoverImage(isrc)){
                 return Response.status(Response.Status.OK)
                         .build();
             }else{

@@ -76,11 +76,10 @@ public class CoverImageManagerTest {
     @Test
     public void get() throws SQLException, RepException {
         //Arrange, create album and image
-        ICoverImageManager coverImageManager = (ICoverImageManager) ManagerFactory.COVER_IMAGE.getManager();
         IAlbumManager albumManager = (IAlbumManager) ManagerFactory.ALBUM.getManager();
         ILogManager logManager = (ILogManager) ManagerFactory.LOG.getManager();
         albumManager.addAlbum(testAlbum);
-        coverImageManager.createOrUpdateCoverImageIfExist(imageInputStream, mimeType, testAlbum.getIsrc());
+        albumManager.createOrUpdateCoverImageIfExist(imageInputStream, mimeType, testAlbum.getIsrc());
 
         //Action
         CoverImage coverImage = CoverImageDAO.getCoverImageByAlbumIsrc(testAlbum.getIsrc());
@@ -92,7 +91,7 @@ public class CoverImageManagerTest {
         assertEquals(createdLog.getChange(), Log.ChangeType.UPDATE);
 
         //Clean up
-        coverImageManager.deleteCoverImage(testAlbum.getIsrc());
+        albumManager.deleteCoverImage(testAlbum.getIsrc());
         albumManager.deleteAlbum(testAlbum.getIsrc());
     }
 
@@ -125,23 +124,22 @@ public class CoverImageManagerTest {
 
     @Test
     public void deleteNonExistingImage() throws RepException {
-        ICoverImageManager coverImageManager = (ICoverImageManager) ManagerFactory.COVER_IMAGE.getManager();
+        IAlbumManager albumManager = (IAlbumManager) ManagerFactory.ALBUM.getManager();
         assertThrows(RepException.class, () -> {
-            coverImageManager.deleteCoverImage(testAlbum.getIsrc());
+            albumManager.deleteCoverImage(testAlbum.getIsrc());
         });
     }
 
     @Test
     public void delete() throws SQLException, RepException {
         //arrange
-        ICoverImageManager coverImageManager = (ICoverImageManager) ManagerFactory.COVER_IMAGE.getManager();
         IAlbumManager albumManager = (IAlbumManager) ManagerFactory.ALBUM.getManager();
         ILogManager logManager = (ILogManager) ManagerFactory.LOG.getManager();
         albumManager.addAlbum(testAlbum);
-        coverImageManager.createOrUpdateCoverImageIfExist(imageInputStream, mimeType, testAlbum.getIsrc());
+        albumManager.createOrUpdateCoverImageIfExist(imageInputStream, mimeType, testAlbum.getIsrc());
 
         //Action
-        boolean success = coverImageManager.deleteCoverImage(testAlbum.getIsrc());
+        boolean success = albumManager.deleteCoverImage(testAlbum.getIsrc());
         Log deletedLog = getLastActionLogOfAlbum();
 
         //Assert
@@ -155,14 +153,13 @@ public class CoverImageManagerTest {
     @Test
     public void createOrUpdate() throws SQLException, RepException {
         //arrange
-        ICoverImageManager coverImageManager = (ICoverImageManager) ManagerFactory.COVER_IMAGE.getManager();
         IAlbumManager albumManager = (IAlbumManager) ManagerFactory.ALBUM.getManager();
 
         albumManager.addAlbum(testAlbum);
 
 
         //Action
-        CoverImage coverImage = coverImageManager.createOrUpdateCoverImageIfExist(imageInputStream, mimeType, testAlbum.getIsrc());
+        CoverImage coverImage = albumManager.createOrUpdateCoverImageIfExist(imageInputStream, mimeType, testAlbum.getIsrc());
         assertTrue(coverImage.getCoverImageId() > 0);
         assertNotNull(coverImage);
         assertEquals(coverImage.getMimeType(), mimeType);

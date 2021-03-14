@@ -1,6 +1,9 @@
 import repository.core.Album;
+import repository.core.CoverImage;
 import repository.core.IAlbumManager;
+import repository.core.RepException;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Optional;
@@ -62,5 +65,20 @@ public class AlbumManagerInMemory implements IAlbumManager  {
             return false;
 
         return true;
+    }
+
+    @Override
+    public CoverImage createOrUpdateCoverImageIfExist(InputStream imageBlob, String mimeType, String isrc) throws RepException {
+        return null;
+    }
+
+    @Override
+    public CoverImage getCoverImageByAlbumIsrc(String isrc) throws RepException {
+        return null;
+    }
+
+    @Override
+    public boolean deleteCoverImage(String isrc) throws RepException {
+        return false;
     }
 }
