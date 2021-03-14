@@ -15,8 +15,6 @@ import Divider from '@material-ui/core/Divider';
 import Navbar from './subcomponents/Navbar';
 import { albumApi, albumServer } from "../endpoints/albumServer";
 import { formatter } from '../utilities/formatter';
-import AlbumCoverForm from './AlbumCoverForm';
-import AlbumCover from './subcomponents/AlbumCover';
 
 const DescInput = withStyles({
     root: {
@@ -26,7 +24,7 @@ const DescInput = withStyles({
     }
 })(MuiTextField);
 
-function AlbumForm() {
+function AlbumCoverForm() {
     const history = useHistory();
     const location = useLocation();
 
@@ -36,7 +34,8 @@ function AlbumForm() {
     const [lastname, setLastname] = useState('');
     const [releaseYear, setReleaseYear] = useState('');
     const [contentDesc, setContentDesc] = useState('');
-    const [coverImage, setCoverImage] = useState(false)
+    const [coverImage, setCoverImage] = useState('')
+    const [coverImageFile, setCoverImageFile] = useState(null)
     const yearRef = useRef(new Date().getFullYear());
 
     const [isrcError, setIsrcError] = useState('');
@@ -48,22 +47,20 @@ function AlbumForm() {
 
     useEffect(() => {
         // Mount
-        const params = location.state;
+        const params = location.state.album;
         if(params && params.isrc) {
             setIsrc(params.isrc);
-            setTitle(params.title);
-            setFirstname(params.firstname);
-            setLastname(params.lastname);
-            setReleaseYear(params.releaseYear);
-            setContentDesc(params.contentDesc);
         }
 
+        console.log("useEffect() isrc is :" + params.isrc);
+
         //Check if the image exist
-        albumServer.get(albumApi.getAlbumCover, {
+        /*albumServer.get(albumApi.getAlbumCover, {
             isrc: isrc
         }).then(res => {
-            setCoverImage(true);
-        })
+            console.log("Get successful");
+            setCoverImage(formatter.getCoverImageUrl(isrc));
+        })*/
 
     }, [location.state]);
 
@@ -103,52 +100,17 @@ function AlbumForm() {
             operation();
     };
 
-    const addAlbum = () => {
-        var success = false;
-        
-        albumServer.post(albumApi.add, {
+    const updateCoverImage = () => {
+        console.log("Update cover image fired ");
+        albumServer.put(albumApi.updateCoverImage, {
             isrc: isrc,
-            title: title,
-            releaseYear: releaseYear,
-            contentDesc: contentDesc,
-            artist: {
-                firstname: firstname,
-                lastname: lastname
-            }
+            file: coverImageFile
         })
-            .then(res => {
-                history.push({
-                    pathname: '/albums',
-                    state: {
-                        album: res.data
-                    }
-                });
-                success = true;
-            })
-            .catch(err => alert(err));
+        .then(res => alert("Update cover image success"))
+        .catch(err => alert(err));
     };
 
-    const updateAlbum = () => {
-        albumServer.put(albumApi.update, {
-            isrc: location.state.isrc,
-            title: title,
-            releaseYear: releaseYear,
-            contentDesc: contentDesc,
-            artist: {
-                firstname: firstname,
-                lastname: lastname
-            }
-        })
-            .then(res => history.push({
-                pathname: '/albums',
-                state: {
-                    album: res.data
-                }
-            }))
-            .catch(err => alert(err));
-    };
-
-    const deleteAlbum = () => {
+    const deleteCoverImage = () => {
         albumServer.delete(albumApi.delete + '/' + location.state.isrc)
             .then(() => {
                 location.state.album = null;
@@ -198,67 +160,33 @@ function AlbumForm() {
         if(location.state && location.state.isrc)
             return (
                 <React.Fragment>
-                    <Button className="mr-3" variant="contained" color="primary" startIcon={<SaveIcon />} onClick={() => submit(updateAlbum)}>Save</Button>
-                    <Button variant="contained" color="secondary" startIcon={<DeleteIcon />} onClick={deleteAlbum}>Delete</Button>
+                    <Button className="mr-3" variant="contained" color="primary" startIcon={<SaveIcon />} onClick={updateCoverImage}>Save</Button>
+                    <Button variant="contained" color="secondary" startIcon={<DeleteIcon />} onClick={deleteCoverImage}>Delete</Button>
                 </React.Fragment>
             );
 
-        return <Button variant="contained" color="primary" startIcon={<AddIcon />} onClick={() => submit(addAlbum)}>Add</Button>
-    };
-
-    const onFileChange = () => {
-        console.log(coverImage.name)
+        return <Button variant="contained" color="primary" startIcon={<AddIcon />} onClick={() => submit(updateCoverImage)}>Add</Button>
     };
 
     return (
         <React.Fragment>
-            <Navbar />
-
-            <div id="albumForm">
-                <ArrowBackIosRoundedIcon className="back" fontSize="large" onClick={backRedirect} />
-
-                <h3>
-                    {renderHeader()}
-                </h3>
-
-                {renderIsrcInput()}
+            <div id="albumCoverForm">
+                <h5>Album cover (optional)</h5>
 
                 <div className="formRow">
                     <FormControl className="formColumn">
-                        <TextField label="Title" value={title} error={titleError !== ''} helperText={titleError}
-                                   onChange={(e) => setTitle(e.currentTarget.value)} />
-                    </FormControl>
-
-                    <FormControl className="formColumn">
-                        <TextField type="number" label="Release Year" value={releaseYear} error={releaseYearError !== ''} helperText={releaseYearError}
-                                   onChange={(e) => setReleaseYear(e.currentTarget.value)} />
+                        <input type="file" onChange={(e) => setCoverImageFile(e.currentTarget.files[0])}/>
                     </FormControl>
                 </div>
 
                 <div className="formRow">
-                    <FormControl className="formColumn">
-                        <TextField label="First Name" value={firstname} error={firstnameError !== ''} helperText={firstnameError}
-                                   onChange={(e) => setFirstname(e.currentTarget.value)} />
-                    </FormControl>
-
-                    <FormControl className="formColumn">
-                        <TextField label="Last Name" value={lastname} error={lastnameError !== ''} helperText={lastnameError}
-                                   onChange={(e) => setLastname(e.currentTarget.value)} />
-                    </FormControl>
-                </div>
-
-                <div className="formRow">
-                    <DescInput id="albumContentDescInput" value={contentDesc} label="Description" variant="outlined" rows={5} multiline
-                               onChange={(e) => setContentDesc(e.currentTarget.value)} />
+                    <img src={formatter.getCoverImageUrl(isrc)} style={{"width" : "30%"}}/>
                 </div>
 
                 {renderButtons()}
-
-                <Divider variant="middle" />
-                <AlbumCoverForm isrc={isrc}></AlbumCoverForm>
             </div>
         </React.Fragment>
     );
 }
 
-export default AlbumForm;
+export default AlbumCoverForm;

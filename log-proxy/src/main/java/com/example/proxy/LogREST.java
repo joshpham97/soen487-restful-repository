@@ -45,6 +45,7 @@ public class LogREST {
                     .build();
         }
     }
+
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteLogs() {
