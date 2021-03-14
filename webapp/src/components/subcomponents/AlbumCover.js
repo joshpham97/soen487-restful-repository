@@ -3,8 +3,6 @@ import MuiCard from '@material-ui/core/Card';
 import MuiCardMedia from '@material-ui/core/CardMedia';
 import MuiCardHeader from '@material-ui/core/CardHeader';
 import { CardActionArea } from '@material-ui/core';
-import { albumApi, albumServer } from '../../endpoints/albumServer';
-import { serverConfig } from '../../serverConfig';
 
 const Card = withStyles({
     root: {
@@ -34,16 +32,17 @@ const CardHeader = withStyles({
     }
 })(MuiCardHeader);
 
-const getAlbumCoverUrl = (isrc) =>
-{
-    return `${serverConfig.basrUrl}${serverConfig.albumApi.getAlbumCover}/${isrc}`;
-}
 
 function AlbumCover(props) {
+    const getAlbumCoverUrl = () =>
+    {
+        return `http://localhost:8081/myapp/albumImage/${props.isrc}`;
+    }
+
     return (
       <Card>
           <CardActionArea>
-              <CardMedia image={getAlbumCoverUrl(props.isrc)} title="Paella dish">
+              <CardMedia image={getAlbumCoverUrl()} title="Paella dish">
                  
               </CardMedia>
               <CardHeader title={props.title} subheader={props.firstname + " " + props.lastname} />

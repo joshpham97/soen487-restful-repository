@@ -13,5 +13,6 @@ export const albumApi = {
     update: '/myapp/album',
     delete: '/myapp/album',
     getAlbumCover: '/myapp/albumImage',
-    addAlbumCover: '/myapp/albumImage'
+    addAlbumCover: '/myapp/albumImage',
+    deleteAlbumCover: '/myapp/albumImage'
 };

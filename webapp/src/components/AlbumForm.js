@@ -13,10 +13,8 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import Divider from '@material-ui/core/Divider';
 
 import Navbar from './subcomponents/Navbar';
-import { albumApi, albumServer } from "../endpoints/albumServer";
-import { formatter } from '../utilities/formatter';
-import AlbumCoverForm from './AlbumCoverForm';
-import AlbumCover from './subcomponents/AlbumCover';
+import { albumApi, albumServer } from "../endpoints/albumServer"; 
+import AlbumCoverForm from './subcomponents/AlbumCoverForm';
 
 const DescInput = withStyles({
     root: {
@@ -36,7 +34,6 @@ function AlbumForm() {
     const [lastname, setLastname] = useState('');
     const [releaseYear, setReleaseYear] = useState('');
     const [contentDesc, setContentDesc] = useState('');
-    const [coverImage, setCoverImage] = useState(false)
     const yearRef = useRef(new Date().getFullYear());
 
     const [isrcError, setIsrcError] = useState('');
@@ -57,14 +54,6 @@ function AlbumForm() {
             setReleaseYear(params.releaseYear);
             setContentDesc(params.contentDesc);
         }
-
-        //Check if the image exist
-        albumServer.get(albumApi.getAlbumCover, {
-            isrc: isrc
-        }).then(res => {
-            setCoverImage(true);
-        })
-
     }, [location.state]);
 
     const submit = (operation) => {
@@ -206,10 +195,6 @@ function AlbumForm() {
         return <Button variant="contained" color="primary" startIcon={<AddIcon />} onClick={() => submit(addAlbum)}>Add</Button>
     };
 
-    const onFileChange = () => {
-        console.log(coverImage.name)
-    };
-
     return (
         <React.Fragment>
             <Navbar />
@@ -254,7 +239,7 @@ function AlbumForm() {
 
                 {renderButtons()}
 
-                <Divider variant="middle" />
+                <Divider variant="middle" style={{"margin": "20px auto 20px auto", "width": "60%"}} />
                 <AlbumCoverForm isrc={isrc}></AlbumCoverForm>
             </div>
         </React.Fragment>
