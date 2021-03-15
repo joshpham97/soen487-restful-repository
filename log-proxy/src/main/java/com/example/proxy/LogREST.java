@@ -15,11 +15,11 @@ import java.util.Scanner;
 @Path("log")
 public class LogREST {
     @POST
-    @Consumes(MediaType.TEXT_XML)
-    @Produces(MediaType.TEXT_XML)
+    @Consumes(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_XML)
     public Response soapOperation(String xml) {
         try(CloseableHttpClient client = HttpClients.createDefault()) {
-            HttpPost httpPost = new HttpPost("http://localhost:8090/log");
+            HttpPost httpPost = new HttpPost(String.format("http://localhost:8090/log"));
 
             httpPost.setHeader("Content-Type", "text/xml");
             StringEntity entity = new StringEntity(xml);

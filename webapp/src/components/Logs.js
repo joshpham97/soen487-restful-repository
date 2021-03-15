@@ -1,7 +1,6 @@
 import Navbar from "./subcomponents/Navbar";
 import React, {Component, useEffect, useRef, useState} from "react";
 import { logApi, logServer} from '../endpoints/logServer';
-import { soapOperations, envelopeBuilder, messageParser } from '../utilities/soapUtils';
 import {Button, Fab, Slide} from "@material-ui/core";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import {useHistory, useLocation} from "react-router";
@@ -44,23 +43,23 @@ function Logs() {
     }, [location.state]);
 
     const getLogList = () => {
-        const soapEnvelope = envelopeBuilder(soapOperations.list, {
-            from: fromFilterRef.current,
-            to: toFilterRef.current,
+    logServer.get(logApi.get, {
+        params: {
             changeType: changeTypeFilterRef.current,
-        });
-
-        logServer.post(logApi.soapOperation, soapEnvelope, {
-            headers: {
-                "Content-Type": 'text/xml'
-            }
+            from: fromFilterRef.current,
+            to: toFilterRef.current
+        }
+    })
+        .then(res => {
+            setLogs(res.data.filter((log) => {
+                return log.change.match(new RegExp(changeTypeFilterRef.current, 'i'));
+            }));
         })
-            .then(res => setLogs(messageParser(res.data)))
-            .catch(err => {
-                console.log(err);
-                setLogs(null);
-            })
-            .finally(() => setLoaded(true));
+        .catch(err => {
+            console.log(err);
+            setLogs(null);
+        })
+        .finally(() => setLoaded(true));
     };
 
     const filterRedirect = () => {
@@ -106,14 +105,13 @@ function Logs() {
     }
 
     const clearLog = () => {
-        const soapEnvelope = envelopeBuilder(soapOperations.clear);
-
-        logServer.post(logApi.soapOperation, soapEnvelope, {
-            headers: {
-                "Content-Type": 'text/xml'
-            }
-        })
-            .then(res => messageParser(res.data))
+        logServer.delete(logApi.delete)
+            .then(res => {
+                history.push({
+                    pathname: '/logs',
+                    state: location.state
+                });
+            })
             .catch(err => alert("ERROR: CLEAR LOG is not yet supported."));
     };
 

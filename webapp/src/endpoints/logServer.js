@@ -8,6 +8,5 @@ export const logServer = axios.create({
 
 export const logApi = {
     get: '/logapp/log',
-    delete: '/logapp/log',
-    soapOperation: '/logapp/log'
+    delete: '/logapp/log'
 };
