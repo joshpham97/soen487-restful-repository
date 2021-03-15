@@ -40,7 +40,11 @@ function AlbumCoverForm(props) {
             reloadImage();
             alert("Updated the album with new cover image");
         })
-        .catch(err => alert(err));
+        .catch(err => {
+            if(err.response){
+                alert(err.response.data);
+            };
+        });
     };
 
     const deleteCoverImage = () => {
@@ -52,7 +56,11 @@ function AlbumCoverForm(props) {
                 reloadImage();
                 alert("Cover image deleted");
             })
-            .catch(err => alert(err));
+            .catch(err => {
+                if(err.response){
+                    alert(err.response.data);
+                };
+            });
     };
 
     const reloadImage = () => {

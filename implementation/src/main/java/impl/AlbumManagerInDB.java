@@ -96,6 +96,9 @@ public class AlbumManagerInDB implements IAlbumManager {
     }
 
     public CoverImage createOrUpdateCoverImageIfExist(InputStream imageBlob, String mimeType, String isrc) throws RepException {
+        if (!mimeType.startsWith("image/"))
+            throw new RepException("Failed to update the cover image. The file is not a valid image file");
+
         try{
             ILogManager logManager = (ILogManager) ManagerFactory.LOG.getManager();
             //CoverImage coverImage = CoverImageDAO.createOrUpdateCoverImageIfExist(imageBlob, mimeType, isrc);
@@ -131,7 +134,7 @@ public class AlbumManagerInDB implements IAlbumManager {
 
             return isDeleted;
         }catch (SQLException ex){
-            throw new RepException("There was error deleting the cover image with the isrc: " + isrc);
+            throw new RepException("There was error deleting the cover image with the isrc: " + isrc + ". Cover image may not exist");
         }
     }
 
