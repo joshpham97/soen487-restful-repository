@@ -6,15 +6,12 @@ import { createBrowserHistory } from 'history';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import './styles/index.css';
-import Home from './components/Home';
-import Example from './components/Example';
-import Example2 from './components/Example2';
 import AlbumList from './components/AlbumList';
 import AlbumFilter from './components/AlbumFilter';
 import AlbumDetails from './components/AlbumDetails';
 import AlbumForm from './components/AlbumForm';
+import LogFilter from './components/LogFilter';
 import Logs from './components/Logs';
-import LogList from './components/LogList';
 
 const history = createBrowserHistory();
 
@@ -28,14 +25,13 @@ const routing = (
             <Route path="/albums/get" component={AlbumDetails} />
             <Route path="/albums/filter" component={AlbumFilter} />
             <Route path="/albums" component={AlbumList} />
-            <Route path="/example2" component={Example2} />
-            <Route path="/example" component={Example} />
+            <Route path="/logs/filter" component={LogFilter} />
             <Route path="/logs" component={Logs} />
-            <Route path="/logList" component={LogList} />
-            <Route path="/" component={Home} />
+            <Route path="/" component={AlbumList} />
         </Switch>
     </Router>
     </React.StrictMode>
 );
+
 
 ReactDOM.render(routing, document.getElementById('root'));

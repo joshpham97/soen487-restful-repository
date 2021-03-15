@@ -1,10 +1,32 @@
+import '../styles/logs.css';
+
 import Navbar from "./subcomponents/Navbar";
-import React, {Component, useEffect, useRef, useState} from "react";
+import React, { useEffect, useRef, useState} from "react";
+import { withStyles } from '@material-ui/core/styles';
 import { logApi, logServer} from '../endpoints/logServer';
-import {Button, Fab, Slide} from "@material-ui/core";
+import { soapOperations, envelopeBuilder, messageParser } from '../utilities/soapUtils';
+import MuiTableContainer from '@material-ui/core/TableContainer';
+import { CircularProgress, Fab, Table, TableHead, TableBody, TableRow, TableCell } from "@material-ui/core";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import {useHistory, useLocation} from "react-router";
 import DeleteIcon from "@material-ui/icons/Delete";
+
+const windowHeight = window.innerHeight;
+const tableHeight = windowHeight/1.7;
+
+const TableContainer = withStyles({
+    root: {
+        height: tableHeight + 'px'
+    }
+})(MuiTableContainer);
+
+const BodyTableRow = withStyles((theme) => ({
+    root: {
+        '&:nth-of-type(odd)': {
+            backgroundColor: theme.palette.action.hover
+        }
+    }
+}))(TableRow);
 
 function Logs() {
     const history = useHistory();
@@ -16,15 +38,11 @@ function Logs() {
     const toFilterRef = useRef('');
 
     const [logs, setLogs] = useState([]);
-    const [currentLog, setCurrentLog] = useState(null);
 
     useEffect( () => {
         // Mount
         const params = location.state;
         if(params) {
-            if (params.log)
-                setCurrentLog(params.log);
-
             if(params.filter) {
                 if (params.filter.changeType)
                     changeTypeFilterRef.current = params.filter.changeType;
@@ -43,86 +61,110 @@ function Logs() {
     }, [location.state]);
 
     const getLogList = () => {
-    logServer.get(logApi.get, {
-        params: {
-            changeType: changeTypeFilterRef.current,
+        const soapEnvelope = envelopeBuilder(soapOperations.list, {
             from: fromFilterRef.current,
-            to: toFilterRef.current
-        }
-    })
-        .then(res => {
-            setLogs(res.data.filter((log) => {
-                return log.change.match(new RegExp(changeTypeFilterRef.current, 'i'));
-            }));
+            to: toFilterRef.current,
+            changeType: changeTypeFilterRef.current,
+        });
+
+        logServer.post(logApi.soapOperation, soapEnvelope, {
+            headers: {
+                'Content-Type': 'text/xml'
+            }
         })
-        .catch(err => {
-            console.log(err);
-            setLogs(null);
-        })
-        .finally(() => setLoaded(true));
+            .then(res => setLogs(messageParser(res.data)))
+            .catch(err => {
+                if(err.response)
+                    alert(err.response.data);
+
+                setLogs(null);
+            })
+            .finally(() => setLoaded(true));
     };
 
     const filterRedirect = () => {
         history.push({
-            pathname: '/logList',
+            pathname: '/logs/filter',
             state: location.state
         });
     };
 
     const renderLogList = () => {
+        if(!loaded)
+            return <CircularProgress color="inherit" />
+        else if(!logs)
+            return <div>An error occurred while getting the logs.</div>;
+        else if(logs.length === 0) {
+            return (
+                <React.Fragment>
+                    <div>There are no matches</div>
+                    {addFilter()}
+                </React.Fragment>
+            );
+        }
 
-        if(!logs)
-            return <div>An error occurred while getting the logs. Date format should be: yyyy-MM-dd HH:mm:ss</div>;
-        else if(logs.length === 0)
-            return <div>There are no matches</div>;
+        return (
+            <React.Fragment>
+                <TableContainer>
+                    <Table size="small" stickyHeader>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell align="center"><b>ISRC</b></TableCell>
+                                <TableCell align="center"><b>Change Type</b></TableCell>
+                                <TableCell align="center"><b>Date/Time</b></TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {logs.map((log, n) => (
+                                <BodyTableRow key={n}>
+                                    <TableCell align="center">{log.recordKey}</TableCell>
+                                    <TableCell align="center">{log.change}</TableCell>
+                                    <TableCell align="center">{log.date}</TableCell>
+                                </BodyTableRow>
 
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
 
-        return logs.map(log => (
-            <div key={log.date}>
-                <span>changeType: {log.change}</span>
-                <span className="ml-3">Date: {log.date}</span>
-                <span className="ml-3">ISRC: {log.recordKey}</span>
-            </div>
-
-        ));
-
-    }
+                {addFilter()}
+            </React.Fragment>
+        );
+    };
 
     const addFilter = () => {
         return (
-            <React.Fragment>
-                <div className="mt-3 mb-3">
-                    <Fab size="medium" onClick={filterRedirect} >
-                        <FilterListIcon />
-                    </Fab>
-                    &nbsp;&nbsp;&nbsp;
-                    <Fab size="medium" onClick={clearLog} >
-                        <DeleteIcon />
-                    </Fab>
-                </div>
-            </React.Fragment>
+            <div className="mt-3 mb-3">
+                <Fab size="medium" onClick={filterRedirect} >
+                    <FilterListIcon />
+                </Fab>
+                &nbsp;&nbsp;&nbsp;
+                <Fab size="medium" onClick={clearLog} >
+                    <DeleteIcon />
+                </Fab>
+            </div>
         );
-    }
+    };
 
     const clearLog = () => {
-        logServer.delete(logApi.delete)
-            .then(res => {
-                history.push({
-                    pathname: '/logs',
-                    state: location.state
-                });
-            })
-            .catch(err => alert("ERROR: CLEAR LOG is not yet supported."));
+        const soapEnvelope = envelopeBuilder(soapOperations.clear);
+
+        logServer.post(logApi.soapOperation, soapEnvelope, {
+            headers: {
+                'Content-Type': 'text/xml'
+            }
+        })
+            .then(res => messageParser(res.data))
+            .catch(err => alert(err));
     };
 
     return (
         <React.Fragment>
             <Navbar />
 
-            <div id="albumList">
+            <div id="logList">
                 <h3>Logs</h3>
                 {renderLogList()}
-                {addFilter()}
             </div>
         </React.Fragment>
     );

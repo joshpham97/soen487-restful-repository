@@ -48,7 +48,10 @@ function AlbumDetails() {
                 if(res.data.isrc)
                     setAlbum(res.data)
             })
-            .catch(err => console.log(err))
+            .catch(err => {
+                if(err.response)
+                    console.log(err.response.data); // Handled by UI
+            })
             .finally(() => setLoaded(true));
     };
 
@@ -71,7 +74,7 @@ function AlbumDetails() {
         return (
             <React.Fragment>
                 <div className="mt-3 albumCover">
-                    <AlbumCover title={album.title} firstname={album.artist.firstname} lastname={album.artist.lastname} />
+                    <AlbumCover isrc={album.isrc} title={album.title} firstname={album.artist.firstname} lastname={album.artist.lastname} />
                 </div>
 
                 <Divider className="mt-3" />

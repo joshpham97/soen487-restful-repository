@@ -1,7 +1,7 @@
 package database.dao;
 
 import database.db.DBConnection;
-import repository.core.CoverImage;
+import repository.core.pojo.CoverImage;
 
 import java.io.InputStream;
 import java.sql.*;

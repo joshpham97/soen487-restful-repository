@@ -1,7 +1,11 @@
 package com.example.rest;
 
 import factories.ManagerFactory;
-import repository.core.*;
+import repository.core.exception.RepException;
+import repository.core.interfaces.IAlbumManager;
+import repository.core.interfaces.ILogManager;
+import repository.core.pojo.Album;
+import repository.core.pojo.Log;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.GenericEntity;
@@ -13,7 +17,6 @@ import java.util.List;
 @Path("album")
 public class AlbumREST {
     private IAlbumManager albumManager = (IAlbumManager) ManagerFactory.ALBUM.getManager();
-    private ILogManager logManager = (ILogManager) ManagerFactory.LOG.getManager();
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -68,8 +71,6 @@ public class AlbumREST {
                         .build();
             }
 
-            logManager.addLog(new Log(LocalDateTime.now(), Log.ChangeType.ADD, album.getIsrc()));
-
             return Response.status(Response.Status.OK)
                     .entity(album)
                     .build();
@@ -98,8 +99,6 @@ public class AlbumREST {
                         .build();
             }
 
-            logManager.addLog(new Log(LocalDateTime.now(), Log.ChangeType.UPDATE, album.getIsrc()));
-
             return Response.status(Response.Status.OK)
                     .entity(album)
                     .build();
@@ -120,8 +119,6 @@ public class AlbumREST {
     public Response deleteAlbum(@PathParam("isrc") String isrc) {
         try {
             albumManager.deleteAlbum(isrc);
-
-            logManager.addLog(new Log(LocalDateTime.now(), Log.ChangeType.DELETE, isrc));
 
             return Response.status(Response.Status.OK)
                     .entity("Successfully deleted album")

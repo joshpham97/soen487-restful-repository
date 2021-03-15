@@ -1,13 +1,12 @@
 package factories;
 
-import repository.core.IManager;
+import repository.core.interfaces.IManager;
 import utilities.ConfigReader;
 
 import java.lang.reflect.Constructor;
 
 public enum ManagerFactory {
     ALBUM("AlbumManagerImpl"),
-    COVER_IMAGE("CoverImageManagerImpl"),
     LOG("LogManagerImpl");
 
     private IManager manager;

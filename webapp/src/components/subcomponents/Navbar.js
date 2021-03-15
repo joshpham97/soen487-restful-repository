@@ -5,16 +5,6 @@ import MenuIcon from '@material-ui/icons/Menu';
 
 const links = [
     {
-        label: 'Home',
-        path: '/'
-    }, {
-        label: 'Example1',
-        path: '/example'
-
-    }, {
-        label: 'Example2',
-        path: '/example2'
-    }, {
         label: 'Albums',
         path: '/albums'
     },  {
