@@ -81,18 +81,15 @@ public class CoverImageManagerTest {
     public void get() throws SQLException, RepException {
         //Arrange, create album and image
         IAlbumManager albumManager = (IAlbumManager) ManagerFactory.ALBUM.getManager();
-        ILogManager logManager = (ILogManager) ManagerFactory.LOG.getManager();
         albumManager.addAlbum(testAlbum);
         albumManager.createOrUpdateCoverImageIfExist(imageInputStream, mimeType, testAlbum.getIsrc());
 
         //Action
         CoverImage coverImage = CoverImageDAO.getCoverImageByAlbumIsrc(testAlbum.getIsrc());
-        Log createdLog = getLastActionLogOfAlbum();
 
         //Assert
         assertEquals(coverImage.getIsrc(), testAlbum.getIsrc());
         assertEquals(coverImage.getMimeType(), mimeType);
-        assertEquals(createdLog.getChange(), Log.ChangeType.UPDATE);
 
         //Clean up
         albumManager.deleteCoverImage(testAlbum.getIsrc());
@@ -148,7 +145,7 @@ public class CoverImageManagerTest {
 
         //Assert
         assertTrue(success);
-        assertEquals(deletedLog.getChange(), Log.ChangeType.DELETE);
+        assertEquals(deletedLog.getChange(), Log.ChangeType.UPDATE);
 
         //Clean up
         AlbumDAO.deleteAlbum(testAlbum.getIsrc());
