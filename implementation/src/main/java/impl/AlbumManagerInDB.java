@@ -37,9 +37,15 @@ public class AlbumManagerInDB implements IAlbumManager {
         else if(getAlbum(album.getIsrc()) != null)
             throw new RepException(String.format("Failed to add album: album with an ISRC of %s already exists", album.getIsrc()));
 
-
-        return AlbumDAO.insertAlbum(album.getIsrc(), album.getTitle(), album.getContentDesc(),
+        boolean success = AlbumDAO.insertAlbum(album.getIsrc(), album.getTitle(), album.getContentDesc(),
                 album.getReleaseYear(), album.getArtist().getFirstname(), album.getArtist().getLastname());
+
+        if(success) {
+            ILogManager logManager = (ILogManager) ManagerFactory.LOG.getManager();
+            logManager.addLog(new Log(LocalDateTime.now(), Log.ChangeType.ADD, album.getIsrc()));
+        }
+
+        return success;
     }
 
     public boolean updateAlbum(Album album) throws SQLException, RepException {
@@ -52,15 +58,31 @@ public class AlbumManagerInDB implements IAlbumManager {
         else if(album.getReleaseYear() <= 0)
             throw new RepException("Failed to update album: invalid releaseYear");
 
-        return AlbumDAO.updateAlbum(album.getIsrc(), album.getTitle(), album.getContentDesc(),
+        boolean success = AlbumDAO.updateAlbum(album.getIsrc(), album.getTitle(), album.getContentDesc(),
                 album.getReleaseYear(), album.getArtist().getFirstname(), album.getArtist().getLastname());
+
+        if(success) {
+            ILogManager logManager = (ILogManager) ManagerFactory.LOG.getManager();
+            logManager.addLog(new Log(LocalDateTime.now(), Log.ChangeType.UPDATE, album.getIsrc()));
+        }
+
+        return success;
     }
 
     public boolean deleteAlbum(String isrc) throws SQLException, RepException {
-        boolean success = AlbumDAO.deleteAlbum(isrc);
+        if(getCoverImageByAlbumIsrc(isrc) != null) {
+            // Use DAO to avoid getting an "UPDATE" log before deletion
+            boolean coverImageSuccess = CoverImageDAO.deleteCoverImage(isrc);
+            if(!coverImageSuccess)
+                throw new RepException("There was error deleting the cover image with the isrc: " + isrc);
+        }
 
+        boolean success = AlbumDAO.deleteAlbum(isrc);
         if(!success)
             throw new RepException("Failed to delete album with an ISRC of " + isrc);
+
+        ILogManager logManager = (ILogManager) ManagerFactory.LOG.getManager();
+        logManager.addLog(new Log(LocalDateTime.now(), Log.ChangeType.DELETE, isrc));
 
         return true; // Always true anyway
     }
