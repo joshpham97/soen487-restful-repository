@@ -45,7 +45,7 @@ export const messageParser = (message) => {
 
     const xmlFault = xml.getElementsByTagName(responseMessageTagNames.fault);
     if(xmlFault.length > 0) {
-        throw "SOAP Fault";
+        throw xmlFault[0].childNodes[1].innerHTML;
     }
     const xmlListElements = xml.getElementsByTagName(responseMessageTagNames.listElement);
     const listLength = xmlListElements.length;

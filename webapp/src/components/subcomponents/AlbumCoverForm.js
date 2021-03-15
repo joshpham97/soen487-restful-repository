@@ -25,7 +25,7 @@ function AlbumCoverForm(props) {
     }
 
     const updateCoverImage = () => {
-        var url = albumApi.addAlbumCover + "/" + props.isrc;
+        const url = albumApi.addAlbumCover + "/" + props.isrc;
 
         const formData = new FormData();
         formData.append('file', coverImageFile)
@@ -43,13 +43,12 @@ function AlbumCoverForm(props) {
         .catch(err => {
             if(err.response){
                 alert(err.response.data);
-            };
+            }
         });
     };
 
     const deleteCoverImage = () => {
-        console.log(albumApi);
-        var url = albumApi.deleteAlbumCover + "/" + props.isrc;
+        const url = albumApi.deleteAlbumCover + "/" + props.isrc;
 
         albumServer.delete(url)
             .then(() => {
@@ -59,7 +58,7 @@ function AlbumCoverForm(props) {
             .catch(err => {
                 if(err.response){
                     alert(err.response.data);
-                };
+                }
             });
     };
 
@@ -79,7 +78,7 @@ function AlbumCoverForm(props) {
     };
 
     return (
-        <div id="albumCoverForm" style={{display: (props.isrc == '') ? "none": "block"}}>
+        <div id="albumCoverForm">
             <h5>Album cover (optional)</h5> 
 
             <div className="formRow">

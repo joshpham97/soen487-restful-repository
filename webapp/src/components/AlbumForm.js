@@ -42,7 +42,6 @@ function AlbumForm() {
     const [firstnameError, setFirstnameError] = useState('');
     const [lastnameError, setLastnameError] = useState('');
 
-
     useEffect(() => {
         // Mount
         const params = location.state;
@@ -93,8 +92,6 @@ function AlbumForm() {
     };
 
     const addAlbum = () => {
-        var success = false;
-        
         albumServer.post(albumApi.add, {
             isrc: isrc,
             title: title,
@@ -112,9 +109,11 @@ function AlbumForm() {
                         album: res.data
                     }
                 });
-                success = true;
             })
-            .catch(err => alert(err));
+            .catch(err => {
+                if(err.response)
+                    alert(err.response.data);
+            });
     };
 
     const updateAlbum = () => {
@@ -134,7 +133,10 @@ function AlbumForm() {
                     album: res.data
                 }
             }))
-            .catch(err => alert(err));
+            .catch(err => {
+                if(err.response)
+                    alert(err.response.data);
+            });
     };
 
     const deleteAlbum = () => {
@@ -147,7 +149,10 @@ function AlbumForm() {
                     state: location.state
                 });
             })
-            .catch(err => alert(err));
+            .catch(err => {
+                if(err.response)
+                    alert(err.response.data);
+            });
     };
 
     const backRedirect = () => {
@@ -195,6 +200,16 @@ function AlbumForm() {
         return <Button variant="contained" color="primary" startIcon={<AddIcon />} onClick={() => submit(addAlbum)}>Add</Button>
     };
 
+    const renderCoverImageForm = () => {
+        if(location.state && location.state.isrc)
+            return (
+                <React.Fragment>
+                    <Divider variant="middle" style={{"margin": "20px auto 20px auto", "width": "60%"}} />
+                    <AlbumCoverForm isrc={isrc} />
+                </React.Fragment>
+            );
+    };
+
     return (
         <React.Fragment>
             <Navbar />
@@ -239,8 +254,7 @@ function AlbumForm() {
 
                 {renderButtons()}
 
-                <Divider variant="middle" style={{"margin": "20px auto 20px auto", "width": "60%"}} />
-                <AlbumCoverForm isrc={isrc}></AlbumCoverForm>
+                {renderCoverImageForm()}
             </div>
         </React.Fragment>
     );
