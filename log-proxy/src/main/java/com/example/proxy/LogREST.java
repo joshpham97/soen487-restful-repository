@@ -1,49 +1,64 @@
 package com.example.proxy;
 
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+import com.example.soap.service.Log;
+import com.example.soap.service.LogEntry;
+import com.example.soap.service.LogEntryImpl;
+import com.example.soap.service.LogEntryImplService;
+import factories.ManagerFactory;
+import repository.core.Album;
+import repository.core.ILogManager;
+import repository.core.RepException;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.IOException;
-import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.List;
 
 @Path("log")
 public class LogREST {
-    @POST
-    @Consumes(MediaType.APPLICATION_XML)
-    @Produces(MediaType.APPLICATION_XML)
-    public Response soapOperation(String xml) {
-        try(CloseableHttpClient client = HttpClients.createDefault()) {
-            HttpPost httpPost = new HttpPost(String.format("http://localhost:8090/log"));
 
-            httpPost.setHeader("Content-Type", "text/xml");
-            StringEntity entity = new StringEntity(xml);
-            httpPost.setEntity(entity);
+    private LogEntryImplService service = new LogEntryImplService();
+    LogEntry port = service.getLogEntryImplPort();
 
-            CloseableHttpResponse response = client.execute(httpPost);
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response listLog(@QueryParam("from") String from, @QueryParam("to") String to, @QueryParam("changeType") String changeType) {
+        try {
+            if(from == null)
+                from="";
+            if(to == null)
+                to="";
+            if(changeType == null)
+                changeType="";
+
+            List<Log> logs = port.listLog(from, to, changeType);
+            GenericEntity<List<Log>> entity = new GenericEntity<List<Log>>(logs) {};
 
             return Response.status(Response.Status.OK)
-                    .entity(readResponse(response))
+                    .entity(entity)
                     .build();
         } catch(Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("An error occurred while trying to get the list of logs. Date Format should be: 'yyyy-MM-dd HH:mm:ss' ")
                     .build();
         }
     }
+    @DELETE
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteLogs() {
+        try {
+            String log = port.clearLog();
+            GenericEntity<String> entity = new GenericEntity<String>(log) {};
 
-    private static String readResponse(CloseableHttpResponse response) throws IOException {
-        Scanner sc = new Scanner(response.getEntity().getContent());
-
-        StringBuilder stringResponse = new StringBuilder();
-        while (sc.hasNext())
-            stringResponse.append(sc.nextLine() + "\n");
-
-        response.close();
-        return stringResponse.toString();
+            return Response.status(Response.Status.OK)
+                    .entity(entity)
+                    .build();
+        } catch(Exception re) {
+            return Response.status(Response.Status.NOT_IMPLEMENTED)
+                    .entity(re.getMessage())
+                    .build();
+        }
     }
 }

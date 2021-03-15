@@ -23,10 +23,9 @@ public class LogEntryImpl implements LogEntry {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime fromDateTime = null;
         LocalDateTime toDateTime = null;
-        changeType = changeType == null ? "" : changeType;
 
         //Format date if not null
-        if(from != null && !from.equals(""))
+        if(!from.equals(""))
         {
             try {
                 fromDateTime = LocalDateTime.parse(from, formatter);
@@ -36,7 +35,7 @@ public class LogEntryImpl implements LogEntry {
                 throw new LogFault("ERROR: Date format should be yyyy-MM-dd HH:mm:ss");
             }
         }
-        if(to != null && !to.equals("")){
+        if(!to.equals("")){
             try {
                 toDateTime = LocalDateTime.parse(to, formatter);
             }
