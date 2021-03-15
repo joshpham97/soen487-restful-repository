@@ -1,8 +1,6 @@
 package database.dao;
 
 import database.db.DBConnection;
-import repository.core.Album;
-import repository.core.Artist;
 import repository.core.Log;
 
 import java.sql.*;
