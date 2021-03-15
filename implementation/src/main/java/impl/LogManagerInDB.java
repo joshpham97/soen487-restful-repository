@@ -1,9 +1,9 @@
 package impl;
 
 import database.dao.LogDAO;
-import repository.core.ILogManager;
-import repository.core.Log;
-import repository.core.RepException;
+import repository.core.interfaces.ILogManager;
+import repository.core.pojo.Log;
+import repository.core.exception.RepException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

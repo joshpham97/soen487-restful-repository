@@ -1,9 +1,9 @@
 package impl;
 
-import repository.core.Album;
-import repository.core.CoverImage;
-import repository.core.IAlbumManager;
-import repository.core.RepException;
+import repository.core.pojo.Album;
+import repository.core.pojo.CoverImage;
+import repository.core.interfaces.IAlbumManager;
+import repository.core.exception.RepException;
 
 import java.io.InputStream;
 import java.util.ArrayList;

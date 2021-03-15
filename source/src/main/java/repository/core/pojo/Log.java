@@ -1,4 +1,6 @@
-package repository.core;
+package repository.core.pojo;
+
+import repository.core.helpers.LocalDateTimeXmlAdapter;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

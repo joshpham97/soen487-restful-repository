@@ -1,9 +1,6 @@
 package factories;
 
-import repository.core.IAlbumManager;
-import repository.core.IArtistManager;
-import repository.core.ICoverImageManager;
-import repository.core.IManager;
+import repository.core.interfaces.IManager;
 import utilities.ConfigReader;
 
 import java.lang.reflect.Constructor;

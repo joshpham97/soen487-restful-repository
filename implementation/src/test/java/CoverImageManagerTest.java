@@ -3,14 +3,18 @@ import database.dao.CoverImageDAO;
 import factories.ManagerFactory;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import repository.core.*;
+import repository.core.exception.RepException;
+import repository.core.interfaces.IAlbumManager;
+import repository.core.interfaces.ILogManager;
+import repository.core.pojo.Album;
+import repository.core.pojo.Artist;
+import repository.core.pojo.CoverImage;
+import repository.core.pojo.Log;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;

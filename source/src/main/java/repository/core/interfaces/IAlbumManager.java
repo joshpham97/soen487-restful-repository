@@ -1,4 +1,8 @@
-package repository.core;
+package repository.core.interfaces;
+
+import repository.core.exception.RepException;
+import repository.core.pojo.Album;
+import repository.core.pojo.CoverImage;
 
 import java.io.InputStream;
 import java.sql.SQLException;

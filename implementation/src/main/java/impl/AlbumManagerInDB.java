@@ -3,7 +3,12 @@ package impl;
 import database.dao.AlbumDAO;
 import database.dao.CoverImageDAO;
 import factories.ManagerFactory;
-import repository.core.*;
+import repository.core.exception.RepException;
+import repository.core.interfaces.IAlbumManager;
+import repository.core.interfaces.ILogManager;
+import repository.core.pojo.Album;
+import repository.core.pojo.CoverImage;
+import repository.core.pojo.Log;
 
 import java.io.InputStream;
 import java.sql.SQLException;
@@ -62,15 +67,7 @@ public class AlbumManagerInDB implements IAlbumManager {
 
     public CoverImage getCoverImageByAlbumIsrc(String isrc) throws RepException{
         try{
-            //Logging the data first
-            ILogManager logManager = (ILogManager) ManagerFactory.LOG.getManager();
-            CoverImage coverImage = CoverImageDAO.getCoverImageByAlbumIsrc(isrc);
-
-            if(coverImage != null){
-                logManager.addLog(new Log(LocalDateTime.now(), Log.ChangeType.ADD, isrc));
-            }
-
-            return coverImage;
+            return CoverImageDAO.getCoverImageByAlbumIsrc(isrc);
         }catch (SQLException ex){
             throw new RepException("There was an error getting the cover image of the album with isrc: " + isrc + " on the server.");
         }
@@ -107,7 +104,7 @@ public class AlbumManagerInDB implements IAlbumManager {
             boolean isDeleted = CoverImageDAO.deleteCoverImage(isrc);
 
             if(isDeleted){
-                logManager.addLog(new Log(LocalDateTime.now(), Log.ChangeType.DELETE, isrc));
+                logManager.addLog(new Log(LocalDateTime.now(), Log.ChangeType.UPDATE, isrc));
             }
 
             return isDeleted;

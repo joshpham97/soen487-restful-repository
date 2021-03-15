@@ -1,8 +1,8 @@
 package database.dao;
 
 import database.db.DBConnection;
-import repository.core.Album;
-import repository.core.Artist;
+import repository.core.pojo.Album;
+import repository.core.pojo.Artist;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

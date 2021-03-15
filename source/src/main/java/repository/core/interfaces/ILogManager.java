@@ -1,4 +1,7 @@
-package repository.core;
+package repository.core.interfaces;
+
+import repository.core.exception.RepException;
+import repository.core.pojo.Log;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

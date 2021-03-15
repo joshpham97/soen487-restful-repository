@@ -4,10 +4,9 @@ import factories.ManagerFactory;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
-import repository.core.CoverImage;
-import repository.core.IAlbumManager;
-import repository.core.ICoverImageManager;
-import repository.core.RepException;
+import repository.core.pojo.CoverImage;
+import repository.core.interfaces.IAlbumManager;
+import repository.core.exception.RepException;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;

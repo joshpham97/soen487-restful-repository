@@ -1,7 +1,11 @@
 package com.example.rest;
 
 import factories.ManagerFactory;
-import repository.core.*;
+import repository.core.exception.RepException;
+import repository.core.interfaces.IAlbumManager;
+import repository.core.interfaces.ILogManager;
+import repository.core.pojo.Album;
+import repository.core.pojo.Log;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.GenericEntity;
