@@ -4,6 +4,7 @@ import factories.ManagerFactory;
 import repository.core.ILogManager;
 import repository.core.Log;
 import repository.core.LogFault;
+import repository.core.RepException;
 
 import javax.jws.WebService;
 import java.text.ParseException;
@@ -23,9 +24,21 @@ public class LogEntryImpl implements LogEntry {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime fromDateTime = null;
         LocalDateTime toDateTime = null;
+        Log.ChangeType type = null;
+
+        if(!changeType.equals(""))
+        {
+            if(changeType.equals("ADD") || changeType.equals("UPDATE") || changeType.equals("DELETE"))
+            {
+                type = Log.ChangeType.valueOf(changeType);
+            }
+            else{
+                throw new LogFault("Enter a valid ChangeType (CASE SENSITIVE): ADD , UPDATE, DELETE");
+            }
+        }
 
         //Format date if not null
-        if(!from.equals(""))
+        if(from != null && !from.equals(""))
         {
             try {
                 fromDateTime = LocalDateTime.parse(from, formatter);
@@ -35,7 +48,7 @@ public class LogEntryImpl implements LogEntry {
                 throw new LogFault("ERROR: Date format should be yyyy-MM-dd HH:mm:ss");
             }
         }
-        if(!to.equals("")){
+        if(to != null && !to.equals("")){
             try {
                 toDateTime = LocalDateTime.parse(to, formatter);
             }
@@ -48,7 +61,7 @@ public class LogEntryImpl implements LogEntry {
         //FILTERING
         if((fromDateTime != null && toDateTime != null && !changeType.equals("")) || (fromDateTime == null && toDateTime != null && !changeType.equals("")) || (fromDateTime != null && toDateTime == null && !changeType.equals("")))
         {
-            logs = logManager.listLog(fromDateTime, toDateTime, changeType);
+            logs = logManager.listLog(fromDateTime, toDateTime, type);
         }
         else if((fromDateTime != null && toDateTime == null && changeType.equals("")) || (fromDateTime == null && toDateTime != null && changeType.equals("")) || (fromDateTime != null && toDateTime != null && changeType.equals("")))
         {
@@ -56,7 +69,7 @@ public class LogEntryImpl implements LogEntry {
         }
         else if(fromDateTime == null && toDateTime == null && !changeType.equals(""))
         {
-            logs = logManager.listLog(changeType);
+            logs = logManager.listLog(type);
         }
         else
         {
@@ -67,6 +80,12 @@ public class LogEntryImpl implements LogEntry {
 
     @Override
     public String clearLog() throws LogFault {
-        throw new LogFault("ERROR: CLEAR LOG is not yet supported.");
+        try {
+            logManager.clearLog();
+
+            return "Log cleared";
+        } catch(RepException re) {
+            throw new LogFault(re.getMessage());
+        }
     }
 }

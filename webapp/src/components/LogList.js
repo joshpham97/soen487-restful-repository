@@ -58,6 +58,13 @@ function LogList() {
                 valid = false;
             }
         }
+        if(changeType.toUpperCase() === "ADD" || changeType.toUpperCase() === "UPDATE" || changeType.toUpperCase() === "DELETE" || changeType === "" ){
+            valid = true;
+        }
+        else{
+            valid = false;
+            alert("Invalid changetype: ADD, UPDATE, DELETE")
+        }
 
         if(valid)
         {
@@ -67,7 +74,7 @@ function LogList() {
                     filter: {
                         from: fromDateTime,
                         to: toDateTime,
-                        changeType: changeType
+                        changeType: changeType.toUpperCase()
                     }
                 }
             });
