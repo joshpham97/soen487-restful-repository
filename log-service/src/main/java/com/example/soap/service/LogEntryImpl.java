@@ -4,6 +4,7 @@ import factories.ManagerFactory;
 import repository.core.ILogManager;
 import repository.core.Log;
 import repository.core.LogFault;
+import repository.core.RepException;
 
 import javax.jws.WebService;
 import java.text.ParseException;
@@ -79,6 +80,12 @@ public class LogEntryImpl implements LogEntry {
 
     @Override
     public String clearLog() throws LogFault {
-        throw new LogFault("ERROR: CLEAR LOG is not yet supported.");
+        try {
+            logManager.clearLog();
+
+            return "Log cleared";
+        } catch(RepException re) {
+            throw new LogFault(re.getMessage());
+        }
     }
 }
