@@ -1,13 +1,11 @@
-import repository.core.Artist;
-import repository.core.IArtistManager;
+package impl;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Optional;
+import repository.core.interfaces.IManager;
+import repository.core.pojo.Artist;
+
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.Collectors;
 
-public class ArtistManagerInMemory implements IArtistManager {
+public class ArtistManagerInMemory implements IManager {
     private CopyOnWriteArrayList<Artist> artists;
 
     public ArtistManagerInMemory() {

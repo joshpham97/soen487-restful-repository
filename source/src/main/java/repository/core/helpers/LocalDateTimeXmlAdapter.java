@@ -1,4 +1,4 @@
-package repository.core;
+package repository.core.helpers;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import java.time.LocalDateTime;

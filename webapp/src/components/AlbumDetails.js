@@ -71,7 +71,7 @@ function AlbumDetails() {
         return (
             <React.Fragment>
                 <div className="mt-3 albumCover">
-                    <AlbumCover title={album.title} firstname={album.artist.firstname} lastname={album.artist.lastname} />
+                    <AlbumCover isrc={album.isrc} title={album.title} firstname={album.artist.firstname} lastname={album.artist.lastname} />
                 </div>
 
                 <Divider className="mt-3" />

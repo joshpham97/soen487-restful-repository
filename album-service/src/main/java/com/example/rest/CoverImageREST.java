@@ -4,8 +4,9 @@ import factories.ManagerFactory;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
-import repository.core.CoverImage;
-import repository.core.ICoverImageManager;
+import repository.core.pojo.CoverImage;
+import repository.core.interfaces.IAlbumManager;
+import repository.core.exception.RepException;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -15,15 +16,15 @@ import java.io.*;
 import java.sql.SQLException;
 
 @Path("albumImage")
-public class CoverImageRest {
-    private ICoverImageManager coverImageManager = (ICoverImageManager) ManagerFactory.COVER_IMAGE.getManager();
+public class CoverImageREST {
+    private IAlbumManager albumManager = (IAlbumManager) ManagerFactory.ALBUM.getManager();
 
     @GET
     @Path("{isrc}")
     public Response getCoverImage(@PathParam("isrc") String isrc) {
-        String errorMessage;
         try{
-            CoverImage coverImage = coverImageManager.getCoverImageByAlbumIsrc(isrc);
+            CoverImage coverImage = albumManager.getCoverImageByAlbumIsrc(isrc);
+            long x = coverImage.getBlob().length();
             int blobLength = (int) coverImage.getBlob().length();
             byte[] blobAsBytes = coverImage.getBlob().getBytes(1, blobLength);
 
@@ -32,13 +33,15 @@ public class CoverImageRest {
                     output.write(blobAsBytes);
                 }}).header("Content-Type", coverImage.getMimeType()).build();
 
+        }catch (RepException ex){
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(ex.getMessage())
+                    .build();
         }catch (SQLException ex){
-            errorMessage = "There was an error getting the cover image from the server database.";
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("There was an error reading the cover image of the album with isrc: " + isrc + " on the server.")
+                    .build();
         }
-
-        return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                .entity("There was an error getting the cover image from the server database.")
-                .build();
     }
 
     @PUT
@@ -49,8 +52,8 @@ public class CoverImageRest {
                                      @FormDataParam("file") final FormDataBodyPart body,
                                      @PathParam("isrc") String isrc) {
         try {
-            boolean isCreated = coverImageManager.getCoverImageByAlbumIsrc(isrc) != null;
-            CoverImage coverImage = coverImageManager.createOrUpdateCoverImageIfExist(fileInputStream, body.getMediaType().toString(), isrc);
+            boolean isCreated = albumManager.getCoverImageByAlbumIsrc(isrc) != null;
+            CoverImage coverImage = albumManager.createOrUpdateCoverImageIfExist(fileInputStream, body.getMediaType().toString(), isrc);
 
             if (coverImage != null){
                 if (isCreated)
@@ -61,13 +64,13 @@ public class CoverImageRest {
                             .build();
             }else{
                 return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                        .entity("Unable to create or update cover image")
+                        .entity("Unable to create or update cover image for album with the isrc: " + isrc)
                         .build();
             }
         }
-        catch(SQLException e) {
+        catch(RepException ex) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("There was an error creating or updating the cover image in the server database.")
+                    .entity(ex.getMessage())
                     .build();
         }
     }
@@ -76,18 +79,18 @@ public class CoverImageRest {
     @Path("{isrc}")
     public Response deleteCoverImage(@PathParam("isrc") String isrc){
         try {
-            if(coverImageManager.deleteCoverImage(isrc)){
+            if(albumManager.deleteCoverImage(isrc)){
                 return Response.status(Response.Status.OK)
                         .build();
             }else{
                 return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                        .entity("Unable to delete cover image.")
+                        .entity("There was error deleting the cover image of the album with the isrc: " + isrc)
                         .build();
             }
         }
-        catch(SQLException e) {
+        catch(RepException ex) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("There was an error creating or updating the cover image in the server database.")
+                    .entity(ex.getMessage())
                     .build();
         }
     }
