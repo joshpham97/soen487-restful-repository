@@ -61,10 +61,7 @@ function LogFilter() {
                 valid = false;
             }
         }
-        if(changeType.toUpperCase() === "ADD" || changeType.toUpperCase() === "UPDATE" || changeType.toUpperCase() === "DELETE" || changeType === "" ){
-            valid = true;
-        }
-        else{
+        if(changeType.toUpperCase() !== "ADD" && changeType.toUpperCase() !== "UPDATE" && changeType.toUpperCase() !== "DELETE" && changeType !== "" ){
             valid = false;
             alert("Invalid changetype: ADD, UPDATE, DELETE")
         }
