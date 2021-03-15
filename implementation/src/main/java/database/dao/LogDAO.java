@@ -1,9 +1,7 @@
 package database.dao;
 
 import database.db.DBConnection;
-import repository.core.Album;
-import repository.core.Artist;
-import repository.core.Log;
+import repository.core.pojo.Log;
 
 import java.sql.*;
 import java.time.LocalDateTime;

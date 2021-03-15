@@ -1,6 +1,7 @@
 import Navbar from "./subcomponents/Navbar";
 import React, {Component, useEffect, useRef, useState} from "react";
 import { logApi, logServer} from '../endpoints/logServer';
+import { soapOperations, envelopeBuilder, messageParser } from '../utilities/soapUtils';
 import {Button, Fab, Slide} from "@material-ui/core";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import {useHistory, useLocation} from "react-router";
@@ -43,23 +44,23 @@ function Logs() {
     }, [location.state]);
 
     const getLogList = () => {
-    logServer.get(logApi.get, {
-        params: {
-            changeType: changeTypeFilterRef.current,
+        const soapEnvelope = envelopeBuilder(soapOperations.list, {
             from: fromFilterRef.current,
-            to: toFilterRef.current
-        }
-    })
-        .then(res => {
-            setLogs(res.data.filter((log) => {
-                return log.change.match(new RegExp(changeTypeFilterRef.current, 'i'));
-            }));
+            to: toFilterRef.current,
+            changeType: changeTypeFilterRef.current,
+        });
+
+        logServer.post(logApi.soapOperation, soapEnvelope, {
+            headers: {
+                "Content-Type": 'text/xml'
+            }
         })
-        .catch(err => {
-            console.log(err);
-            setLogs(null);
-        })
-        .finally(() => setLoaded(true));
+            .then(res => setLogs(messageParser(res.data)))
+            .catch(err => {
+                console.log(err);
+                setLogs(null);
+            })
+            .finally(() => setLoaded(true));
     };
 
     const filterRedirect = () => {
@@ -72,7 +73,7 @@ function Logs() {
     const renderLogList = () => {
 
         if(!logs)
-            return <div>An error occurred while getting the logs. Date format should be: yyyy-MM-dd HH:mm:ss</div>;
+            return <div>An error occurred while getting the logs.</div>;
         else if(logs.length === 0)
             return <div>There are no matches</div>;
 
@@ -85,7 +86,6 @@ function Logs() {
             </div>
 
         ));
-
     }
 
     const addFilter = () => {
@@ -105,13 +105,14 @@ function Logs() {
     }
 
     const clearLog = () => {
-        logServer.delete(logApi.delete)
-            .then(res => {
-                history.push({
-                    pathname: '/logs',
-                    state: location.state
-                });
-            })
+        const soapEnvelope = envelopeBuilder(soapOperations.clear);
+
+        logServer.post(logApi.soapOperation, soapEnvelope, {
+            headers: {
+                "Content-Type": 'text/xml'
+            }
+        })
+            .then(res => messageParser(res.data))
             .catch(err => alert("ERROR: CLEAR LOG is not yet supported."));
     };
 

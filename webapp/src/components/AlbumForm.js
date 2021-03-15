@@ -10,9 +10,11 @@ import ArrowBackIosRoundedIcon from '@material-ui/icons/ArrowBackIosRounded';
 import AddIcon from '@material-ui/icons/Add';
 import SaveIcon from '@material-ui/icons/Save';
 import DeleteIcon from '@material-ui/icons/Delete';
+import Divider from '@material-ui/core/Divider';
 
 import Navbar from './subcomponents/Navbar';
-import { albumApi, albumServer } from "../endpoints/albumServer";
+import { albumApi, albumServer } from "../endpoints/albumServer"; 
+import AlbumCoverForm from './subcomponents/AlbumCoverForm';
 
 const DescInput = withStyles({
     root: {
@@ -45,6 +47,7 @@ function AlbumForm() {
         // Mount
         const params = location.state;
         if(params && params.isrc) {
+            setIsrc(params.isrc);
             setTitle(params.title);
             setFirstname(params.firstname);
             setLastname(params.lastname);
@@ -90,6 +93,8 @@ function AlbumForm() {
     };
 
     const addAlbum = () => {
+        var success = false;
+        
         albumServer.post(albumApi.add, {
             isrc: isrc,
             title: title,
@@ -100,12 +105,15 @@ function AlbumForm() {
                 lastname: lastname
             }
         })
-            .then(res => history.push({
-                pathname: '/albums',
-                state: {
-                    album: res.data
-                }
-            }))
+            .then(res => {
+                history.push({
+                    pathname: '/albums',
+                    state: {
+                        album: res.data
+                    }
+                });
+                success = true;
+            })
             .catch(err => alert(err));
     };
 
@@ -230,6 +238,9 @@ function AlbumForm() {
                 </div>
 
                 {renderButtons()}
+
+                <Divider variant="middle" style={{"margin": "20px auto 20px auto", "width": "60%"}} />
+                <AlbumCoverForm isrc={isrc}></AlbumCoverForm>
             </div>
         </React.Fragment>
     );

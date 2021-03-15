@@ -32,12 +32,18 @@ const CardHeader = withStyles({
     }
 })(MuiCardHeader);
 
+
 function AlbumCover(props) {
+    const getAlbumCoverUrl = () =>
+    {
+        return `http://localhost:8081/myapp/albumImage/${props.isrc}`;
+    }
+
     return (
       <Card>
           <CardActionArea>
-              <CardMedia>
-                  MEDIA
+              <CardMedia image={getAlbumCoverUrl()} title="Paella dish">
+                 
               </CardMedia>
               <CardHeader title={props.title} subheader={props.firstname + " " + props.lastname} />
           </CardActionArea>
