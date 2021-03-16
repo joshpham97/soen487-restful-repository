@@ -1,7 +1,7 @@
 package database.dao;
 
 import database.db.DBConnection;
-import repository.core.Log;
+import repository.core.pojo.Log;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -36,7 +36,7 @@ public class LogDAO {
         ArrayList<Log> logs = new ArrayList<>();
         try{
             Connection conn = DBConnection.getConnection();
-            String sql = "SELECT * FROM Log";
+            String sql = "SELECT * FROM Log ORDER BY logged_time DESC";
             Statement stmt = conn.createStatement();
 
             ResultSet rs = stmt.executeQuery(sql);

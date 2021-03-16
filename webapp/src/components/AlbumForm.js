@@ -10,9 +10,11 @@ import ArrowBackIosRoundedIcon from '@material-ui/icons/ArrowBackIosRounded';
 import AddIcon from '@material-ui/icons/Add';
 import SaveIcon from '@material-ui/icons/Save';
 import DeleteIcon from '@material-ui/icons/Delete';
+import Divider from '@material-ui/core/Divider';
 
 import Navbar from './subcomponents/Navbar';
-import { albumApi, albumServer } from "../endpoints/albumServer";
+import { albumApi, albumServer } from "../endpoints/albumServer"; 
+import AlbumCoverForm from './subcomponents/AlbumCoverForm';
 
 const DescInput = withStyles({
     root: {
@@ -40,11 +42,11 @@ function AlbumForm() {
     const [firstnameError, setFirstnameError] = useState('');
     const [lastnameError, setLastnameError] = useState('');
 
-
     useEffect(() => {
         // Mount
         const params = location.state;
         if(params && params.isrc) {
+            setIsrc(params.isrc);
             setTitle(params.title);
             setFirstname(params.firstname);
             setLastname(params.lastname);
@@ -100,13 +102,18 @@ function AlbumForm() {
                 lastname: lastname
             }
         })
-            .then(res => history.push({
-                pathname: '/albums',
-                state: {
-                    album: res.data
-                }
-            }))
-            .catch(err => alert(err));
+            .then(res => {
+                history.push({
+                    pathname: '/albums',
+                    state: {
+                        album: res.data
+                    }
+                });
+            })
+            .catch(err => {
+                if(err.response)
+                    alert(err.response.data);
+            });
     };
 
     const updateAlbum = () => {
@@ -126,7 +133,10 @@ function AlbumForm() {
                     album: res.data
                 }
             }))
-            .catch(err => alert(err));
+            .catch(err => {
+                if(err.response)
+                    alert(err.response.data);
+            });
     };
 
     const deleteAlbum = () => {
@@ -139,7 +149,10 @@ function AlbumForm() {
                     state: location.state
                 });
             })
-            .catch(err => alert(err));
+            .catch(err => {
+                if(err.response)
+                    alert(err.response.data);
+            });
     };
 
     const backRedirect = () => {
@@ -187,6 +200,16 @@ function AlbumForm() {
         return <Button variant="contained" color="primary" startIcon={<AddIcon />} onClick={() => submit(addAlbum)}>Add</Button>
     };
 
+    const renderCoverImageForm = () => {
+        if(location.state && location.state.isrc)
+            return (
+                <React.Fragment>
+                    <Divider variant="middle" style={{"margin": "20px auto 20px auto", "width": "60%"}} />
+                    <AlbumCoverForm isrc={isrc} />
+                </React.Fragment>
+            );
+    };
+
     return (
         <React.Fragment>
             <Navbar />
@@ -230,6 +253,8 @@ function AlbumForm() {
                 </div>
 
                 {renderButtons()}
+
+                {renderCoverImageForm()}
             </div>
         </React.Fragment>
     );

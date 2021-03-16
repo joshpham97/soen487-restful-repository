@@ -75,7 +75,9 @@ function AlbumList() {
                 }));
             })
             .catch(err => {
-                console.log(err);
+                if(err.response)
+                    alert(err.response.data);
+
                 setAlbums(null);
             })
             .finally(() => setLoaded(true));
@@ -176,7 +178,7 @@ function AlbumList() {
                 <div className="albums" onWheel={(e) => horizontalScroll(e)}>
                     {albums.map(album => (
                         <div key={album.isrc} id={"ISRC" + album.isrc} className="album" onClick={(e) => toggleSummary(e, album)}>
-                            <AlbumCover title={album.title} firstname={album.artist.firstname} lastname={album.artist.lastname} />
+                            <AlbumCover title={album.title} firstname={album.artist.firstname} lastname={album.artist.lastname} isrc={album.isrc}/>
                         </div>
                     ))}
                 </div>

@@ -84,7 +84,7 @@ function AlbumFilter() {
                 <ArrowBackIosRoundedIcon fontSize="large" className="back" onClick={backRedirect} />
 
                 <h3>
-                    Filter Album
+                    Filter Albums
                 </h3>
 
                 <div className="formRow">
@@ -95,18 +95,18 @@ function AlbumFilter() {
                     </FormControl>
 
                     <FormControl className="formColumn">
-                        <InputLabel htmlFor="albumNameInput">Name</InputLabel>
+                        <InputLabel htmlFor="albumNameInput">Full name</InputLabel>
                         <Input id="albumNameInput" value={name}
                                onChange={(e) => setName(e.currentTarget.value)}/>
                     </FormControl>
                 </div>
 
                 <div className="formRow">
-                    <TextField className="formColumn" type="number" label="From" variant="outlined" value={from}
+                    <TextField className="formColumn" type="number" label="From year" variant="outlined" value={from}
                                error={fromError !== ''} helperText={fromError}
                                onChange={(e) => setFrom(e.currentTarget.value)} />
 
-                    <TextField className="formColumn" type="number" label="To" variant="outlined" value={to}
+                    <TextField className="formColumn" type="number" label="To year" variant="outlined" value={to}
                                error={toError !== ''} helperText={toError}
                                onChange={(e) => setTo(e.currentTarget.value)} />
                 </div>
