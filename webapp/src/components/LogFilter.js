@@ -106,7 +106,7 @@ function LogFilter() {
                 <ArrowBackIosRoundedIcon className="back" fontSize="large" onClick={backRedirect} />
 
                 <h3>
-                    Filter Log
+                    Filter Logs
                 </h3>
 
                 <div className="formRow">
