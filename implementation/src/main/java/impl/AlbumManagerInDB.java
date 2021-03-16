@@ -114,7 +114,6 @@ public class AlbumManagerInDB implements IAlbumManager {
 
             if (coverImage != null) {
                 logManager.addLog(new Log(LocalDateTime.now(), Log.ChangeType.UPDATE, isrc));
-
             }
 
             return coverImage;
