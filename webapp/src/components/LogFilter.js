@@ -4,7 +4,7 @@ import {useHistory, useLocation} from "react-router";
 import React from "react";
 import Navbar from "./subcomponents/Navbar";
 import ArrowBackIosRoundedIcon from "@material-ui/icons/ArrowBackIosRounded";
-import {Button, FormControl, TextField } from "@material-ui/core";
+import {Button, FormControl, TextField, Select, MenuItem, InputLabel} from "@material-ui/core";
 import { useState, useEffect } from 'react';
 import FilterListIcon from "@material-ui/icons/FilterList";
 import RotateLeftIcon from "@material-ui/icons/RotateLeft";
@@ -93,12 +93,12 @@ function LogFilter() {
 
                 <div className="formRow">
                     <FormControl className="formColumn">
-                        <div>Change Type</div>
-                        <select id="logChangeType" value={changeType}
+                        <InputLabel shrink id={"logChangeTypeLabel"}>Change Type</InputLabel>
+                        <Select labelId={"logChangeTypeLabel"} native id="logChangeType" value={changeType}
                                 onChange={(e) => setChangeType(e.currentTarget.value)}>
                             <option value="">All</option>
                             {renderChangeTypeOptions()}>
-                        </select>
+                        </Select>
                     </FormControl>
                 </div>
 
