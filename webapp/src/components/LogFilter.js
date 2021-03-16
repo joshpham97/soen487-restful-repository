@@ -97,7 +97,7 @@ function LogFilter() {
                         <Select labelId={"logChangeTypeLabel"} native id="logChangeType" value={changeType}
                                 onChange={(e) => setChangeType(e.currentTarget.value)}>
                             <option value="">All</option>
-                            {renderChangeTypeOptions()}>
+                            {renderChangeTypeOptions()}
                         </Select>
                     </FormControl>
                 </div>
