@@ -79,19 +79,19 @@ public class LogDAO {
             PreparedStatement stmt;
             if(fromDate != null && toDate == null)
             {
-                String sql = "SELECT * FROM Log WHERE logged_time >= ?";
+                String sql = "SELECT * FROM Log WHERE logged_time >= ? ORDER BY logged_time DESC";
                 stmt = conn.prepareStatement(sql);
                 stmt.setTimestamp(1, Timestamp.valueOf(fromDate));
             }
             else if(fromDate == null && toDate != null)
             {
-                String sql = "SELECT * FROM Log WHERE logged_time <= ?";
+                String sql = "SELECT * FROM Log WHERE logged_time <= ? ORDER BY logged_time DESC";
                 stmt = conn.prepareStatement(sql);
                 stmt.setTimestamp(1, Timestamp.valueOf(toDate));
             }
             else
             {
-                String sql = "SELECT * FROM Log WHERE logged_time between ? AND ?";
+                String sql = "SELECT * FROM Log WHERE logged_time between ? AND ? ORDER BY logged_time DESC";
                 stmt = conn.prepareStatement(sql);
                 stmt.setTimestamp(1, Timestamp.valueOf(fromDate));
                 stmt.setTimestamp(2, Timestamp.valueOf(toDate));
@@ -114,7 +114,7 @@ public class LogDAO {
             PreparedStatement stmt;
             if(fromDate != null && toDate != null && !typeOfChange.equals(""))
             {
-                String sql = "SELECT * FROM Log WHERE logged_time between ? AND ? AND typeOfChange = ?";
+                String sql = "SELECT * FROM Log WHERE logged_time between ? AND ? AND typeOfChange = ? ORDER BY logged_time DESC";
                 stmt = conn.prepareStatement(sql);
                 stmt.setTimestamp(1, Timestamp.valueOf(fromDate));
                 stmt.setTimestamp(2, Timestamp.valueOf(toDate));
@@ -122,14 +122,14 @@ public class LogDAO {
             }
             else if(fromDate == null && (toDate != null && !typeOfChange.equals("")))
             {
-                String sql = "SELECT * FROM Log WHERE logged_time <= ? AND typeOfChange = ?";
+                String sql = "SELECT * FROM Log WHERE logged_time <= ? AND typeOfChange = ? ORDER BY logged_time DESC";
                 stmt = conn.prepareStatement(sql);
                 stmt.setTimestamp(1, Timestamp.valueOf(toDate));
                 stmt.setString(2, typeOfChange);
             }
             else /**if(toDate == null && (fromDate != null && !typeOfChange.equals("")))*/
             {
-                String sql = "SELECT * FROM Log WHERE logged_time >= ? AND typeOfChange = ?";
+                String sql = "SELECT * FROM Log WHERE logged_time >= ? AND typeOfChange = ? ORDER BY logged_time DESC";
                 stmt = conn.prepareStatement(sql);
                 stmt.setTimestamp(1, Timestamp.valueOf(fromDate));
                 stmt.setString(2, typeOfChange);
@@ -149,7 +149,7 @@ public class LogDAO {
         ArrayList<Log> logs = new ArrayList<>();
         try{
             Connection conn = DBConnection.getConnection();
-            String sql = "SELECT * FROM Log WHERE typeOfChange = ?";
+            String sql = "SELECT * FROM Log WHERE typeOfChange = ? ORDER BY logged_time DESC";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, typeOfChange);
             ResultSet rs = stmt.executeQuery();
