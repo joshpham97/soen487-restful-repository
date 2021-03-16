@@ -1,7 +1,7 @@
 import React from 'react';
 import { albumApi, albumServer } from '../../endpoints/albumServer';
 import { FormControl, Button } from '@material-ui/core';
-import { useState} from 'react';
+import {useEffect, useState} from 'react';
 import SaveIcon from '@material-ui/icons/Save';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { formatter } from '../../utilities/formatter';
@@ -9,8 +9,7 @@ import Alert from '@material-ui/lab/Alert';
 
 
 function AlbumCoverForm(props) {
-
-    const [coverImageFile, setCoverImageFile] = useState(false)
+    const [coverImageFile, setCoverImageFile] = useState(false);
 
     const imageNotFound = () => {
         document.getElementById('coverImage').hidden = "hidden";
