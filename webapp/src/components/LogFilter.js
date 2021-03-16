@@ -33,6 +33,7 @@ function LogFilter() {
     const getList = () => {
         let valid = true;
 
+        /**
         if(fromDateTime.length !== 0)
         {
             if(fromDateTime.length === 19)
@@ -47,33 +48,37 @@ function LogFilter() {
                 valid = false;
             }
         }
+         */
+        let modifiedFromDate, modifiedToDate;
+        if(fromDateTime.length !== 0)
+        {
+            modifiedFromDate = fromDateTime.replace("T", " ") + ":00";
+        }
+        else{
+            modifiedFromDate = "";
+        }
+
         if(toDateTime.length !== 0)
         {
-            if(toDateTime.length === 19)
-            {
-                if(isNaN(Date.parse(toDateTime))){
-                    alert("Date format should be: yyyy-MM-dd HH:mm:ss")
-                    valid = false;
-                }
-            }
-            else{
-                alert("Date format should be: yyyy-MM-dd HH:mm:ss")
-                valid = false;
-            }
+            modifiedToDate = toDateTime.replace("T", " ") + ":00";
         }
+        else{
+            modifiedToDate = "";
+        }
+        /**
         if(changeType.toUpperCase() !== "ADD" && changeType.toUpperCase() !== "UPDATE" && changeType.toUpperCase() !== "DELETE" && changeType !== "" ){
             valid = false;
             alert("Invalid changetype: ADD, UPDATE, DELETE")
         }
-
+*/
         if(valid)
         {
             history.push({
                 pathname: '/logs',
                 state: {
                     filter: {
-                        from: fromDateTime,
-                        to: toDateTime,
+                        from: modifiedFromDate,
+                        to: modifiedToDate,
                         changeType: changeType.toUpperCase()
                     }
                 }
@@ -108,23 +113,27 @@ function LogFilter() {
 
                 <div className="formRow">
                     <FormControl className="formColumn">
-                        <InputLabel htmlFor="logChangeType">ChangeType</InputLabel>
-                        <Input id="logChangeType" value={changeType}
-                               onChange={(e) => setChangeType(e.currentTarget.value)}/>
+                        <label htmlFor="logChangeType">ChangeType:</label>
+                        <select id="logChangeType" onChange={(e) => setChangeType(e.currentTarget.value)}>
+                            <option value="">ChangeType</option>
+                            <option value="ADD">ADD</option>
+                            <option value="UPDATE">UPDATE</option>
+                            <option value="DELETE">DELETE</option>
+                        </select>
                     </FormControl>
                 </div>
 
                 <div className="formRow">
                     <FormControl className="formColumn">
-                        <InputLabel htmlFor="fromDateTime">From</InputLabel>
-                        <Input id="fromDateTime" value={fromDateTime}
-                               onChange={(e) => setFromDateTime(e.currentTarget.value)}/>
+                        <label htmlFor="fromDateTime">From:</label>
+                        <input type="datetime-local" id="fromDateTime"
+                               min="2021-03-01T00:00" max="2021-03-31T00:00" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}" onChange={(e) => setFromDateTime(e.currentTarget.value)}/>
                     </FormControl>
 
                     <FormControl className="formColumn">
-                        <InputLabel htmlFor="toDateTime">To</InputLabel>
-                        <Input id="toDateTime" value={toDateTime}
-                               onChange={(e) => setToDateTime(e.currentTarget.value)}/>
+                        <label htmlFor="toDateTime">To:</label>
+                        <input type="datetime-local" id="toDateTime"
+                               min="2021-03-01T00:00" max="2021-03-31T00:00" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}" onChange={(e) => setToDateTime(e.currentTarget.value)}/>
                     </FormControl>
                 </div>
 
