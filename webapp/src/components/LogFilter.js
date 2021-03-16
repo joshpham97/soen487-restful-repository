@@ -4,10 +4,16 @@ import {useHistory, useLocation} from "react-router";
 import React from "react";
 import Navbar from "./subcomponents/Navbar";
 import ArrowBackIosRoundedIcon from "@material-ui/icons/ArrowBackIosRounded";
-import {Button, FormControl, Input, InputLabel } from "@material-ui/core";
+import {Button, FormControl, TextField, Select, MenuItem, InputLabel} from "@material-ui/core";
 import { useState, useEffect } from 'react';
 import FilterListIcon from "@material-ui/icons/FilterList";
 import RotateLeftIcon from "@material-ui/icons/RotateLeft";
+
+const changeTypes = [
+    'ADD',
+    'UPDATE',
+    'DELETE'
+];
 
 function LogFilter() {
     const history = useHistory();
@@ -24,61 +30,31 @@ function LogFilter() {
             if(params.filter.changeType)
                 setChangeType(params.filter.changeType);
             if(params.filter.from)
-                setFromDateTime(params.filter.from);
+                setFromDateTime(formatDateTimeForInput(params.filter.from));
             if(params.filter.to)
-                setToDateTime(params.filter.to);
+                setToDateTime(formatDateTimeForInput(params.filter.to));
         }
     }, [location.state]);
 
+    const formatDateTimeForInput = (dateTime) => {
+        return dateTime.substring(0, dateTime.length - 3).replace(' ', 'T');
+    };
+
+    const formatDateTimeForApiCall = (dateTime) => {
+        return dateTime && dateTime !== '' ? dateTime.replace("T", " ") + ':00' : '';
+    };
+
     const getList = () => {
-        let valid = true;
-
-        if(fromDateTime.length !== 0)
-        {
-            if(fromDateTime.length === 19)
-            {
-                if(isNaN(Date.parse(fromDateTime))){
-                    alert("Date format should be: yyyy-MM-dd HH:mm:ss")
-                    valid = false;
+        history.push({
+            pathname: '/logs',
+            state: {
+                filter: {
+                    from: formatDateTimeForApiCall(fromDateTime),
+                    to: formatDateTimeForApiCall(toDateTime),
+                    changeType: changeType
                 }
             }
-            else{
-                alert("Date format should be: yyyy-MM-dd HH:mm:ss")
-                valid = false;
-            }
-        }
-        if(toDateTime.length !== 0)
-        {
-            if(toDateTime.length === 19)
-            {
-                if(isNaN(Date.parse(toDateTime))){
-                    alert("Date format should be: yyyy-MM-dd HH:mm:ss")
-                    valid = false;
-                }
-            }
-            else{
-                alert("Date format should be: yyyy-MM-dd HH:mm:ss")
-                valid = false;
-            }
-        }
-        if(changeType.toUpperCase() !== "ADD" && changeType.toUpperCase() !== "UPDATE" && changeType.toUpperCase() !== "DELETE" && changeType !== "" ){
-            valid = false;
-            alert("Invalid changetype: ADD, UPDATE, DELETE")
-        }
-
-        if(valid)
-        {
-            history.push({
-                pathname: '/logs',
-                state: {
-                    filter: {
-                        from: fromDateTime,
-                        to: toDateTime,
-                        changeType: changeType.toUpperCase()
-                    }
-                }
-            });
-        }
+        });
     };
 
     const backRedirect = () => {
@@ -95,6 +71,15 @@ function LogFilter() {
         history.push('/logs');
     };
 
+    const renderChangeTypeOptions = () => {
+        return changeTypes.map((c) => {
+            if(c === changeType)
+                return <option key={c} value={c} selected>{c}</option>;
+            else
+                return <option key={c} value={c}>{c}</option>;
+        });
+    };
+
     return (
         <React.Fragment>
             <Navbar />
@@ -108,23 +93,24 @@ function LogFilter() {
 
                 <div className="formRow">
                     <FormControl className="formColumn">
-                        <InputLabel htmlFor="logChangeType">ChangeType</InputLabel>
-                        <Input id="logChangeType" value={changeType}
-                               onChange={(e) => setChangeType(e.currentTarget.value)}/>
+                        <InputLabel shrink id={"logChangeTypeLabel"}>Change Type</InputLabel>
+                        <Select labelId={"logChangeTypeLabel"} native id="logChangeType" value={changeType}
+                                onChange={(e) => setChangeType(e.currentTarget.value)}>
+                            <option value="">All</option>
+                            {renderChangeTypeOptions()}
+                        </Select>
                     </FormControl>
                 </div>
 
                 <div className="formRow">
                     <FormControl className="formColumn">
-                        <InputLabel htmlFor="fromDateTime">From</InputLabel>
-                        <Input id="fromDateTime" value={fromDateTime}
-                               onChange={(e) => setFromDateTime(e.currentTarget.value)}/>
+                        <TextField type="datetime-local" label="From" value={fromDateTime} InputLabelProps={{shrink: true}}
+                                   onChange={(e) => setFromDateTime(e.currentTarget.value)}/>
                     </FormControl>
 
                     <FormControl className="formColumn">
-                        <InputLabel htmlFor="toDateTime">To</InputLabel>
-                        <Input id="toDateTime" value={toDateTime}
-                               onChange={(e) => setToDateTime(e.currentTarget.value)}/>
+                        <TextField type="datetime-local" label="To" value={toDateTime} InputLabelProps={{shrink: true}}
+                                   onChange={(e) => setToDateTime(e.currentTarget.value)}/>
                     </FormControl>
                 </div>
 
