@@ -77,7 +77,7 @@ function AlbumCoverForm(props) {
     };
 
     return (
-        <div id="albumCoverForm" style={{display: (props.show) ? "block": "none"}}>
+        <div id="albumCoverForm">
             <h5>Album cover (optional)</h5> 
 
             <div className="formRow">

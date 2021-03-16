@@ -205,7 +205,7 @@ function AlbumForm() {
             return (
                 <React.Fragment>
                     <Divider variant="middle" style={{"margin": "20px auto 20px auto", "width": "60%"}} />
-                    <AlbumCoverForm isrc={isrc} show={location.state && location.state.isrc}/>
+                    <AlbumCoverForm isrc={isrc}/>
                 </React.Fragment>
             );
     };
