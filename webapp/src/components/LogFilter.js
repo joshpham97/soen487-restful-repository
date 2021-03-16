@@ -31,24 +31,7 @@ function LogFilter() {
     }, [location.state]);
 
     const getList = () => {
-        let valid = true;
 
-        /**
-        if(fromDateTime.length !== 0)
-        {
-            if(fromDateTime.length === 19)
-            {
-                if(isNaN(Date.parse(fromDateTime))){
-                    alert("Date format should be: yyyy-MM-dd HH:mm:ss")
-                    valid = false;
-                }
-            }
-            else{
-                alert("Date format should be: yyyy-MM-dd HH:mm:ss")
-                valid = false;
-            }
-        }
-         */
         let modifiedFromDate, modifiedToDate;
         if(fromDateTime.length !== 0)
         {
@@ -65,25 +48,17 @@ function LogFilter() {
         else{
             modifiedToDate = "";
         }
-        /**
-        if(changeType.toUpperCase() !== "ADD" && changeType.toUpperCase() !== "UPDATE" && changeType.toUpperCase() !== "DELETE" && changeType !== "" ){
-            valid = false;
-            alert("Invalid changetype: ADD, UPDATE, DELETE")
-        }
-*/
-        if(valid)
-        {
-            history.push({
-                pathname: '/logs',
-                state: {
-                    filter: {
-                        from: modifiedFromDate,
-                        to: modifiedToDate,
-                        changeType: changeType.toUpperCase()
-                    }
+
+        history.push({
+            pathname: '/logs',
+            state: {
+                filter: {
+                    from: modifiedFromDate,
+                    to: modifiedToDate,
+                    changeType: changeType.toUpperCase()
                 }
-            });
-        }
+            }
+        });
     };
 
     const backRedirect = () => {
