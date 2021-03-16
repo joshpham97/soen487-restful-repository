@@ -1,12 +1,15 @@
+import '../styles/logForm.css';
+
 import {useHistory, useLocation} from "react-router";
 import React from "react";
 import Navbar from "./subcomponents/Navbar";
 import ArrowBackIosRoundedIcon from "@material-ui/icons/ArrowBackIosRounded";
-import {Button, FormControl, Input, InputLabel, TextField} from "@material-ui/core";
-import { useState, useEffect, useRef } from 'react';
+import {Button, FormControl, Input, InputLabel } from "@material-ui/core";
+import { useState, useEffect } from 'react';
 import FilterListIcon from "@material-ui/icons/FilterList";
+import RotateLeftIcon from "@material-ui/icons/RotateLeft";
 
-function LogList() {
+function LogFilter() {
     const history = useHistory();
     const location = useLocation();
 
@@ -58,10 +61,7 @@ function LogList() {
                 valid = false;
             }
         }
-        if(changeType.toUpperCase() === "ADD" || changeType.toUpperCase() === "UPDATE" || changeType.toUpperCase() === "DELETE" || changeType === "" ){
-            valid = true;
-        }
-        else{
+        if(changeType.toUpperCase() !== "ADD" && changeType.toUpperCase() !== "UPDATE" && changeType.toUpperCase() !== "DELETE" && changeType !== "" ){
             valid = false;
             alert("Invalid changetype: ADD, UPDATE, DELETE")
         }
@@ -91,6 +91,10 @@ function LogList() {
         });
     };
 
+    const logsRedirect = () => {
+        history.push('/logs');
+    };
+
     return (
         <React.Fragment>
             <Navbar />
@@ -98,13 +102,19 @@ function LogList() {
             <div id="logForm">
                 <ArrowBackIosRoundedIcon className="back" fontSize="large" onClick={backRedirect} />
 
+                <h3>
+                    Filter Logs
+                </h3>
+
                 <div className="formRow">
                     <FormControl className="formColumn">
                         <InputLabel htmlFor="logChangeType">ChangeType</InputLabel>
                         <Input id="logChangeType" value={changeType}
                                onChange={(e) => setChangeType(e.currentTarget.value)}/>
                     </FormControl>
+                </div>
 
+                <div className="formRow">
                     <FormControl className="formColumn">
                         <InputLabel htmlFor="fromDateTime">From</InputLabel>
                         <Input id="fromDateTime" value={fromDateTime}
@@ -117,9 +127,11 @@ function LogList() {
                                onChange={(e) => setToDateTime(e.currentTarget.value)}/>
                     </FormControl>
                 </div>
+
                 <Button className="mr-3" variant="contained" color="primary" startIcon={<FilterListIcon />} onClick={getList}>Filter</Button>
+                <Button variant="contained" color="secondary" startIcon={<RotateLeftIcon />} onClick={logsRedirect}>Reset</Button>
             </div>
         </React.Fragment>
     );
 }
-export default LogList;
+export default LogFilter;

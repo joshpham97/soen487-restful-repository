@@ -75,7 +75,9 @@ function AlbumList() {
                 }));
             })
             .catch(err => {
-                console.log(err);
+                if(err.response)
+                    alert(err.response.data);
+
                 setAlbums(null);
             })
             .finally(() => setLoaded(true));

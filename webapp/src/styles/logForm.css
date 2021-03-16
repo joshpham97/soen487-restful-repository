@@ -1,0 +1,17 @@
+#logForm {
+    text-align: center;
+}
+
+#logForm .back {
+    position: absolute;
+    left: 2pc;
+    cursor: pointer;
+}
+
+#logForm .formRow {
+    margin: 2em 0;
+}
+
+#logForm .formColumn {
+    margin: 0 1.5pc
+}

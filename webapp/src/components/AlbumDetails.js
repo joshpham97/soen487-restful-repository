@@ -48,7 +48,10 @@ function AlbumDetails() {
                 if(res.data.isrc)
                     setAlbum(res.data)
             })
-            .catch(err => console.log(err))
+            .catch(err => {
+                if(err.response)
+                    console.log(err.response.data); // Handled by UI
+            })
             .finally(() => setLoaded(true));
     };
 

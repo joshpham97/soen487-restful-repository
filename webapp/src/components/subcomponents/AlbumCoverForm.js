@@ -24,7 +24,7 @@ function AlbumCoverForm(props) {
     }
 
     const updateCoverImage = () => {
-        var url = albumApi.addAlbumCover + "/" + props.isrc;
+        const url = albumApi.addAlbumCover + "/" + props.isrc;
 
         const formData = new FormData();
         formData.append('file', coverImageFile)
@@ -39,19 +39,26 @@ function AlbumCoverForm(props) {
             reloadImage();
             alert("Updated the album with new cover image");
         })
-        .catch(err => alert(err));
+        .catch(err => {
+            if(err.response){
+                alert(err.response.data);
+            }
+        });
     };
 
     const deleteCoverImage = () => {
-        console.log(albumApi);
-        var url = albumApi.deleteAlbumCover + "/" + props.isrc;
+        const url = albumApi.deleteAlbumCover + "/" + props.isrc;
 
         albumServer.delete(url)
             .then(() => {
                 reloadImage();
                 alert("Cover image deleted");
             })
-            .catch(err => alert(err));
+            .catch(err => {
+                if(err.response){
+                    alert(err.response.data);
+                }
+            });
     };
 
     const reloadImage = () => {
