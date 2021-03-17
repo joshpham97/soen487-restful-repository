@@ -130,7 +130,7 @@ public class CoverImageManagerTest {
             albumManager.deleteCoverImage(testAlbum.getIsrc());
         });
     }
-
+/**
     @Test
     public void delete() throws SQLException, RepException {
         //arrange
@@ -192,4 +192,5 @@ public class CoverImageManagerTest {
                 .collect(Collectors.toList());
         return filteredLogs.get(filteredLogs.size() - 1);
     }
+ */
 }
