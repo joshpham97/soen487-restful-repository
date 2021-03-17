@@ -104,12 +104,12 @@ function LogFilter() {
 
                 <div className="formRow">
                     <FormControl className="formColumn">
-                        <TextField type="datetime-local" label="From" value={fromDateTime} InputLabelProps={{shrink: true}}
+                        <TextField type="datetime-local" label="From" variant="outlined" value={fromDateTime} InputLabelProps={{shrink: true}}
                                    onChange={(e) => setFromDateTime(e.currentTarget.value)}/>
                     </FormControl>
 
                     <FormControl className="formColumn">
-                        <TextField type="datetime-local" label="To" value={toDateTime} InputLabelProps={{shrink: true}}
+                        <TextField type="datetime-local" label="To" value={toDateTime} variant="outlined" InputLabelProps={{shrink: true}}
                                    onChange={(e) => setToDateTime(e.currentTarget.value)}/>
                     </FormControl>
                 </div>
