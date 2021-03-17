@@ -8,44 +8,36 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class LogDAO {
-    public static boolean addLog(LocalDateTime time, String change, String recordKey)
+    public static boolean addLog(LocalDateTime time, String change, String recordKey) throws SQLException
     {
         boolean success = false;
-        try {
-            Connection conn = DBConnection.getConnection();
+        Connection conn = DBConnection.getConnection();
 
-            String query = "INSERT INTO Log (logged_time, typeOfChange, recordKey)" + " values (?,?,?)";
-            PreparedStatement stmt = conn.prepareStatement(query);
+        String query = "INSERT INTO Log (logged_time, typeOfChange, recordKey)" + " values (?,?,?)";
+        PreparedStatement stmt = conn.prepareStatement(query);
 
-            stmt.setTimestamp(1, Timestamp.valueOf(time));
-            stmt.setString(2, change);
-            stmt.setString(3, recordKey);
-            int row = stmt.executeUpdate();
+        stmt.setTimestamp(1, Timestamp.valueOf(time));
+        stmt.setString(2, change);
+        stmt.setString(3, recordKey);
+        int row = stmt.executeUpdate();
 
-            if (row > 0)
-                success = true;
+        if (row > 0)
+            success = true;
 
-        } catch (Exception e) {
-            System.err.println("There was an error adding log in database.");
-            System.err.println(e.getMessage());
-        }
         return success;
     }
 
-    public static ArrayList<Log> getLog(){
+    public static ArrayList<Log> getLog() throws SQLException{
         ArrayList<Log> logs = new ArrayList<>();
-        try{
-            Connection conn = DBConnection.getConnection();
-            String sql = "SELECT * FROM Log ORDER BY logged_time DESC";
-            Statement stmt = conn.createStatement();
 
-            ResultSet rs = stmt.executeQuery(sql);
-            while(rs.next())
-                logs.add(mapResultSetToLog(rs));
-        } catch (Exception e) {
-            System.err.println("There was an error adding log in database.");
-            System.err.println(e.getMessage());
-        }
+        Connection conn = DBConnection.getConnection();
+        String sql = "SELECT * FROM Log ORDER BY logged_time DESC";
+        Statement stmt = conn.createStatement();
+
+        ResultSet rs = stmt.executeQuery(sql);
+        while(rs.next())
+            logs.add(mapResultSetToLog(rs));
+
         return logs;
     }
 
@@ -72,93 +64,82 @@ public class LogDAO {
         return log;
     }
 
-    public static ArrayList<Log> getLog(LocalDateTime fromDate, LocalDateTime toDate){
+    public static ArrayList<Log> getLog(LocalDateTime fromDate, LocalDateTime toDate) throws SQLException{
         ArrayList<Log> logs = new ArrayList<>();
-        try{
-            Connection conn = DBConnection.getConnection();
-            PreparedStatement stmt;
-            if(fromDate != null && toDate == null)
-            {
-                String sql = "SELECT * FROM Log WHERE logged_time >= ? ORDER BY logged_time DESC";
-                stmt = conn.prepareStatement(sql);
-                stmt.setTimestamp(1, Timestamp.valueOf(fromDate));
-            }
-            else if(fromDate == null && toDate != null)
-            {
-                String sql = "SELECT * FROM Log WHERE logged_time <= ? ORDER BY logged_time DESC";
-                stmt = conn.prepareStatement(sql);
-                stmt.setTimestamp(1, Timestamp.valueOf(toDate));
-            }
-            else
-            {
-                String sql = "SELECT * FROM Log WHERE logged_time between ? AND ? ORDER BY logged_time DESC";
-                stmt = conn.prepareStatement(sql);
-                stmt.setTimestamp(1, Timestamp.valueOf(fromDate));
-                stmt.setTimestamp(2, Timestamp.valueOf(toDate));
-            }
+        Connection conn = DBConnection.getConnection();
+        PreparedStatement stmt;
 
-            ResultSet rs = stmt.executeQuery();
-            while(rs.next())
-                logs.add(mapResultSetToLog(rs));
-        } catch (Exception e) {
-            System.err.println("There was an error retrieving log in database.");
-            System.err.println(e.getMessage());
+        if(fromDate != null && toDate == null)
+        {
+            String sql = "SELECT * FROM Log WHERE logged_time >= ? ORDER BY logged_time DESC";
+            stmt = conn.prepareStatement(sql);
+            stmt.setTimestamp(1, Timestamp.valueOf(fromDate));
         }
+        else if(fromDate == null && toDate != null)
+        {
+            String sql = "SELECT * FROM Log WHERE logged_time <= ? ORDER BY logged_time DESC";
+            stmt = conn.prepareStatement(sql);
+            stmt.setTimestamp(1, Timestamp.valueOf(toDate));
+        }
+        else {
+            String sql = "SELECT * FROM Log WHERE logged_time between ? AND ? ORDER BY logged_time DESC";
+            stmt = conn.prepareStatement(sql);
+            stmt.setTimestamp(1, Timestamp.valueOf(fromDate));
+            stmt.setTimestamp(2, Timestamp.valueOf(toDate));
+        }
+
+        ResultSet rs = stmt.executeQuery();
+        while(rs.next())
+            logs.add(mapResultSetToLog(rs));
+
         return logs;
     }
 
-    public static ArrayList<Log> getLog(LocalDateTime fromDate, LocalDateTime toDate, String typeOfChange){
+    public static ArrayList<Log> getLog(LocalDateTime fromDate, LocalDateTime toDate, String typeOfChange) throws SQLException{
         ArrayList<Log> logs = new ArrayList<>();
-        try{
-            Connection conn = DBConnection.getConnection();
-            PreparedStatement stmt;
-            if(fromDate != null && toDate != null && !typeOfChange.equals(""))
-            {
-                String sql = "SELECT * FROM Log WHERE logged_time between ? AND ? AND typeOfChange = ? ORDER BY logged_time DESC";
-                stmt = conn.prepareStatement(sql);
-                stmt.setTimestamp(1, Timestamp.valueOf(fromDate));
-                stmt.setTimestamp(2, Timestamp.valueOf(toDate));
-                stmt.setString(3, typeOfChange);
-            }
-            else if(fromDate == null && (toDate != null && !typeOfChange.equals("")))
-            {
-                String sql = "SELECT * FROM Log WHERE logged_time <= ? AND typeOfChange = ? ORDER BY logged_time DESC";
-                stmt = conn.prepareStatement(sql);
-                stmt.setTimestamp(1, Timestamp.valueOf(toDate));
-                stmt.setString(2, typeOfChange);
-            }
-            else /**if(toDate == null && (fromDate != null && !typeOfChange.equals("")))*/
-            {
-                String sql = "SELECT * FROM Log WHERE logged_time >= ? AND typeOfChange = ? ORDER BY logged_time DESC";
-                stmt = conn.prepareStatement(sql);
-                stmt.setTimestamp(1, Timestamp.valueOf(fromDate));
-                stmt.setString(2, typeOfChange);
-            }
 
-            ResultSet rs = stmt.executeQuery();
-            while(rs.next())
-                logs.add(mapResultSetToLog(rs));
-        } catch (Exception e) {
-            System.err.println("There was an error retrieving log in database.");
-            System.err.println(e.getMessage());
+        Connection conn = DBConnection.getConnection();
+        PreparedStatement stmt;
+        if(fromDate != null && toDate != null && !typeOfChange.equals(""))
+        {
+            String sql = "SELECT * FROM Log WHERE logged_time between ? AND ? AND typeOfChange = ? ORDER BY logged_time DESC";
+            stmt = conn.prepareStatement(sql);
+            stmt.setTimestamp(1, Timestamp.valueOf(fromDate));
+            stmt.setTimestamp(2, Timestamp.valueOf(toDate));
+            stmt.setString(3, typeOfChange);
         }
+        else if(fromDate == null && (toDate != null && !typeOfChange.equals("")))
+        {
+            String sql = "SELECT * FROM Log WHERE logged_time <= ? AND typeOfChange = ? ORDER BY logged_time DESC";
+            stmt = conn.prepareStatement(sql);
+            stmt.setTimestamp(1, Timestamp.valueOf(toDate));
+            stmt.setString(2, typeOfChange);
+        }
+        else /**if(toDate == null && (fromDate != null && !typeOfChange.equals("")))*/
+        {
+            String sql = "SELECT * FROM Log WHERE logged_time >= ? AND typeOfChange = ? ORDER BY logged_time DESC";
+            stmt = conn.prepareStatement(sql);
+            stmt.setTimestamp(1, Timestamp.valueOf(fromDate));
+            stmt.setString(2, typeOfChange);
+        }
+
+        ResultSet rs = stmt.executeQuery();
+        while(rs.next())
+            logs.add(mapResultSetToLog(rs));
+
         return logs;
     }
 
-    public static ArrayList<Log> getLog(String typeOfChange){
+    public static ArrayList<Log> getLog(String typeOfChange) throws SQLException{
         ArrayList<Log> logs = new ArrayList<>();
-        try{
-            Connection conn = DBConnection.getConnection();
-            String sql = "SELECT * FROM Log WHERE typeOfChange = ? ORDER BY logged_time DESC";
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1, typeOfChange);
-            ResultSet rs = stmt.executeQuery();
-            while(rs.next())
-                logs.add(mapResultSetToLog(rs));
-        } catch (Exception e) {
-            System.err.println("There was an error retrieving log in database.");
-            System.err.println(e.getMessage());
-        }
+        Connection conn = DBConnection.getConnection();
+        String sql = "SELECT * FROM Log WHERE typeOfChange = ? ORDER BY logged_time DESC";
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setString(1, typeOfChange);
+        ResultSet rs = stmt.executeQuery();
+        while(rs.next())
+            logs.add(mapResultSetToLog(rs));
+
         return logs;
     }
 }
