@@ -93,7 +93,7 @@ function LogFilter() {
 
                 <div className="formRow">
                     <FormControl className="formColumn">
-                        <InputLabel shrink id={"logChangeTypeLabel"}>Change Type</InputLabel>
+                        <InputLabel shrink id={"logChangeTypeLabel"} style={{width: "100px"}}>Change Type</InputLabel>
                         <Select labelId={"logChangeTypeLabel"} native id="logChangeType" value={changeType}
                                 onChange={(e) => setChangeType(e.currentTarget.value)}>
                             <option value="">All</option>

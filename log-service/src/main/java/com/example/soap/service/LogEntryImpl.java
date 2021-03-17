@@ -27,57 +27,44 @@ public class LogEntryImpl implements LogEntry {
             LocalDateTime toDateTime = null;
             Log.ChangeType type = null;
 
-            if(!changeType.equals(""))
-            {
-                if(changeType.equals("ADD") || changeType.equals("UPDATE") || changeType.equals("DELETE"))
-                {
+            if (!changeType.equals("")) {
+                if (changeType.equals("ADD") || changeType.equals("UPDATE") || changeType.equals("DELETE")) {
                     type = Log.ChangeType.valueOf(changeType);
-                }
-                else{
+                } else {
                     throw new LogException("Enter a valid ChangeType (CASE SENSITIVE): ADD , UPDATE, DELETE");
                 }
             }
 
             //Format date if not null
-            if(from != null && !from.equals(""))
-            {
+            if (from != null && !from.equals("")) {
                 try {
                     fromDateTime = LocalDateTime.parse(from, formatter);
-                }
-                catch (DateTimeParseException pe)
-                {
+                } catch (DateTimeParseException pe) {
                     throw new LogException("ERROR: Date format should be yyyy-MM-dd HH:mm:ss");
                 }
             }
-            if(to != null && !to.equals("")){
+            if (to != null && !to.equals("")) {
                 try {
                     toDateTime = LocalDateTime.parse(to, formatter);
-                }
-                catch (DateTimeParseException pe)
-                {
+                } catch (DateTimeParseException pe) {
                     throw new LogException("ERROR: Date format should be yyyy-MM-dd HH:mm:ss");
                 }
             }
 
             //FILTERING
-            if((fromDateTime != null && toDateTime != null && !changeType.equals("")) || (fromDateTime == null && toDateTime != null && !changeType.equals("")) || (fromDateTime != null && toDateTime == null && !changeType.equals("")))
-            {
+            if ((fromDateTime != null && toDateTime != null && !changeType.equals("")) || (fromDateTime == null && toDateTime != null && !changeType.equals("")) || (fromDateTime != null && toDateTime == null && !changeType.equals(""))) {
                 logs = logManager.listLog(fromDateTime, toDateTime, type);
-            }
-            else if((fromDateTime != null && toDateTime == null && changeType.equals("")) || (fromDateTime == null && toDateTime != null && changeType.equals("")) || (fromDateTime != null && toDateTime != null && changeType.equals("")))
-            {
+            } else if ((fromDateTime != null && toDateTime == null && changeType.equals("")) || (fromDateTime == null && toDateTime != null && changeType.equals("")) || (fromDateTime != null && toDateTime != null && changeType.equals(""))) {
                 logs = logManager.listLog(fromDateTime, toDateTime);
-            }
-            else if(fromDateTime == null && toDateTime == null && !changeType.equals(""))
-            {
+            } else if (fromDateTime == null && toDateTime == null && !changeType.equals("")) {
                 logs = logManager.listLog(type);
-            }
-            else
-            {
+            } else {
                 logs = logManager.listLog();
             }
             return logs;
-        } catch(LogException | SQLException ex){
+        } catch(LogException ex) {
+            throw new LogException(ex.getMessage()); // To keep other messages (also gives errors if not caught)
+        } catch(SQLException ex) {
             throw new LogException("Error getting the list of logs!");
         }
     }
